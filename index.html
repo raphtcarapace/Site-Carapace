@@ -32,7 +32,7 @@
         /* HEADER & NAVIGATION */
         header {
             background: var(--white);
-            padding: 15px 5%;
+            padding: 10px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,21 +43,14 @@
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--dark-blue);
-            letter-spacing: 2px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
         }
 
-        .logo svg {
-            transition: transform 0.3s ease;
-        }
-        .logo:hover svg {
-            transform: scale(1.1);
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         nav ul {
@@ -90,14 +83,10 @@
             display: block;
         }
 
-        /* HERO SECTION (PAGE DE GARDE) */
+        /* HERO SECTION (PAGE DE GARDE) AVEC VOTRE VILLA */
         .hero {
-            /* 
-               IMPORTANT : Pour mettre VOTRE photo de villa, remplacez le lien web ci-dessous 
-               par le nom de votre image, par exemple : url('mavilla.jpg')
-            */
-            background: linear-gradient(rgba(26, 37, 48, 0.6), rgba(26, 37, 48, 0.8)), 
-                        url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            background: linear-gradient(rgba(26, 37, 48, 0.4), rgba(26, 37, 48, 0.8)), 
+                        url('villa.png') center/cover no-repeat;
             color: var(--white);
             text-align: center;
             padding: 160px 20px;
@@ -311,7 +300,7 @@
                 font-size: 30px;
             }
             .products-grid {
-                grid-template-columns: 1fr; /* 1 colonne sur petit écran vertical */
+                grid-template-columns: 1fr;
             }
             .result-box {
                 padding: 15px;
@@ -324,10 +313,7 @@
     <!-- HEADER / NAVIGATION -->
     <header>
         <div class="logo" onclick="showPage('home')">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c1272d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            CARAPACE
+            <img src="logo.png" alt="Logo Carapace" style="height: 70px; width: auto; object-fit: contain;">
         </div>
         <nav>
             <ul>
@@ -341,14 +327,12 @@
 
     <!-- ==================== PAGE D'ACCUEIL ==================== -->
     <div id="page-home" class="page-section active">
-        <!-- PAGE DE GARDE -->
         <section class="hero">
             <div class="badge-devis">Devis gratuit sans engagement</div>
             <h1>La protection de vos espaces</h1>
             <p>Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour une sérénité absolue.</p>
         </section>
 
-        <!-- ZONE QUIZZ INTERACTIF -->
         <section class="quiz-container">
             <h2>Trouvez la configuration idéale</h2>
             
@@ -395,23 +379,17 @@
             <div class="products-grid">
                 <div class="product-card pack">
                     <div class="product-title">PACK ESSENTIEL</div>
-                    <div class="product-desc">
-                        Détecteur de mouvement extérieur Ajax Hub, Panneau de commande, 1 détecteur d'ouverture, 1 télécommande, Installation et Programmation.
-                    </div>
+                    <div class="product-desc">Détecteur de mouvement extérieur Ajax Hub, Panneau de commande, 1 détecteur d'ouverture, 1 télécommande, Installation et Programmation.</div>
                     <div class="product-price">965.71 € <span class="product-tva">TTC</span></div>
                 </div>
                 <div class="product-card pack">
                     <div class="product-title">PACK CONFORT</div>
-                    <div class="product-desc">
-                        Détecteur de mouvement extérieur avec caméra, Détecteur de mouvement classique, Sirène extérieure, Sirène intérieure, Hub, Panneau tactile.
-                    </div>
+                    <div class="product-desc">Détecteur de mouvement extérieur avec caméra, Détecteur de mouvement classique, Sirène extérieure, Sirène intérieure, Hub, Panneau tactile.</div>
                     <div class="product-price">978.91 € <span class="product-tva">TTC</span></div>
                 </div>
                 <div class="product-card pack">
                     <div class="product-title">PACK TOUT CONFORT</div>
-                    <div class="product-desc">
-                        Idem Pack Confort + Caméra intérieure, Caméra extérieure, Détecteur ouverture menuiserie x1, Création de scénarios complets.
-                    </div>
+                    <div class="product-desc">Idem Pack Confort + Caméra intérieure, Caméra extérieure, Détecteur ouverture menuiserie x1, Création de scénarios complets.</div>
                     <div class="product-price">2012.71 € <span class="product-tva">TTC</span></div>
                 </div>
             </div>
@@ -450,23 +428,17 @@
             <div class="products-grid">
                 <div class="product-card pack">
                     <div class="product-title">Somfy Pack Essentiel</div>
-                    <div class="product-desc">
-                        Caméra intérieure Somfy one plus, Détecteurs, Badges, Tahoma, Autocollant maison protégée, Option tablette, Installation et Mise en service.
-                    </div>
+                    <div class="product-desc">Caméra intérieure Somfy one plus, Détecteurs, Badges, Tahoma, Autocollant maison protégée, Option tablette, Installation et Mise en service.</div>
                     <div class="product-price">2505.00 € <span class="product-tva">TTC</span></div>
                 </div>
                 <div class="product-card pack">
                     <div class="product-title">Somfy Pack Confort</div>
-                    <div class="product-desc">
-                        Caméra intérieure Somfy one plus, Caméra Outdoor, Tahoma, Autocollant, Option tablette, Installation et Mise en service.
-                    </div>
+                    <div class="product-desc">Caméra intérieure Somfy one plus, Caméra Outdoor, Tahoma, Autocollant, Option tablette, Installation et Mise en service.</div>
                     <div class="product-price">2591.00 € <span class="product-tva">TTC</span></div>
                 </div>
                 <div class="product-card pack">
                     <div class="product-title">Somfy Pack Tout Confort</div>
-                    <div class="product-desc">
-                        Caméra int + Outdoor, Tahoma, Badges, Détecteurs, Autocollant, Option tablette, Installation et Mise en service.
-                    </div>
+                    <div class="product-desc">Caméra int + Outdoor, Tahoma, Badges, Détecteurs, Autocollant, Option tablette, Installation et Mise en service.</div>
                     <div class="product-price">2963.00 € <span class="product-tva">TTC</span></div>
                 </div>
             </div>
@@ -526,26 +498,18 @@
 
     <!-- LOGIQUE JAVASCRIPT (SPA & QUIZZ) -->
     <script>
-        // --- 1. Gestion des pages virtuelles (SPA) ---
         function showPage(pageId) {
-            // Cacher toutes les sections
             document.querySelectorAll('.page-section').forEach(el => {
                 el.classList.remove('active');
             });
-            // Désactiver tous les liens du menu
             document.querySelectorAll('nav a').forEach(el => {
                 el.classList.remove('active');
             });
-
-            // Afficher la page demandée et activer le lien
             document.getElementById('page-' + pageId).classList.add('active');
             document.getElementById('nav-' + pageId).classList.add('active');
-            
-            // Remonter en haut de la page doucement
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- 2. Logique du Quizz ---
         let choixLogement = "";
         let choixBesoin = "";
 
