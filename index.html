@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carapace - La protection de vos espaces</title>
+    <style>
+        /* --- STYLES PREMIUM (CSS) --- */
+        :root {
+            --primary-red: #c1272d; /* Rouge inspiré du logo Carapace */
+            --dark-blue: #1a2530; /* Bleu très foncé pour le contraste premium */
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            background: white;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--dark-blue);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span { color: var(--primary-red); }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover { color: var(--primary-red); }
+
+        /* HERO SECTION (PAGE DE GARDE) */
+        .hero {
+            /* Image de maison moderne haut de gamme */
+            background: linear-gradient(rgba(26, 37, 48, 0.7), rgba(26, 37, 48, 0.7)), 
+                        url('https://images.unsplash.com/photo-1558036117-15d82a90b9b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 180px 20px;
+        }
+
+        .badge-devis {
+            display: inline-block;
+            background: var(--primary-red);
+            color: white;
+            padding: 10px 25px;
+            font-weight: bold;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(193, 39, 45, 0.4);
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin: 0 0 20px 0;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* SECTION QUIZZ */
+        .quiz-container {
+            max-width: 900px;
+            margin: -60px auto 80px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quiz-container h2 {
+            font-size: 32px;
+            color: var(--dark-blue);
+            margin-bottom: 40px;
+        }
+
+        .question { display: none; }
+        .question.active { display: block; animation: fadeIn 0.6s ease; }
+
+        .question h3 { font-size: 22px; margin-bottom: 30px; color: #444; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-option {
+            background: white;
+            border: 2px solid #eaeaea;
+            padding: 25px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #555;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-option:hover {
+            border-color: var(--primary-red);
+            background: #fffafa;
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(193, 39, 45, 0.1);
+        }
+
+        /* RESULTAT DU QUIZZ */
+        .result {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .result-box {
+            background: #fffafa;
+            border-left: 5px solid var(--primary-red);
+            padding: 30px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .result h3 { color: var(--dark-blue); font-size: 28px; margin-top:0;}
+        .pack-name { color: var(--primary-red); font-size: 24px; font-weight: bold; }
+        .pack-desc { font-size: 16px; line-height: 1.6; color: #666; margin: 15px 0;}
+        
+        .btn-action {
+            display: inline-block;
+            background: var(--dark-blue);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-action:hover { background: var(--primary-red); }
+
+        /* FOOTER / CONTACT */
+        footer {
+            background: var(--dark-blue);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        footer h2 { font-size: 36px; margin-bottom: 20px; }
+        footer p { font-size: 18px; color: #a0aab5; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;}
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / NAVIGATION -->
+    <header>
+        <div class="logo">
+            <!-- Icône minimaliste de bouclier (représentant la carapace/sécurité) -->
+            <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#c1272d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            CARAPACE
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#gammes">Ajax</a></li>
+                <li><a href="#gammes">Somfy</a></li>
+                <li><a href="#gammes">Yale</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- PAGE DE GARDE -->
+    <section class="hero">
+        <div class="badge-devis">Devis gratuit sans engagement</div>
+        <h1>La protection de vos espaces</h1>
+        <p>Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour une sérénité absolue.</p>
+    </section>
+
+    <!-- ZONE QUIZZ INTERACTIF -->
+    <section class="quiz-container" id="quizz">
+        <h2>Trouvez la configuration idéale pour vous</h2>
+        
+        <!-- Étape 1 -->
+        <div id="etape-1" class="question active">
+            <h3>Que souhaitez-vous équiper en priorité ?</h3>
+            <div class="options-grid">
+                <button class="btn-option" onclick="repondre(1, 'appartement')">Un Appartement</button>
+                <button class="btn-option" onclick="repondre(1, 'maison')">Une Maison (avec extérieur)</button>
+                <button class="btn-option" onclick="repondre(1, 'pro')">Des locaux professionnels</button>
+            </div>
+        </div>
+
+        <!-- Étape 2 -->
+        <div id="etape-2" class="question">
+            <h3>Quel est votre objectif principal ?</h3>
+            <div class="options-grid">
+                <button class="btn-option" onclick="repondre(2, 'intrusion')">Sécurité anti-intrusion & Alarmes</button>
+                <button class="btn-option" onclick="repondre(2, 'domotique')">Confort & Maison Connectée (Domotique)</button>
+                <button class="btn-option" onclick="repondre(2, 'complet')">Protection Totale (Sécurité + Caméras + Domotique)</button>
+            </div>
+        </div>
+
+        <!-- Résultat du Quizz -->
+        <div id="resultat" class="result">
+            <h3>Notre recommandation pour vous :</h3>
+            <div class="result-box">
+                <div class="pack-name" id="titre-pack">Pack Essentiel</div>
+                <div class="pack-desc" id="description-pack">...</div>
+                <p><strong>Gamme suggérée :</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">Ajax / Somfy</span></p>
+            </div>
+            <p style="margin-bottom: 20px; font-weight: bold; color: #444;">Devis gratuit sans engagement.</p>
+            <a href="#contact" class="btn-action">Demander mon devis personnalisé</a>
+            <button onclick="recommencerQuizz()" style="background:none; border:none; color:var(--primary-red); text-decoration:underline; cursor:pointer; margin-left:20px; font-size:16px;">Refaire le test</button>
+        </div>
+    </section>
+
+    <!-- FOOTER / NOUS CONTACTER -->
+    <footer id="contact">
+        <h2>Nous contacter</h2>
+        <p>Nos experts Carapace sont à votre disposition pour analyser vos espaces et vous proposer l'équipement Somfy, Yale ou Ajax le plus adapté à vos besoins.</p>
+        
+        <!-- Emplacement pour la fonctionnalité de bouton demandée -->
+        <a href="mailto:contact@carapace.fr" class="btn-action" style="background: var(--primary-red);">Demander un contact immédiat</a>
+        
+        <p style="margin-top: 60px; font-size: 12px; opacity: 0.5;">© 2026 Carapace - Domotique et Maison Connectée. Tous droits réservés.</p>
+    </footer>
+
+    <!-- LOGIQUE JAVASCRIPT DU QUIZZ -->
+    <script>
+        let choixLogement = "";
+        let choixBesoin = "";
+
+        function repondre(etape, choix) {
+            if (etape === 1) {
+                choixLogement = choix;
+                document.getElementById('etape-1').classList.remove('active');
+                document.getElementById('etape-2').classList.add('active');
+            } else if (etape === 2) {
+                choixBesoin = choix;
+                document.getElementById('etape-2').classList.remove('active');
+                calculerResultat();
+            }
+        }
+
+        function calculerResultat() {
+            let titre = "";
+            let description = "";
+            let marque = "";
+
+            // Logique de recommandation basée sur vos catalogues
+            if (choixBesoin === 'intrusion' && choixLogement === 'appartement') {
+                titre = "PACK ESSENTIEL";
+                description = "La base parfaite de la sécurité : Panneau de commande, détecteur de mouvement, détecteur d'ouverture sur menuiserie et télécommande. L'idéal pour sécuriser les accès de votre appartement.";
+                marque = "Ajax";
+            } else if (choixBesoin === 'intrusion' && (choixLogement === 'maison' || choixLogement === 'pro')) {
+                titre = "PACK CONFORT";
+                description = "Sécurité renforcée avec dissuasion : Détecteurs de mouvement extérieurs avec caméra sur demande, sirènes intérieure et extérieure pour protéger les abords de votre maison avant même l'effraction.";
+                marque = "Ajax ou Yale";
+            } else if (choixBesoin === 'domotique') {
+                titre = "PACK DOMOTIQUE & CONFORT";
+                description = "Gérez votre maison du bout des doigts : Thermostats connectés pour radiateur, prises commandées et serrures connectées pour un confort de vie optimal au quotidien.";
+                marque = "Somfy (Tahoma) / Homematic IP";
+            } else {
+                titre = "PACK TOUT CONFORT";
+                description = "La protection absolue de vos espaces : Caméras intérieures et extérieures (Outdoor), centrale d'alarme, détecteurs, badges et création de scénarios domotiques complets sur tablette tactile.";
+                marque = "Somfy ou Ajax";
+            }
+
+            // Affichage des résultats
+            document.getElementById('titre-pack').innerText = titre;
+            document.getElementById('description-pack').innerText = description;
+            document.getElementById('marque-pack').innerText = marque;
+            
+            document.getElementById('resultat').style.display = 'block';
+        }
+
+        function recommencerQuizz() {
+            choixLogement = "";
+            choixBesoin = "";
+            document.getElementById('resultat').style.display = 'none';
+            document.getElementById('etape-1').classList.add('active');
+        }
+    </script>
+</body>
+</html>
