@@ -25,7 +25,6 @@
             line-height: 1.6;
         }
 
-        /* HEADER & NAVIGATION */
         header {
             background: var(--white);
             padding: 10px 5%;
@@ -49,11 +48,9 @@
         }
         nav a:hover, nav a.active { color: var(--primary-red); }
 
-        /* GESTION DES PAGES (SPA) */
         .page-section { display: none; animation: fadeIn 0.5s ease; }
         .page-section.active { display: block; }
 
-        /* HERO SECTION (PAGE DE GARDE) */
         .hero {
             background: linear-gradient(rgba(26, 37, 48, 0.4), rgba(26, 37, 48, 0.8)), 
                         url('villa.png') center/cover no-repeat;
@@ -70,7 +67,6 @@
         .hero h1 { font-size: 48px; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; }
         .hero p { font-size: 20px; font-weight: 300; max-width: 700px; margin: 0 auto; color: #e0e0e0; }
 
-        /* SECTION QUIZZ */
         .quiz-container {
             max-width: 900px; margin: -50px auto 60px auto; background: var(--white);
             border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
@@ -90,7 +86,6 @@
         }
         .btn-option:hover { border-color: var(--primary-red); background: #fffafa; color: var(--primary-red); transform: translateY(-2px); }
 
-        /* RESULTAT QUIZZ */
         .result { display: none; text-align: center; padding: 10px; }
         .result-box {
             background: #fffafa; border-left: 4px solid var(--primary-red); padding: 25px;
@@ -99,7 +94,6 @@
         .result-box h3 { margin-top: 0; color: var(--dark-blue); }
         .pack-name { color: var(--primary-red); font-size: 22px; font-weight: bold; }
 
-        /* PAGES MARQUES (BOUTIQUE) */
         .brand-header {
             background: var(--dark-blue); color: var(--white); text-align: center;
             padding: 80px 20px; margin-bottom: 40px;
@@ -119,18 +113,24 @@
             background: var(--white); border-radius: 10px; padding: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease;
             border-top: 4px solid transparent; display: flex; flex-direction: column;
+            cursor: pointer; /* Indique que la carte est cliquable */
         }
         .product-card:hover { transform: translateY(-5px); border-top: 4px solid var(--primary-red); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .product-card.pack { border-top: 4px solid var(--primary-red); background: #fffafa; }
 
-        /* GESTION DES IMAGES PRODUITS */
         .product-image-container {
             width: 100%; height: 200px; margin-bottom: 20px; border-radius: 8px;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
             background-color: #f9f9f9; border: 1px solid #eaeaea;
+            padding: 10px; /* Ajout d'un padding pour respirer */
         }
         .product-image-container img {
-            width: 100%; height: 100%; object-fit: cover; /* Cover pour remplir le cadre de façon premium */
+            /* MODIFICATION POUR LES PETITES IMAGES 125x125 */
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* L'image s'affiche en entier sans être rognée */
+            max-width: 140px;    /* Empêche l'image de devenir floue en s'étirant trop */
+            max-height: 140px;
             transition: transform 0.4s ease;
         }
         .product-card:hover .product-image-container img { transform: scale(1.08); }
@@ -140,7 +140,84 @@
         .product-price { font-size: 24px; font-weight: bold; color: var(--primary-red); }
         .product-tva { font-size: 12px; color: #999; font-weight: normal; }
 
-        /* BOUTONS & FOOTER */
+        /* NOUVEAU CSS : PAGE DÉTAIL PRODUIT */
+        .detail-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+            margin-bottom: 60px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .detail-image-box {
+            flex: 0 0 400px;
+            height: 400px;
+            background: #f9f9f9;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .detail-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .detail-info {
+            flex: 1;
+        }
+        .detail-marque {
+            color: var(--primary-red);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .detail-title {
+            font-size: 32px;
+            color: var(--dark-blue);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        .detail-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-red);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-desc-courte {
+            font-size: 18px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        .detail-desc-longue {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .btn-back:hover { color: var(--primary-red); }
+
         .btn-action {
             display: inline-block; background: var(--primary-red); color: var(--white);
             padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none;
@@ -152,7 +229,11 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* RESPONSIVE DESIGN */
+        @media (max-width: 900px) {
+            .detail-container { flex-direction: column; }
+            .detail-image-box { flex: auto; width: 100%; height: 300px; }
+        }
+
         @media (max-width: 768px) {
             header { flex-direction: column; padding: 15px 20px; gap: 15px; }
             nav ul { flex-wrap: wrap; justify-content: center; gap: 15px; }
@@ -165,7 +246,6 @@
 </head>
 <body>
 
-    <!-- HEADER / NAVIGATION -->
     <header>
         <div class="logo" onclick="showPage('home')">
             <img src="logo.png" alt="Logo Carapace" style="height: 70px; width: auto; object-fit: contain;">
@@ -175,12 +255,11 @@
                 <li><a onclick="showPage('home')" id="nav-home" class="active">Accueil & Quizz</a></li>
                 <li><a onclick="showPage('ajax')" id="nav-ajax">Ajax</a></li>
                 <li><a onclick="showPage('somfy')" id="nav-somfy">Somfy</a></li>
-                <li><a onclick="showPage('yale')" id="nav-yale">Yale & Domotique</a></li>
+                <li><a onclick="showPage('yale')" id="nav-yale">Yale Home</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- ==================== PAGE D'ACCUEIL ==================== -->
     <div id="page-home" class="page-section active">
         <section class="hero">
             <div class="badge-devis">Devis gratuit sans engagement</div>
@@ -190,6 +269,7 @@
 
         <section class="quiz-container">
             <h2>Trouvez la configuration idéale</h2>
+            
             <div id="etape-1" class="question active">
                 <h3>Que souhaitez-vous équiper en priorité ?</h3>
                 <div class="options-grid">
@@ -198,6 +278,7 @@
                     <button class="btn-option" onclick="repondre(1, 'pro')">💼 Des locaux professionnels</button>
                 </div>
             </div>
+            
             <div id="etape-2" class="question">
                 <h3>Quel est votre objectif principal ?</h3>
                 <div class="options-grid">
@@ -206,21 +287,29 @@
                     <button class="btn-option" onclick="repondre(2, 'complet')">⭐ Protection Totale</button>
                 </div>
             </div>
+
+            <div id="etape-3" class="question">
+                <h3>Quelle expérience correspond le plus à vos attentes ?</h3>
+                <div class="options-grid">
+                    <button class="btn-option" onclick="repondre(3, 'ajax')">⬛ Design épuré & 100% Sans Fil</button>
+                    <button class="btn-option" onclick="repondre(3, 'somfy')">🇫🇷 Écosystème complet & Excellence Française</button>
+                </div>
+            </div>
+
             <div id="resultat" class="result">
                 <div class="result-box">
-                    <h3>Notre recommandation :</h3>
+                    <h3>Notre recommandation personnalisée :</h3>
                     <div class="pack-name" id="titre-pack">Pack Essentiel</div>
                     <div class="product-desc" id="description-pack" style="margin-top:10px;">...</div>
-                    <p style="margin-top:15px;"><strong>Gamme suggérée :</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">Ajax / Somfy</span></p>
+                    <p style="margin-top:15px;"><strong>Gamme suggérée :</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">...</span></p>
                 </div>
-                <p style="margin-bottom: 20px; font-weight: bold; color: #444;">Devis gratuit sans engagement.</p>
-                <a href="#contact" class="btn-action">Demander mon devis</a>
+                <p style="margin-bottom: 20px; font-weight: bold; color: #444;">Un expert Carapace va concevoir votre devis sur-mesure.</p>
+                <a href="mailto:contact@carapace.fr?subject=Demande de devis suite au quiz" class="btn-action">Demander mon devis</a>
                 <button onclick="recommencerQuizz()" style="background:none; border:none; color:var(--text-light); text-decoration:underline; cursor:pointer; margin-left:15px; font-size:14px;">Refaire le test</button>
             </div>
         </section>
     </div>
 
-    <!-- ==================== PAGE AJAX ==================== -->
     <div id="page-ajax" class="page-section">
         <div class="brand-header">
             <h1>Gamme AJAX</h1>
@@ -228,69 +317,11 @@
         </div>
         <div class="container">
             <h2 class="section-title">Nos Packs Sécurité Ajax</h2>
-            <div class="products-grid">
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=500&q=80" alt="Ajax Pack Essentiel">
-                    </div>
-                    <div class="product-title">PACK ESSENTIEL</div>
-                    <div class="product-desc">Détecteur de mouvement extérieur Ajax Hub, Panneau de commande, 1 détecteur d'ouverture, 1 télécommande, Installation et Programmation.</div>
-                    <div class="product-price">965.71 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=500&q=80" alt="Ajax Pack Confort">
-                    </div>
-                    <div class="product-title">PACK CONFORT</div>
-                    <div class="product-desc">Détecteur de mouvement extérieur avec caméra, Détecteur de mouvement classique, Sirène extérieure, Sirène intérieure, Hub, Panneau tactile.</div>
-                    <div class="product-price">978.91 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500&q=80" alt="Ajax Pack Tout Confort">
-                    </div>
-                    <div class="product-title">PACK TOUT CONFORT</div>
-                    <div class="product-desc">Idem Pack Confort + Caméra intérieure, Caméra extérieure, Détecteur ouverture menuiserie x1, Création de scénarios complets.</div>
-                    <div class="product-price">2012.71 € <span class="product-tva">TTC</span></div>
-                </div>
-            </div>
-
-            <h2 class="section-title">Produits à la carte Ajax</h2>
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=500&q=80" alt="Caméra Outdoor AJAX">
-                    </div>
-                    <div class="product-title">Caméra Outdoor AJAX</div>
-                    <div class="product-price">358.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=500&q=80" alt="Caméra Dome">
-                    </div>
-                    <div class="product-title">Caméra Dome MINI-5-B</div>
-                    <div class="product-price">260.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500&q=80" alt="Clavier Tactile">
-                    </div>
-                    <div class="product-title">Clavier tactile AJAX</div>
-                    <div class="product-desc">Clavier nouvelle génération AJ-KEYPADTOUCHSCREEN-B</div>
-                    <div class="product-price">320.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=500&q=80" alt="Détecteur Mouvement">
-                    </div>
-                    <div class="product-title">Détecteur de mouvement On Demand</div>
-                    <div class="product-price">290.00 € <span class="product-tva">TTC</span></div>
-                </div>
-            </div>
+            <div class="products-grid" id="ajax-packs"></div>
+            <div id="ajax-dynamic-categories"></div>
         </div>
     </div>
 
-    <!-- ==================== PAGE SOMFY ==================== -->
     <div id="page-somfy" class="page-section">
         <div class="brand-header">
             <h1>Gamme SOMFY</h1>
@@ -298,115 +329,88 @@
         </div>
         <div class="container">
             <h2 class="section-title">Nos Packs Sécurité Somfy</h2>
-            <div class="products-grid">
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=500&q=80" alt="Somfy Pack Essentiel">
-                    </div>
-                    <div class="product-title">Somfy Pack Essentiel</div>
-                    <div class="product-desc">Caméra intérieure Somfy one plus, Détecteurs, Badges, Tahoma, Autocollant maison protégée, Option tablette, Installation et Mise en service.</div>
-                    <div class="product-price">2505.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=500&q=80" alt="Somfy Pack Confort">
-                    </div>
-                    <div class="product-title">Somfy Pack Confort</div>
-                    <div class="product-desc">Caméra intérieure Somfy one plus, Caméra Outdoor, Tahoma, Autocollant, Option tablette, Installation et Mise en service.</div>
-                    <div class="product-price">2591.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card pack">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500&q=80" alt="Somfy Pack Tout Confort">
-                    </div>
-                    <div class="product-title">Somfy Pack Tout Confort</div>
-                    <div class="product-desc">Caméra int + Outdoor, Tahoma, Badges, Détecteurs, Autocollant, Option tablette, Installation et Mise en service.</div>
-                    <div class="product-price">2963.00 € <span class="product-tva">TTC</span></div>
-                </div>
-            </div>
+            <div class="products-grid" id="somfy-packs"></div>
+            <h2 class="section-title">Produits à la carte Somfy</h2>
+            <div class="products-grid" id="somfy-produits"></div>
         </div>
     </div>
 
-    <!-- ==================== PAGE YALE & DOMOTIQUE ==================== -->
     <div id="page-yale" class="page-section">
         <div class="brand-header">
-            <h1>Yale & Solutions Domotiques</h1>
-            <p>Sécurisez vos accès et gérez la température et l'énergie de votre foyer avec nos solutions Homematic IP et Yale.</p>
+            <h1>Yale Home & Solutions Domotiques</h1>
+            <p>Sécurisez vos accès et gérez la température et l'énergie de votre foyer avec nos solutions connectées.</p>
         </div>
         <div class="container">
             <h2 class="section-title">Contrôle d'accès & Énergie</h2>
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=500&q=80" alt="Serrure connectée">
-                    </div>
-                    <div class="product-title">Serrure connectée Homematic IP</div>
-                    <div class="product-desc">Mécanisme de serrure motorisé (HmIP-DLD)</div>
-                    <div class="product-price">320.00 € <span class="product-tva">TTC</span></div>
+            <div class="products-grid" id="yale-produits"></div>
+        </div>
+    </div>
+
+    <!-- NOUVELLE PAGE : DÉTAIL DU PRODUIT -->
+    <div id="page-detail" class="page-section">
+        <!-- Le header sera masqué pour que le détail prenne de la place -->
+        <div class="container" style="margin-top: 40px;">
+            <!-- Bouton Retour -->
+            <a onclick="retourMarque()" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Retour aux produits
+            </a>
+
+            <div class="detail-container">
+                <div class="detail-image-box">
+                    <img id="detail-image" src="" alt="Produit">
                 </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500&q=80" alt="Clavier serrure">
-                    </div>
-                    <div class="product-title">Clavier pour serrure connectée</div>
-                    <div class="product-desc">Homematic IP Keypad (HmIP-WKP)</div>
-                    <div class="product-price">125.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500&q=80" alt="Tablette de contrôle">
-                    </div>
-                    <div class="product-title">Panneau de contrôle</div>
-                    <div class="product-desc">Tablette tactile murale pour le pilotage centralisé</div>
-                    <div class="product-price">320.00 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1560930950-5cc20e8cbbf1?w=500&q=80" alt="Thermostat mural">
-                    </div>
-                    <div class="product-title">Thermostat mural</div>
-                    <div class="product-desc">Homematic IP avec capteur d'humidité de l'air</div>
-                    <div class="product-price">91.50 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1560930950-5cc20e8cbbf1?w=500&q=80" alt="Thermostat radiateur">
-                    </div>
-                    <div class="product-title">Thermostat de radiateur</div>
-                    <div class="product-desc">HmIP-eTRV-3 - Pure</div>
-                    <div class="product-price">93.50 € <span class="product-tva">TTC</span></div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image-container">
-                        <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=500&q=80" alt="Prise commandée">
-                    </div>
-                    <div class="product-title">Prise commandée noire</div>
-                    <div class="product-desc">AJ-SOCKET-B</div>
-                    <div class="product-price">121.00 € <span class="product-tva">TTC</span></div>
+                <div class="detail-info">
+                    <span id="detail-marque" class="detail-marque">Marque</span>
+                    <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
+                    <div id="detail-prix" class="detail-price">0.00 € <span class="product-tva">TTC</span></div>
+                    
+                    <div id="detail-desc-courte" class="detail-desc-courte">Description courte du produit.</div>
+                    <div id="detail-desc-longue" class="detail-desc-longue">Ici viendra s'afficher la description détaillée avec toutes les spécificités du produit...</div>
+                    
+                    <a href="mailto:contact@carapace.fr?subject=Demande de renseignement produit" class="btn-action" style="width:100%; text-align:center;">Je suis intéressé(e)</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER / CONTACT GLOBAL -->
     <footer id="contact">
         <h2>Un projet en tête ?</h2>
         <p style="margin-bottom: 30px; font-size: 16px; opacity: 0.8;">Nos experts Carapace analysent vos espaces pour vous proposer l'équipement idéal (devis gratuit).</p>
-        <a href="mailto:contact@carapace.fr" class="btn-action">Demander un contact immédiat</a>
+        <a href="mailto:contact@carapace.fr?subject=Demande de contact - Site Internet" class="btn-action">Demander un contact immédiat</a>
         <p style="margin-top: 50px; font-size: 12px; opacity: 0.4;">© 2026 Carapace - Protection & Domotique. Tous droits réservés.</p>
     </footer>
 
-    <!-- LOGIQUE JAVASCRIPT (SPA & QUIZZ) -->
     <script>
+        // VARIABLE GLOBALE POUR SE SOUVENIR DE LA PAGE PRÉCÉDENTE (Pour le bouton retour)
+        let pagePrecedente = "home";
+
         function showPage(pageId) {
+            // Si on ne va pas sur la page détail, on mémorise la page courante pour le bouton retour
+            if(pageId !== 'detail') {
+                pagePrecedente = pageId;
+            }
+
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+            
             document.getElementById('page-' + pageId).classList.add('active');
-            document.getElementById('nav-' + pageId).classList.add('active');
+            
+            // On active le lien du menu sauf si on est sur la page de détail (qui n'a pas de lien dans le menu)
+            if(document.getElementById('nav-' + pageId)) {
+                document.getElementById('nav-' + pageId).classList.add('active');
+            }
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        let choixLogement = ""; let choixBesoin = "";
+        // Fonction appelée par le bouton retour
+        function retourMarque() {
+            showPage(pagePrecedente);
+        }
+
+        // Logique du quizz...
+        let choixLogement = ""; let choixBesoin = ""; let choixMarque = "";
 
         function repondre(etape, choix) {
             if (etape === 1) {
@@ -415,41 +419,170 @@
                 document.getElementById('etape-2').classList.add('active');
             } else if (etape === 2) {
                 choixBesoin = choix;
-                document.getElementById('etape-2').classList.remove('active');
+                if (choixBesoin === 'domotique') {
+                    calculerResultat();
+                } else {
+                    document.getElementById('etape-2').classList.remove('active');
+                    document.getElementById('etape-3').classList.add('active');
+                }
+            } else if (etape === 3) {
+                choixMarque = choix;
+                document.getElementById('etape-3').classList.remove('active');
                 calculerResultat();
             }
         }
 
         function calculerResultat() {
-            let titre = ""; let description = ""; let marque = "";
-            if (choixBesoin === 'intrusion' && choixLogement === 'appartement') {
-                titre = "PACK ESSENTIEL";
-                description = "La base parfaite : Panneau de commande, détecteur de mouvement, détecteur d'ouverture et télécommande. L'idéal pour sécuriser vos accès.";
-                marque = "Gamme Ajax recommandée";
-            } else if (choixBesoin === 'intrusion' && (choixLogement === 'maison' || choixLogement === 'pro')) {
-                titre = "PACK CONFORT";
-                description = "Dissuasion maximale : Détecteurs extérieurs avec caméra, sirènes intérieures et extérieures. Arrêtez l'effraction avant qu'elle n'arrive.";
-                marque = "Gamme Ajax ou Somfy recommandée";
-            } else if (choixBesoin === 'domotique') {
-                titre = "SOLUTIONS DOMOTIQUES";
+            let titre = ""; let description = ""; let marqueText = "";
+            if (choixBesoin === 'domotique') {
+                titre = "SOLUTIONS YALE HOME";
                 description = "Gérez votre confort : Thermostats connectés, prises commandées et serrures intelligentes pour une maison qui vous obéit.";
-                marque = "Gamme Yale / Homematic IP recommandée";
+                marqueText = "Gamme Yale Home recommandée";
             } else {
-                titre = "PACK TOUT CONFORT";
-                description = "Protection et confort absolus : Caméras, alarme complète, création de scénarios domotiques et contrôle centralisé.";
-                marque = "Gamme Somfy ou Ajax recommandée";
+                let niveau = "";
+                if (choixLogement === 'appartement') {
+                    niveau = "ESSENTIEL";
+                    description = "La base parfaite : Panneau de commande, détecteur de mouvement, détecteur d'ouverture et télécommande. L'idéal pour sécuriser vos accès.";
+                } else { 
+                    if (choixBesoin === 'complet') {
+                        niveau = "TOUT CONFORT";
+                        description = "Protection et confort absolus : Caméras, alarme complète, création de scénarios domotiques et contrôle centralisé.";
+                    } else {
+                        niveau = "CONFORT";
+                        description = "Dissuasion maximale : Détecteurs extérieurs avec caméra, sirènes intérieures et extérieures. Arrêtez l'effraction avant qu'elle n'arrive.";
+                    }
+                }
+                let nomMarque = choixMarque === 'ajax' ? 'Ajax' : 'Somfy';
+                titre = `PACK ${niveau} ${nomMarque.toUpperCase()}`;
+                marqueText = `Gamme ${nomMarque} privilégiée`;
             }
             document.getElementById('titre-pack').innerText = titre;
             document.getElementById('description-pack').innerText = description;
-            document.getElementById('marque-pack').innerText = marque;
+            document.getElementById('marque-pack').innerText = marqueText;
             document.getElementById('resultat').style.display = 'block';
         }
 
         function recommencerQuizz() {
-            choixLogement = ""; choixBesoin = "";
+            choixLogement = ""; choixBesoin = ""; choixMarque = "";
             document.getElementById('resultat').style.display = 'none';
+            document.querySelectorAll('.question').forEach(el => el.classList.remove('active'));
             document.getElementById('etape-1').classList.add('active');
         }
+    </script>
+
+    <!-- LOGIQUE JAVASCRIPT FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYP0rgV0ERd0uN3KWwylgLkAKPTjfYWtw",
+            authDomain: "carapace-6ffff.firebaseapp.com",
+            projectId: "carapace-6ffff",
+            storageBucket: "carapace-6ffff.firebasestorage.app",
+            messagingSenderId: "123068428000",
+            appId: "1:123068428000:web:a13c5245dd64b6a5dd6a85"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // NOUVEAU : Fonction globale pour ouvrir le détail d'un produit (exposée sur window pour que le HTML puisse l'appeler)
+        window.ouvrirDetailProduit = function(nom, prix, image, desc_courte, desc_longue, marque) {
+            document.getElementById('detail-image').src = image;
+            document.getElementById('detail-image').alt = nom;
+            document.getElementById('detail-titre').innerText = nom;
+            document.getElementById('detail-prix').innerHTML = parseFloat(prix).toFixed(2) + ' € <span class="product-tva">TTC</span>';
+            document.getElementById('detail-desc-courte').innerText = desc_courte || "";
+            document.getElementById('detail-desc-longue').innerHTML = desc_longue || "Plus d'informations disponibles sur demande.";
+            
+            // Formatage de la marque
+            let nomMarqueFormate = marque;
+            if(marque === 'ajax') nomMarqueFormate = "Gamme AJAX";
+            if(marque === 'somfy') nomMarqueFormate = "Gamme SOMFY";
+            if(marque === 'yale') nomMarqueFormate = "Yale Home";
+            document.getElementById('detail-marque').innerText = nomMarqueFormate;
+
+            // Met à jour le bouton contact avec le nom du produit
+            const btnContact = document.querySelector('.detail-info .btn-action');
+            btnContact.href = `mailto:contact@carapace.fr?subject=Demande de renseignement - ${encodeURIComponent(nom)}`;
+
+            showPage('detail');
+        };
+
+        async function chargerCatalogue() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "produits"));
+                
+                let htmlAjaxPacks = "";
+                let categoriesAjax = {}; 
+                let htmlSomfyPacks = "";
+                let htmlSomfyProduits = "";
+                let htmlYale = "";
+                
+                querySnapshot.forEach((doc) => {
+                    const produit = doc.data();
+                    
+                    // NOUVEAU : On prépare les données pour la fonction ouvrirDetailProduit.
+                    // On gère les guillemets et apostrophes pour ne pas casser le HTML
+                    const safeNom = produit.nom ? produit.nom.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                    const safeDescCourte = produit.description ? produit.description.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                    // Pour la description longue, on doit en plus gérer les retours à la ligne potentiellement présents
+                    const safeDescLongue = produit.description_longue ? produit.description_longue.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n') : '';
+                    
+                    // NOUVEAU : On ajoute l'attribut onclick sur la carte entière
+                    const carteHTML = `
+                        <div class="product-card ${produit.est_pack ? 'pack' : ''}" 
+                             onclick="ouvrirDetailProduit('${safeNom}', '${produit.prix}', '${produit.image}', '${safeDescCourte}', '${safeDescLongue}', '${produit.marque}')">
+                            <div class="product-image-container">
+                                <img src="${produit.image}" alt="${produit.nom}">
+                            </div>
+                            <div class="product-title">${produit.nom}</div>
+                            ${produit.description ? `<div class="product-desc">${produit.description}</div>` : ''}
+                            <div class="product-price">${parseFloat(produit.prix).toFixed(2)} € <span class="product-tva">TTC</span></div>
+                        </div>
+                    `;
+
+                    if (produit.marque === 'ajax') {
+                        if (produit.est_pack) {
+                            htmlAjaxPacks += carteHTML;
+                        } else {
+                            const catName = (produit.categorie && produit.categorie !== "") ? produit.categorie : "Autres produits Ajax";
+                            if (!categoriesAjax[catName]) categoriesAjax[catName] = "";
+                            categoriesAjax[catName] += carteHTML;
+                        }
+                    } else if (produit.marque === 'somfy') {
+                        if (produit.est_pack) htmlSomfyPacks += carteHTML;
+                        else htmlSomfyProduits += carteHTML;
+                    } else if (produit.marque === 'yale') {
+                        htmlYale += carteHTML;
+                    }
+                });
+
+                if (htmlAjaxPacks !== "") document.getElementById('ajax-packs').innerHTML = htmlAjaxPacks;
+                
+                const containerAjaxCat = document.getElementById('ajax-dynamic-categories');
+                if (containerAjaxCat) {
+                    let htmlCategories = "";
+                    for (const [nomCategorie, cartesHTML] of Object.entries(categoriesAjax)) {
+                        htmlCategories += `
+                            <h2 class="section-title">${nomCategorie}</h2>
+                            <div class="products-grid">${cartesHTML}</div>
+                        `;
+                    }
+                    containerAjaxCat.innerHTML = htmlCategories;
+                }
+
+                if (htmlSomfyPacks !== "") document.getElementById('somfy-packs').innerHTML = htmlSomfyPacks;
+                if (htmlSomfyProduits !== "") document.getElementById('somfy-produits').innerHTML = htmlSomfyProduits;
+                if (htmlYale !== "") document.getElementById('yale-produits').innerHTML = htmlYale;
+
+            } catch (error) {
+                console.error("Erreur lors du chargement du catalogue:", error);
+            }
+        }
+
+        chargerCatalogue();
     </script>
 </body>
 </html>
