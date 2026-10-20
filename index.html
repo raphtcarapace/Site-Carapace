@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carapace - La protection de vos espaces</title>
     <style>
-        /* --- STYLES PREMIUM (CSS) --- */
         :root {
             --primary-red: #c1272d;
             --dark-blue: #1a2530;
@@ -14,234 +13,66 @@
             --text-main: #333333;
             --text-light: #666666;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--light-bg);
-            color: var(--text-main);
-            scroll-behavior: smooth;
-            line-height: 1.6;
-        }
-
-        header {
-            background: var(--white);
-            padding: 10px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--light-bg); color: var(--text-main); scroll-behavior: smooth; line-height: 1.6; }
+        header { background: var(--white); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
         .logo { cursor: pointer; transition: transform 0.3s ease; display: flex; align-items: center; }
         .logo:hover { transform: scale(1.05); }
-
         nav ul { list-style: none; display: flex; gap: 30px; }
-        nav a {
-            text-decoration: none; color: var(--text-light); font-weight: 600;
-            font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
-            transition: color 0.3s ease; cursor: pointer;
-        }
+        nav a { text-decoration: none; color: var(--text-light); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; cursor: pointer; }
         nav a:hover, nav a.active { color: var(--primary-red); }
-
         .page-section { display: none; animation: fadeIn 0.5s ease; }
         .page-section.active { display: block; }
-
-        .hero {
-            background: linear-gradient(rgba(26, 37, 48, 0.4), rgba(26, 37, 48, 0.8)), 
-                        url('villa.png') center/cover no-repeat;
-            color: var(--white); text-align: center; padding: 160px 20px;
-        }
-
-        .badge-devis {
-            display: inline-block; background: var(--primary-red); color: var(--white);
-            padding: 8px 20px; font-weight: bold; border-radius: 30px;
-            text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
-            margin-bottom: 25px; box-shadow: 0 4px 15px rgba(193, 39, 45, 0.4);
-        }
-
+        .hero { background: linear-gradient(rgba(26, 37, 48, 0.4), rgba(26, 37, 48, 0.8)), url('villa.png') center/cover no-repeat; color: var(--white); text-align: center; padding: 160px 20px; }
+        .badge-devis { display: inline-block; background: var(--primary-red); color: var(--white); padding: 8px 20px; font-weight: bold; border-radius: 30px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(193, 39, 45, 0.4); }
         .hero h1 { font-size: 48px; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; }
         .hero p { font-size: 20px; font-weight: 300; max-width: 700px; margin: 0 auto; color: #e0e0e0; }
-
-        .quiz-container {
-            max-width: 900px; margin: -50px auto 60px auto; background: var(--white);
-            border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            padding: 40px; text-align: center; position: relative; z-index: 10;
-        }
+        .quiz-container { max-width: 900px; margin: -50px auto 60px auto; background: var(--white); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; position: relative; z-index: 10; }
         .quiz-container h2 { font-size: 28px; color: var(--dark-blue); margin-bottom: 30px; }
-
         .question { display: none; }
         .question.active { display: block; animation: fadeIn 0.4s ease; }
         .question h3 { font-size: 20px; margin-bottom: 25px; color: #444; }
-
         .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        .btn-option {
-            background: var(--white); border: 2px solid #eaeaea; padding: 20px;
-            font-size: 16px; font-weight: 600; color: var(--text-light); border-radius: 8px;
-            cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
+        .btn-option { background: var(--white); border: 2px solid #eaeaea; padding: 20px; font-size: 16px; font-weight: 600; color: var(--text-light); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .btn-option:hover { border-color: var(--primary-red); background: #fffafa; color: var(--primary-red); transform: translateY(-2px); }
-
         .result { display: none; text-align: center; padding: 10px; }
-        .result-box {
-            background: #fffafa; border-left: 4px solid var(--primary-red); padding: 25px;
-            border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left;
-        }
+        .result-box { background: #fffafa; border-left: 4px solid var(--primary-red); padding: 25px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; }
         .result-box h3 { margin-top: 0; color: var(--dark-blue); }
         .pack-name { color: var(--primary-red); font-size: 22px; font-weight: bold; }
-
-        .brand-header {
-            background: var(--dark-blue); color: var(--white); text-align: center;
-            padding: 80px 20px; margin-bottom: 40px;
-        }
+        .brand-header { background: var(--dark-blue); color: var(--white); text-align: center; padding: 80px 20px; margin-bottom: 40px; }
         .brand-header h1 { font-size: 40px; margin-bottom: 10px; }
         .brand-header p { font-size: 18px; opacity: 0.8; max-width: 600px; margin: 0 auto; }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .section-title { font-size: 28px; color: var(--dark-blue); margin-bottom: 30px; border-bottom: 2px solid var(--primary-red); padding-bottom: 10px; display: inline-block;}
-
-        .products-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px; margin-bottom: 60px;
-        }
-
-        .product-card {
-            background: var(--white); border-radius: 10px; padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease;
-            border-top: 4px solid transparent; display: flex; flex-direction: column;
-            cursor: pointer; /* Indique que la carte est cliquable */
-        }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .product-card { background: var(--white); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; border-top: 4px solid transparent; display: flex; flex-direction: column; cursor: pointer; }
         .product-card:hover { transform: translateY(-5px); border-top: 4px solid var(--primary-red); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .product-card.pack { border-top: 4px solid var(--primary-red); background: #fffafa; }
-
-        .product-image-container {
-            width: 100%; height: 200px; margin-bottom: 20px; border-radius: 8px;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            background-color: #f9f9f9; border: 1px solid #eaeaea;
-            padding: 10px; /* Ajout d'un padding pour respirer */
-        }
-        .product-image-container img {
-            /* MODIFICATION POUR LES PETITES IMAGES 125x125 */
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; /* L'image s'affiche en entier sans être rognée */
-            max-width: 140px;    /* Empêche l'image de devenir floue en s'étirant trop */
-            max-height: 140px;
-            transition: transform 0.4s ease;
-        }
+        .product-image-container { width: 100%; height: 200px; margin-bottom: 20px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f9f9f9; border: 1px solid #eaeaea; padding: 10px; }
+        .product-image-container img { width: 100%; height: 100%; object-fit: contain; max-width: 140px; max-height: 140px; transition: transform 0.4s ease; }
         .product-card:hover .product-image-container img { transform: scale(1.08); }
-
         .product-title { font-size: 18px; font-weight: bold; color: var(--dark-blue); margin-bottom: 10px; }
         .product-desc { font-size: 14px; color: var(--text-light); flex-grow: 1; margin-bottom: 20px; }
         .product-price { font-size: 24px; font-weight: bold; color: var(--primary-red); }
         .product-tva { font-size: 12px; color: #999; font-weight: normal; }
-
-        /* NOUVEAU CSS : PAGE DÉTAIL PRODUIT */
-        .detail-container {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            padding: 40px;
-            margin-bottom: 60px;
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-        .detail-image-box {
-            flex: 0 0 400px;
-            height: 400px;
-            background: #f9f9f9;
-            border: 1px solid #eaeaea;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .detail-image-box img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .detail-info {
-            flex: 1;
-        }
-        .detail-marque {
-            color: var(--primary-red);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .detail-title {
-            font-size: 32px;
-            color: var(--dark-blue);
-            margin-bottom: 15px;
-            line-height: 1.2;
-        }
-        .detail-price {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-red);
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        .detail-desc-courte {
-            font-size: 18px;
-            font-weight: 500;
-            color: #444;
-            margin-bottom: 20px;
-        }
-        .detail-desc-longue {
-            font-size: 15px;
-            color: var(--text-light);
-            line-height: 1.8;
-            margin-bottom: 40px;
-        }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: bold;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+        
+        .detail-container { background: var(--white); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 40px; margin-bottom: 60px; display: flex; gap: 40px; align-items: flex-start; }
+        .detail-image-box { flex: 0 0 400px; height: 400px; background: #f9f9f9; border: 1px solid #eaeaea; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .detail-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .detail-info { flex: 1; }
+        .detail-marque { color: var(--primary-red); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; margin-bottom: 10px; display: block; }
+        .detail-title { font-size: 32px; color: var(--dark-blue); margin-bottom: 15px; line-height: 1.2; }
+        .detail-price { font-size: 36px; font-weight: bold; color: var(--primary-red); margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .detail-desc-courte { font-size: 18px; font-weight: 500; color: #444; margin-bottom: 20px; }
+        .detail-desc-longue { font-size: 15px; color: var(--text-light); line-height: 1.8; margin-bottom: 40px; }
+        .btn-back { display: inline-flex; align-items: center; gap: 5px; color: var(--text-light); text-decoration: none; font-weight: bold; margin-bottom: 20px; cursor: pointer; transition: color 0.3s; }
         .btn-back:hover { color: var(--primary-red); }
-
-        .btn-action {
-            display: inline-block; background: var(--primary-red); color: var(--white);
-            padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none;
-            border-radius: 5px; transition: background 0.3s ease; border: none; cursor: pointer;
-        }
+        .btn-action { display: inline-block; background: var(--primary-red); color: var(--white); padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; transition: background 0.3s ease; border: none; cursor: pointer; }
         .btn-action:hover { background: #a01f24; }
-
         footer { background: var(--dark-blue); color: var(--white); text-align: center; padding: 60px 20px; margin-top: 40px; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        @media (max-width: 900px) {
-            .detail-container { flex-direction: column; }
-            .detail-image-box { flex: auto; width: 100%; height: 300px; }
-        }
-
-        @media (max-width: 768px) {
-            header { flex-direction: column; padding: 15px 20px; gap: 15px; }
-            nav ul { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .hero { padding: 100px 20px 80px 20px; }
-            .hero h1 { font-size: 32px; }
-            .quiz-container { margin: -30px 15px 40px 15px; padding: 25px 15px; }
-            .products-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .detail-container { flex-direction: column; } .detail-image-box { flex: auto; width: 100%; height: 300px; } }
+        @media (max-width: 768px) { header { flex-direction: column; padding: 15px 20px; gap: 15px; } nav ul { flex-wrap: wrap; justify-content: center; gap: 15px; } .hero { padding: 100px 20px 80px 20px; } .hero h1 { font-size: 32px; } .quiz-container { margin: -30px 15px 40px 15px; padding: 25px 15px; } .products-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -335,27 +166,24 @@
         </div>
     </div>
 
+    <!-- NOUVELLE PAGE YALE -->
     <div id="page-yale" class="page-section">
         <div class="brand-header">
-            <h1>Yale Home & Solutions Domotiques</h1>
-            <p>Sécurisez vos accès et gérez la température et l'énergie de votre foyer avec nos solutions connectées.</p>
+            <h1>Yale Home</h1>
+            <p>La référence en matière de sécurité résidentielle. Protégez ce qui compte le plus avec nos serrures connectées, alarmes, caméras, coffres-forts et cadenas.</p>
         </div>
         <div class="container">
-            <h2 class="section-title">Contrôle d'accès & Énergie</h2>
-            <div class="products-grid" id="yale-produits"></div>
+            <!-- Les catégories de Yale (Coffres-forts, Alarmes, Serrures...) viendront s'afficher ici automatiquement -->
+            <div id="yale-dynamic-categories"></div>
         </div>
     </div>
 
-    <!-- NOUVELLE PAGE : DÉTAIL DU PRODUIT -->
     <div id="page-detail" class="page-section">
-        <!-- Le header sera masqué pour que le détail prenne de la place -->
         <div class="container" style="margin-top: 40px;">
-            <!-- Bouton Retour -->
             <a onclick="retourMarque()" class="btn-back">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Retour aux produits
             </a>
-
             <div class="detail-container">
                 <div class="detail-image-box">
                     <img id="detail-image" src="" alt="Produit">
@@ -364,10 +192,8 @@
                     <span id="detail-marque" class="detail-marque">Marque</span>
                     <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
                     <div id="detail-prix" class="detail-price">0.00 € <span class="product-tva">TTC</span></div>
-                    
                     <div id="detail-desc-courte" class="detail-desc-courte">Description courte du produit.</div>
-                    <div id="detail-desc-longue" class="detail-desc-longue">Ici viendra s'afficher la description détaillée avec toutes les spécificités du produit...</div>
-                    
+                    <div id="detail-desc-longue" class="detail-desc-longue">Ici viendra s'afficher la description détaillée...</div>
                     <a href="mailto:contact@carapace.fr?subject=Demande de renseignement produit" class="btn-action" style="width:100%; text-align:center;">Je suis intéressé(e)</a>
                 </div>
             </div>
@@ -382,34 +208,19 @@
     </footer>
 
     <script>
-        // VARIABLE GLOBALE POUR SE SOUVENIR DE LA PAGE PRÉCÉDENTE (Pour le bouton retour)
         let pagePrecedente = "home";
 
         function showPage(pageId) {
-            // Si on ne va pas sur la page détail, on mémorise la page courante pour le bouton retour
-            if(pageId !== 'detail') {
-                pagePrecedente = pageId;
-            }
-
+            if(pageId !== 'detail') { pagePrecedente = pageId; }
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-            
             document.getElementById('page-' + pageId).classList.add('active');
-            
-            // On active le lien du menu sauf si on est sur la page de détail (qui n'a pas de lien dans le menu)
-            if(document.getElementById('nav-' + pageId)) {
-                document.getElementById('nav-' + pageId).classList.add('active');
-            }
-            
+            if(document.getElementById('nav-' + pageId)) { document.getElementById('nav-' + pageId).classList.add('active'); }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Fonction appelée par le bouton retour
-        function retourMarque() {
-            showPage(pagePrecedente);
-        }
+        function retourMarque() { showPage(pagePrecedente); }
 
-        // Logique du quizz...
         let choixLogement = ""; let choixBesoin = ""; let choixMarque = "";
 
         function repondre(etape, choix) {
@@ -436,7 +247,7 @@
             let titre = ""; let description = ""; let marqueText = "";
             if (choixBesoin === 'domotique') {
                 titre = "SOLUTIONS YALE HOME";
-                description = "Gérez votre confort : Thermostats connectés, prises commandées et serrures intelligentes pour une maison qui vous obéit.";
+                description = "Sécurisez vos portes avec nos serrures intelligentes et surveillez vos extérieurs avec nos caméras.";
                 marqueText = "Gamme Yale Home recommandée";
             } else {
                 let niveau = "";
@@ -470,7 +281,6 @@
         }
     </script>
 
-    <!-- LOGIQUE JAVASCRIPT FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -487,25 +297,27 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // NOUVEAU : Fonction globale pour ouvrir le détail d'un produit (exposée sur window pour que le HTML puisse l'appeler)
-        window.ouvrirDetailProduit = function(nom, prix, image, desc_courte, desc_longue, marque) {
-            document.getElementById('detail-image').src = image;
-            document.getElementById('detail-image').alt = nom;
-            document.getElementById('detail-titre').innerText = nom;
-            document.getElementById('detail-prix').innerHTML = parseFloat(prix).toFixed(2) + ' € <span class="product-tva">TTC</span>';
-            document.getElementById('detail-desc-courte').innerText = desc_courte || "";
-            document.getElementById('detail-desc-longue').innerHTML = desc_longue || "Plus d'informations disponibles sur demande.";
+        window.produitsDataSite = {};
+
+        window.ouvrirDetailProduit = function(id) {
+            const produit = window.produitsDataSite[id];
+            if (!produit) return;
+
+            document.getElementById('detail-image').src = produit.image || '';
+            document.getElementById('detail-image').alt = produit.nom || '';
+            document.getElementById('detail-titre').innerText = produit.nom || '';
+            document.getElementById('detail-prix').innerHTML = parseFloat(produit.prix).toFixed(2) + ' € <span class="product-tva">TTC</span>';
+            document.getElementById('detail-desc-courte').innerText = produit.description || "";
+            document.getElementById('detail-desc-longue').innerHTML = produit.description_longue || "Plus d'informations disponibles sur demande.";
             
-            // Formatage de la marque
-            let nomMarqueFormate = marque;
-            if(marque === 'ajax') nomMarqueFormate = "Gamme AJAX";
-            if(marque === 'somfy') nomMarqueFormate = "Gamme SOMFY";
-            if(marque === 'yale') nomMarqueFormate = "Yale Home";
+            let nomMarqueFormate = produit.marque;
+            if(produit.marque === 'ajax') nomMarqueFormate = "Gamme AJAX";
+            if(produit.marque === 'somfy') nomMarqueFormate = "Gamme SOMFY";
+            if(produit.marque === 'yale') nomMarqueFormate = "Yale Home";
             document.getElementById('detail-marque').innerText = nomMarqueFormate;
 
-            // Met à jour le bouton contact avec le nom du produit
             const btnContact = document.querySelector('.detail-info .btn-action');
-            btnContact.href = `mailto:contact@carapace.fr?subject=Demande de renseignement - ${encodeURIComponent(nom)}`;
+            btnContact.href = `mailto:contact@carapace.fr?subject=Demande de renseignement - ${encodeURIComponent(produit.nom || '')}`;
 
             showPage('detail');
         };
@@ -518,22 +330,17 @@
                 let categoriesAjax = {}; 
                 let htmlSomfyPacks = "";
                 let htmlSomfyProduits = "";
-                let htmlYale = "";
+                // Nouveau : on prépare la gestion dynamique des catégories Yale
+                let categoriesYale = {}; 
                 
                 querySnapshot.forEach((doc) => {
                     const produit = doc.data();
+                    const id = doc.id; 
+                    window.produitsDataSite[id] = produit; 
                     
-                    // NOUVEAU : On prépare les données pour la fonction ouvrirDetailProduit.
-                    // On gère les guillemets et apostrophes pour ne pas casser le HTML
-                    const safeNom = produit.nom ? produit.nom.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
-                    const safeDescCourte = produit.description ? produit.description.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
-                    // Pour la description longue, on doit en plus gérer les retours à la ligne potentiellement présents
-                    const safeDescLongue = produit.description_longue ? produit.description_longue.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n') : '';
-                    
-                    // NOUVEAU : On ajoute l'attribut onclick sur la carte entière
                     const carteHTML = `
                         <div class="product-card ${produit.est_pack ? 'pack' : ''}" 
-                             onclick="ouvrirDetailProduit('${safeNom}', '${produit.prix}', '${produit.image}', '${safeDescCourte}', '${safeDescLongue}', '${produit.marque}')">
+                             onclick="ouvrirDetailProduit('${id}')">
                             <div class="product-image-container">
                                 <img src="${produit.image}" alt="${produit.nom}">
                             </div>
@@ -555,7 +362,10 @@
                         if (produit.est_pack) htmlSomfyPacks += carteHTML;
                         else htmlSomfyProduits += carteHTML;
                     } else if (produit.marque === 'yale') {
-                        htmlYale += carteHTML;
+                        // TRI DYNAMIQUE POUR YALE
+                        const catName = (produit.categorie && produit.categorie !== "") ? produit.categorie : "Autres produits Yale";
+                        if (!categoriesYale[catName]) categoriesYale[catName] = "";
+                        categoriesYale[catName] += carteHTML;
                     }
                 });
 
@@ -565,17 +375,23 @@
                 if (containerAjaxCat) {
                     let htmlCategories = "";
                     for (const [nomCategorie, cartesHTML] of Object.entries(categoriesAjax)) {
-                        htmlCategories += `
-                            <h2 class="section-title">${nomCategorie}</h2>
-                            <div class="products-grid">${cartesHTML}</div>
-                        `;
+                        htmlCategories += `<h2 class="section-title">${nomCategorie}</h2><div class="products-grid">${cartesHTML}</div>`;
                     }
                     containerAjaxCat.innerHTML = htmlCategories;
                 }
 
                 if (htmlSomfyPacks !== "") document.getElementById('somfy-packs').innerHTML = htmlSomfyPacks;
                 if (htmlSomfyProduits !== "") document.getElementById('somfy-produits').innerHTML = htmlSomfyProduits;
-                if (htmlYale !== "") document.getElementById('yale-produits').innerHTML = htmlYale;
+
+                // INJECTION POUR YALE
+                const containerYaleCat = document.getElementById('yale-dynamic-categories');
+                if (containerYaleCat) {
+                    let htmlYaleCategories = "";
+                    for (const [nomCategorie, cartesHTML] of Object.entries(categoriesYale)) {
+                        htmlYaleCategories += `<h2 class="section-title">${nomCategorie}</h2><div class="products-grid">${cartesHTML}</div>`;
+                    }
+                    containerYaleCat.innerHTML = htmlYaleCategories;
+                }
 
             } catch (error) {
                 console.error("Erreur lors du chargement du catalogue:", error);
