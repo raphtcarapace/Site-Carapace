@@ -4,82 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carapace - La protection de vos espaces</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-red: #c1272d;
-            --dark-blue: #1a2530;
-            --light-bg: #f4f6f8;
+            --primary-red-hover: #a01f24;
+            --dark-blue: #111827;
+            --light-bg: #f8fafc;
             --white: #ffffff;
-            --text-main: #333333;
-            --text-light: #666666;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 40px -10px rgba(193,39,45,0.15);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--light-bg); color: var(--text-main); scroll-behavior: smooth; line-height: 1.6; }
-        header { background: var(--white); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-        .logo { cursor: pointer; transition: transform 0.3s ease; display: flex; align-items: center; }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--text-main); 
+            scroll-behavior: smooth; 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER & NAVIGATION */
+        header { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+
+        .logo { cursor: pointer; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; }
         .logo:hover { transform: scale(1.05); }
-        nav ul { list-style: none; display: flex; gap: 30px; }
-        nav a { text-decoration: none; color: var(--text-light); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; cursor: pointer; }
+
+        nav ul { list-style: none; display: flex; gap: 25px; align-items: center; }
+        nav a { 
+            text-decoration: none; color: var(--text-main); font-weight: 600; 
+            font-size: 13px; text-transform: uppercase; letter-spacing: 1px; 
+            transition: color 0.3s ease; cursor: pointer; position: relative;
+        }
         nav a:hover, nav a.active { color: var(--primary-red); }
+
+        /* BOUTON PORTAIL DANS LE MENU */
+        .btn-portail-nav {
+            background: var(--dark-blue);
+            color: var(--white) !important;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px !important;
+            letter-spacing: 1px;
+            transition: background 0.3s ease, transform 0.2s ease !important;
+        }
+        .btn-portail-nav:hover {
+            background: var(--primary-red) !important;
+            transform: translateY(-2px);
+        }
+
         .page-section { display: none; animation: fadeIn 0.5s ease; }
         .page-section.active { display: block; }
-        .hero { background: linear-gradient(rgba(26, 37, 48, 0.4), rgba(26, 37, 48, 0.8)), url('./villa.png') center/cover no-repeat; color: var(--white); text-align: center; padding: 160px 20px; }
-        .badge-devis { display: inline-block; background: var(--primary-red); color: var(--white); padding: 8px 20px; font-weight: bold; border-radius: 30px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(193, 39, 45, 0.4); }
-        .hero h1 { font-size: 48px; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; }
-        .hero p { font-size: 20px; font-weight: 300; max-width: 700px; margin: 0 auto; color: #e0e0e0; }
-        .quiz-container { max-width: 900px; margin: -50px auto 60px auto; background: var(--white); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); padding: 40px; text-align: center; position: relative; z-index: 10; }
-        .quiz-container h2 { font-size: 28px; color: var(--dark-blue); margin-bottom: 30px; }
+
+        /* HERO */
+        .hero { 
+            background: linear-gradient(rgba(17, 24, 39, 0.5), rgba(17, 24, 39, 0.8)), url('./villa.png') center/cover no-repeat; 
+            color: var(--white); text-align: center; padding: 160px 20px; 
+        }
+
+        .badge-devis { 
+            display: inline-block; background: var(--primary-red); color: var(--white); 
+            padding: 8px 24px; font-weight: 700; border-radius: 30px; 
+            text-transform: uppercase; font-size: 12px; letter-spacing: 1.5px; 
+            margin-bottom: 25px; box-shadow: 0 8px 20px rgba(193, 39, 45, 0.4); 
+        }
+
+        .hero h1 { font-size: 50px; margin-bottom: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .hero p { font-size: 20px; font-weight: 400; max-width: 700px; margin: 0 auto; color: #f1f5f9; }
+
+        /* QUIZZ */
+        .quiz-container { 
+            max-width: 900px; margin: -50px auto 60px auto; background: var(--white); 
+            border-radius: 16px; box-shadow: var(--shadow-soft); 
+            padding: 45px; text-align: center; position: relative; z-index: 10; 
+        }
+        .quiz-container h2 { font-size: 30px; color: var(--dark-blue); margin-bottom: 35px; font-weight: 800; }
         .question { display: none; }
         .question.active { display: block; animation: fadeIn 0.4s ease; }
-        .question h3 { font-size: 20px; margin-bottom: 25px; color: #444; }
+        .question h3 { font-size: 20px; margin-bottom: 25px; color: var(--text-main); font-weight: 600; }
         .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        .btn-option { background: var(--white); border: 2px solid #eaeaea; padding: 20px; font-size: 16px; font-weight: 600; color: var(--text-light); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .btn-option:hover { border-color: var(--primary-red); background: #fffafa; color: var(--primary-red); transform: translateY(-2px); }
+        .btn-option { 
+            background: var(--white); border: 2px solid #e2e8f0; padding: 22px 18px; 
+            font-size: 15px; font-weight: 600; color: var(--text-main); border-radius: 10px; 
+            cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: inherit;
+        }
+        .btn-option:hover { border-color: var(--primary-red); background: #fffcfc; color: var(--primary-red); transform: translateY(-3px); }
+
         .result { display: none; text-align: center; padding: 10px; }
-        .result-box { background: #fffafa; border-left: 4px solid var(--primary-red); padding: 25px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; }
+        .result-box { 
+            background: #fffcfc; border-left: 5px solid var(--primary-red); padding: 30px; 
+            border-radius: 0 10px 10px 0; margin-bottom: 30px; text-align: left; 
+        }
         .result-box h3 { margin-top: 0; color: var(--dark-blue); }
-        .pack-name { color: var(--primary-red); font-size: 22px; font-weight: bold; }
-        .brand-header { background: var(--dark-blue); color: var(--white); text-align: center; padding: 80px 20px; margin-bottom: 40px; }
-        .brand-header h1 { font-size: 40px; margin-bottom: 10px; }
-        .brand-header p { font-size: 18px; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+        .pack-name { color: var(--primary-red); font-size: 26px; font-weight: 800; margin: 10px 0; }
+
+        .btn-action { 
+            display: inline-block; background: var(--primary-red); color: var(--white); 
+            padding: 15px 35px; font-size: 15px; font-weight: 700; text-decoration: none; 
+            border-radius: 8px; transition: all 0.3s ease; border: none; cursor: pointer; font-family: inherit;
+        }
+        .btn-action:hover { background: var(--primary-red-hover); transform: translateY(-2px); }
+
+        /* CATALOGUE */
+        .brand-header { background: var(--dark-blue); color: var(--white); text-align: center; padding: 90px 20px; margin-bottom: 50px; }
+        .brand-header h1 { font-size: 44px; margin-bottom: 12px; font-weight: 800; }
+        .brand-header p { font-size: 17px; opacity: 0.85; max-width: 650px; margin: 0 auto; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section-title { font-size: 28px; color: var(--dark-blue); margin-bottom: 30px; border-bottom: 2px solid var(--primary-red); padding-bottom: 10px; display: inline-block;}
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
-        .product-card { background: var(--white); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; border-top: 4px solid transparent; display: flex; flex-direction: column; cursor: pointer; }
-        .product-card:hover { transform: translateY(-5px); border-top: 4px solid var(--primary-red); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .product-card.pack { border-top: 4px solid var(--primary-red); background: #fffafa; }
-        .product-image-container { width: 100%; height: 200px; margin-bottom: 20px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f9f9f9; border: 1px solid #eaeaea; padding: 10px; }
+        .section-title { font-size: 28px; color: var(--dark-blue); margin-bottom: 35px; font-weight: 800; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 70px; }
+
+        .product-card { 
+            background: var(--white); border-radius: 14px; padding: 22px; 
+            box-shadow: var(--shadow-soft); transition: all 0.3s ease; 
+            border: 1px solid rgba(0,0,0,0.03); display: flex; flex-direction: column; cursor: pointer; 
+        }
+        .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: rgba(193,39,45,0.15); }
+        .product-card.pack { border-top: 5px solid var(--primary-red); }
+
+        .product-image-container { 
+            width: 100%; height: 200px; margin-bottom: 20px; border-radius: 10px; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center; 
+            background-color: var(--white); padding: 10px; 
+        }
         .product-image-container img { width: 100%; height: 100%; object-fit: contain; max-width: 140px; max-height: 140px; transition: transform 0.4s ease; }
         .product-card:hover .product-image-container img { transform: scale(1.08); }
-        .product-title { font-size: 18px; font-weight: bold; color: var(--dark-blue); margin-bottom: 10px; }
+
+        .product-title { font-size: 18px; font-weight: 700; color: var(--dark-blue); margin-bottom: 10px; }
         .product-desc { font-size: 14px; color: var(--text-light); flex-grow: 1; margin-bottom: 20px; }
-        .product-price { font-size: 24px; font-weight: bold; color: var(--primary-red); }
-        .product-tva { font-size: 12px; color: #999; font-weight: normal; }
-        
-        .detail-container { background: var(--white); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 40px; margin-bottom: 60px; display: flex; gap: 40px; align-items: flex-start; }
-        .detail-image-box { flex: 0 0 400px; height: 400px; background: #f9f9f9; border: 1px solid #eaeaea; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .product-price { font-size: 24px; font-weight: 800; color: var(--primary-red); }
+        .product-tva { font-size: 12px; color: #94a3b8; font-weight: 600; }
+
+        /* FICHE DÉTAIL */
+        .detail-container { 
+            background: var(--white); border-radius: 16px; box-shadow: var(--shadow-soft); 
+            padding: 40px; margin-bottom: 70px; display: flex; gap: 50px; align-items: flex-start; 
+        }
+        .detail-image-box { 
+            flex: 0 0 400px; height: 400px; background: var(--white); border: 1px solid #f1f5f9; 
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 25px; 
+        }
         .detail-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .detail-info { flex: 1; }
-        .detail-marque { color: var(--primary-red); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; margin-bottom: 10px; display: block; }
-        .detail-title { font-size: 32px; color: var(--dark-blue); margin-bottom: 15px; line-height: 1.2; }
-        .detail-price { font-size: 36px; font-weight: bold; color: var(--primary-red); margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-        .detail-desc-courte { font-size: 18px; font-weight: 500; color: #444; margin-bottom: 20px; }
+        .detail-marque { color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; display: block; }
+        .detail-title { font-size: 34px; color: var(--dark-blue); margin-bottom: 15px; font-weight: 800; line-height: 1.2; }
+        .detail-price { font-size: 36px; font-weight: 800; color: var(--primary-red); margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
+        .detail-desc-courte { font-size: 17px; font-weight: 600; color: var(--text-main); margin-bottom: 20px; }
         .detail-desc-longue { font-size: 15px; color: var(--text-light); line-height: 1.8; margin-bottom: 40px; }
-        .btn-back { display: inline-flex; align-items: center; gap: 5px; color: var(--text-light); text-decoration: none; font-weight: bold; margin-bottom: 20px; cursor: pointer; transition: color 0.3s; }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); font-weight: 600; margin-bottom: 25px; cursor: pointer; text-transform: uppercase; font-size: 14px; }
         .btn-back:hover { color: var(--primary-red); }
-        .btn-action { display: inline-block; background: var(--primary-red); color: var(--white); padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; transition: background 0.3s ease; border: none; cursor: pointer; }
-        .btn-action:hover { background: #a01f24; }
-        footer { background: var(--dark-blue); color: var(--white); text-align: center; padding: 60px 20px; margin-top: 40px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 900px) { .detail-container { flex-direction: column; } .detail-image-box { flex: auto; width: 100%; height: 300px; } }
-        @media (max-width: 768px) { header { flex-direction: column; padding: 15px 20px; gap: 15px; } nav ul { flex-wrap: wrap; justify-content: center; gap: 15px; } .hero { padding: 100px 20px 80px 20px; } .hero h1 { font-size: 32px; } .quiz-container { margin: -30px 15px 40px 15px; padding: 25px 15px; } .products-grid { grid-template-columns: 1fr; } }
+
+        /* FORMULAIRE DE CONTACT */
+        .contact-card-box {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            padding: 45px;
+            max-width: 750px;
+            margin: 0 auto 60px auto;
+        }
+        .form-row { display: flex; gap: 20px; }
+        .form-col { flex: 1; }
+        .form-group-contact { margin-bottom: 22px; text-align: left; }
+        .form-group-contact label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: var(--dark-blue); }
+        .form-group-contact input, .form-group-contact select, .form-group-contact textarea {
+            width: 100%; padding: 13px 15px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+            font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.3s;
+        }
+        .form-group-contact input:focus, .form-group-contact select:focus, .form-group-contact textarea:focus {
+            border-color: var(--primary-red);
+        }
+        .form-group-contact textarea { resize: vertical; min-height: 110px; }
+
+        /* FOOTER */
+        footer { background: var(--dark-blue); color: var(--white); text-align: center; padding: 70px 20px; margin-top: 60px; }
+        footer h2 { font-size: 30px; font-weight: 800; margin-bottom: 15px; }
+        .social-links { margin: 30px 0; display: flex; justify-content: center; gap: 20px; }
+        .social-icon { 
+            display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; 
+            background: rgba(255,255,255,0.1); border-radius: 50%; color: var(--white); 
+            transition: all 0.3s ease; 
+        }
+        .social-icon:hover { background: var(--primary-red); transform: translateY(-3px); }
+        .social-icon svg { width: 22px; height: 22px; fill: currentColor; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 900px) { .detail-container { flex-direction: column; } .detail-image-box { width: 100%; height: 320px; flex: none; } }
+        @media (max-width: 768px) { 
+            header { flex-direction: column; gap: 15px; } 
+            nav ul { flex-wrap: wrap; justify-content: center; gap: 12px; } 
+            .hero h1 { font-size: 34px; }
+            .form-row { flex-direction: column; gap: 0; }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo" onclick="showPage('home')">
-            <img src="./logo.png" alt="Logo Carapace" style="height: 70px; width: auto; object-fit: contain;">
+            <img src="./logo.png" alt="Logo Carapace" style="height: 65px; width: auto; object-fit: contain;">
         </div>
         <nav>
             <ul>
@@ -87,56 +225,59 @@
                 <li><a onclick="showPage('ajax')" id="nav-ajax">Ajax</a></li>
                 <li><a onclick="showPage('somfy')" id="nav-somfy">Somfy</a></li>
                 <li><a onclick="showPage('yale')" id="nav-yale">Yale Home</a></li>
+                <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+                <!-- LIEN CARAPACE PORTAIL -->
+                <li><a href="admin.html" class="btn-portail-nav">Carapace Portail 🔒</a></li>
             </ul>
         </nav>
     </header>
 
     <div id="page-home" class="page-section active">
         <section class="hero">
-            <div class="badge-devis">Devis gratuit sans engagement</div>
+            <div class="badge-devis">Expertise & Sérénité</div>
             <h1>La protection de vos espaces</h1>
-            <p>Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour une sérénité absolue.</p>
+            <p>Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour les particuliers et professionnels.</p>
         </section>
 
         <section class="quiz-container">
             <h2>Trouvez la configuration idéale</h2>
             
             <div id="etape-1" class="question active">
-                <h3>Que souhaitez-vous équiper en priorité ?</h3>
+                <h3>Que souhaitez-vous équiper en priorité&nbsp;?</h3>
                 <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(1, 'appartement')">🏢 Un Appartement</button>
-                    <button class="btn-option" onclick="repondre(1, 'maison')">🏡 Une Maison (avec extérieur)</button>
-                    <button class="btn-option" onclick="repondre(1, 'pro')">💼 Des locaux professionnels</button>
+                    <button class="btn-option" onclick="repondre(1, 'appartement')"><span style="font-size:24px;">🏢</span> Un Appartement</button>
+                    <button class="btn-option" onclick="repondre(1, 'maison')"><span style="font-size:24px;">🏡</span> Une Maison (avec extérieur)</button>
+                    <button class="btn-option" onclick="repondre(1, 'pro')"><span style="font-size:24px;">💼</span> Des locaux professionnels</button>
                 </div>
             </div>
             
             <div id="etape-2" class="question">
-                <h3>Quel est votre objectif principal ?</h3>
+                <h3>Quel est votre objectif principal&nbsp;?</h3>
                 <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(2, 'intrusion')">🛡️ Sécurité & Alarmes</button>
-                    <button class="btn-option" onclick="repondre(2, 'domotique')">📱 Confort & Domotique</button>
-                    <button class="btn-option" onclick="repondre(2, 'complet')">⭐ Protection Totale</button>
+                    <button class="btn-option" onclick="repondre(2, 'intrusion')"><span style="font-size:24px;">🛡️</span> Sécurité & Alarmes</button>
+                    <button class="btn-option" onclick="repondre(2, 'domotique')"><span style="font-size:24px;">📱</span> Confort & Domotique</button>
+                    <button class="btn-option" onclick="repondre(2, 'complet')"><span style="font-size:24px;">⭐</span> Protection Totale</button>
                 </div>
             </div>
 
             <div id="etape-3" class="question">
-                <h3>Quelle expérience correspond le plus à vos attentes ?</h3>
+                <h3>Quelle expérience correspond le plus à vos attentes&nbsp;?</h3>
                 <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(3, 'ajax')">⬛ Design épuré & 100% Sans Fil</button>
-                    <button class="btn-option" onclick="repondre(3, 'somfy')">🇫🇷 Écosystème complet & Excellence Française</button>
+                    <button class="btn-option" onclick="repondre(3, 'ajax')"><span style="font-size:24px;">⬛</span> Design épuré & 100% Sans Fil</button>
+                    <button class="btn-option" onclick="repondre(3, 'somfy')"><span style="font-size:24px;">🇫🇷</span> Écosystème complet & Excellence Française</button>
                 </div>
             </div>
 
             <div id="resultat" class="result">
                 <div class="result-box">
-                    <h3>Notre recommandation personnalisée :</h3>
+                    <h3>Notre recommandation personnalisée&nbsp;:</h3>
                     <div class="pack-name" id="titre-pack">Pack Essentiel</div>
-                    <div class="product-desc" id="description-pack" style="margin-top:10px;">...</div>
-                    <p style="margin-top:15px;"><strong>Gamme suggérée :</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">...</span></p>
+                    <div class="product-desc" id="description-pack" style="margin-top:10px; font-size: 16px;">...</div>
+                    <p style="margin-top:20px;"><strong>Gamme suggérée&nbsp;:</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">...</span></p>
                 </div>
-                <p style="margin-bottom: 20px; font-weight: bold; color: #444;">Un expert Carapace va concevoir votre devis sur-mesure.</p>
-                <a href="mailto:contact@carapace.fr?subject=Demande de devis suite au quiz" class="btn-action">Demander mon devis</a>
-                <button onclick="recommencerQuizz()" style="background:none; border:none; color:var(--text-light); text-decoration:underline; cursor:pointer; margin-left:15px; font-size:14px;">Refaire le test</button>
+                <p style="margin-bottom: 25px; font-weight: 600; color: var(--text-main); font-size: 18px;">Un expert Carapace va concevoir votre devis sur-mesure.</p>
+                <button onclick="ouvrirContactAvecMotif(document.getElementById('titre-pack').innerText)" class="btn-action">Demander mon devis</button>
+                <button onclick="recommencerQuizz()" style="background:none; border:none; color:var(--text-light); text-decoration:underline; font-weight:600; cursor:pointer; margin-left:20px; font-size:15px; font-family: inherit;">Refaire le test</button>
             </div>
         </section>
     </div>
@@ -166,14 +307,12 @@
         </div>
     </div>
 
-    <!-- NOUVELLE PAGE YALE -->
     <div id="page-yale" class="page-section">
         <div class="brand-header">
             <h1>Yale Home</h1>
             <p>La référence en matière de sécurité résidentielle. Protégez ce qui compte le plus avec nos serrures connectées, alarmes, caméras, coffres-forts et cadenas.</p>
         </div>
         <div class="container">
-            <!-- Les catégories de Yale (Coffres-forts, Alarmes, Serrures...) viendront s'afficher ici automatiquement -->
             <div id="yale-dynamic-categories"></div>
         </div>
     </div>
@@ -193,18 +332,78 @@
                     <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
                     <div id="detail-prix" class="detail-price">0.00 € <span class="product-tva">TTC</span></div>
                     <div id="detail-desc-courte" class="detail-desc-courte">Description courte du produit.</div>
-                    <div id="detail-desc-longue" class="detail-desc-longue">Ici viendra s'afficher la description détaillée...</div>
-                    <a href="mailto:contact@carapace.fr?subject=Demande de renseignement produit" class="btn-action" style="width:100%; text-align:center;">Je suis intéressé(e)</a>
+                    <div id="detail-desc-longue" class="detail-desc-longue">Description détaillée...</div>
+                    <button onclick="ouvrirContactAvecMotif(document.getElementById('detail-titre').innerText)" class="btn-action" style="width:100%;">Je suis intéressé(e) par ce produit</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer id="contact">
-        <h2>Un projet en tête ?</h2>
-        <p style="margin-bottom: 30px; font-size: 16px; opacity: 0.8;">Nos experts Carapace analysent vos espaces pour vous proposer l'équipement idéal (devis gratuit).</p>
-        <a href="mailto:contact@carapace.fr?subject=Demande de contact - Site Internet" class="btn-action">Demander un contact immédiat</a>
-        <p style="margin-top: 50px; font-size: 12px; opacity: 0.4;">© 2026 Carapace - Protection & Domotique. Tous droits réservés.</p>
+    <!-- PAGE CONTACT AVEC LE FORMULAIRE INTÉGRÉ -->
+    <div id="page-contact" class="page-section">
+        <div class="brand-header">
+            <h1>Contactez nos experts</h1>
+            <p>Remplissez le formulaire ci-dessous pour une étude personnalisée ou un devis gratuit. Nous vous répondons sous 24h.</p>
+        </div>
+        <div class="container">
+            <div class="contact-card-box">
+                <form id="form-contact-client">
+                    <div class="form-row">
+                        <div class="form-col form-group-contact">
+                            <label for="client-nom">Nom *</label>
+                            <input type="text" id="client-nom" required placeholder="Dupont">
+                        </div>
+                        <div class="form-col form-group-contact">
+                            <label for="client-prenom">Prénom *</label>
+                            <input type="text" id="client-prenom" required placeholder="Alexandre">
+                        </div>
+                    </div>
+
+                    <div class="form-group-contact">
+                        <label for="client-contact">Adresse e-mail ou Numéro de téléphone *</label>
+                        <input type="text" id="client-contact" required placeholder="06 12 34 56 78 ou contact@exemple.fr">
+                    </div>
+
+                    <div class="form-group-contact">
+                        <label for="client-raison">Raison du contact *</label>
+                        <select id="client-raison" required>
+                            <option value="">-- Sélectionnez un motif --</option>
+                            <option value="Demande de devis alarme Ajax">Demande de devis alarme Ajax</option>
+                            <option value="Demande de devis Somfy">Demande de devis Somfy</option>
+                            <option value="Demande de devis serrure Yale">Demande de devis serrure Yale Home</option>
+                            <option value="Étude globale de sécurité">Étude globale de sécurité (Résidence ou Pro)</option>
+                            <option value="Renseignement sur un produit">Renseignement sur un produit précis</option>
+                            <option value="Autre demande">Autre demande</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-contact">
+                        <label for="client-message">Précisions sur votre projet (facultatif)</label>
+                        <textarea id="client-message" placeholder="Décrivez votre besoin : surface, nombre d'accès, présence d'animaux, etc."></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-submit-contact" class="btn-action" style="width: 100%;">Envoyer ma demande</button>
+                    <p id="msg-succes-contact" style="display:none; color: #16a34a; font-weight: 700; margin-top: 15px; text-align: center;">✅ Votre demande a été transmise avec succès à l'équipe Carapace&nbsp;! Nous vous recontacterons très vite.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER AVEC LE FORMULAIRE DIRECT -->
+    <footer id="contact-footer">
+        <h2>Un projet en tête&nbsp;?</h2>
+        <p style="margin-bottom: 30px; font-size: 17px; opacity: 0.9;">Nos experts étudient vos besoins et vous garantissent un chiffrage rapide.</p>
+        <button onclick="showPage('contact')" class="btn-action" style="background: var(--white); color: var(--dark-blue);">Accéder au formulaire de contact</button>
+        
+        <div class="social-links">
+            <a href="https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR" target="_blank" class="social-icon" aria-label="Facebook">
+                <svg viewBox="0 0 24 24">
+                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/>
+                </svg>
+            </a>
+        </div>
+
+        <p style="margin-top: 40px; font-size: 13px; opacity: 0.4; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">© 2026 Carapace - Protection & Domotique. Tous droits réservés.</p>
     </footer>
 
     <script>
@@ -220,6 +419,15 @@
         }
 
         function retourMarque() { showPage(pagePrecedente); }
+
+        function ouvrirContactAvecMotif(motif) {
+            showPage('contact');
+            const select = document.getElementById('client-raison');
+            if(select) {
+                const champMsg = document.getElementById('client-message');
+                champMsg.value = "Demande concernant : " + motif;
+            }
+        }
 
         let choixLogement = ""; let choixBesoin = ""; let choixMarque = "";
 
@@ -247,7 +455,7 @@
             let titre = ""; let description = ""; let marqueText = "";
             if (choixBesoin === 'domotique') {
                 titre = "SOLUTIONS YALE HOME";
-                description = "Sécurisez vos portes avec nos serrures intelligentes et surveillez vos extérieurs avec nos caméras.";
+                description = "Sécurisez vos portes avec nos serrures intelligentes et surveillez vos accès à distance.";
                 marqueText = "Gamme Yale Home recommandée";
             } else {
                 let niveau = "";
@@ -283,7 +491,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBYP0rgV0ERd0uN3KWwylgLkAKPTjfYWtw",
@@ -316,21 +524,16 @@
             if(produit.marque === 'yale') nomMarqueFormate = "Yale Home";
             document.getElementById('detail-marque').innerText = nomMarqueFormate;
 
-            const btnContact = document.querySelector('.detail-info .btn-action');
-            btnContact.href = `mailto:contact@carapace.fr?subject=Demande de renseignement - ${encodeURIComponent(produit.nom || '')}`;
-
             showPage('detail');
         };
 
         async function chargerCatalogue() {
             try {
                 const querySnapshot = await getDocs(collection(db, "produits"));
-                
                 let htmlAjaxPacks = "";
                 let categoriesAjax = {}; 
                 let htmlSomfyPacks = "";
                 let htmlSomfyProduits = "";
-                // Nouveau : on prépare la gestion dynamique des catégories Yale
                 let categoriesYale = {}; 
                 
                 querySnapshot.forEach((doc) => {
@@ -362,7 +565,6 @@
                         if (produit.est_pack) htmlSomfyPacks += carteHTML;
                         else htmlSomfyProduits += carteHTML;
                     } else if (produit.marque === 'yale') {
-                        // TRI DYNAMIQUE POUR YALE
                         const catName = (produit.categorie && produit.categorie !== "") ? produit.categorie : "Autres produits Yale";
                         if (!categoriesYale[catName]) categoriesYale[catName] = "";
                         categoriesYale[catName] += carteHTML;
@@ -383,7 +585,6 @@
                 if (htmlSomfyPacks !== "") document.getElementById('somfy-packs').innerHTML = htmlSomfyPacks;
                 if (htmlSomfyProduits !== "") document.getElementById('somfy-produits').innerHTML = htmlSomfyProduits;
 
-                // INJECTION POUR YALE
                 const containerYaleCat = document.getElementById('yale-dynamic-categories');
                 if (containerYaleCat) {
                     let htmlYaleCategories = "";
@@ -397,6 +598,37 @@
                 console.error("Erreur lors du chargement du catalogue:", error);
             }
         }
+
+        // ENVOI DU FORMULAIRE DE CONTACT VERS FIREBASE
+        document.getElementById('form-contact-client').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-contact');
+            btn.innerText = "Envoi en cours...";
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "demandes_contact"), {
+                    nom: document.getElementById('client-nom').value.trim(),
+                    prenom: document.getElementById('client-prenom').value.trim(),
+                    contact: document.getElementById('client-contact').value.trim(),
+                    raison: document.getElementById('client-raison').value,
+                    message: document.getElementById('client-message').value.trim(),
+                    date: new Date()
+                });
+
+                document.getElementById('form-contact-client').reset();
+                document.getElementById('msg-succes-contact').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('msg-succes-contact').style.display = 'none';
+                }, 7000);
+            } catch (error) {
+                console.error("Erreur contact :", error);
+                alert("Erreur lors de l'envoi de votre demande : " + error.message);
+            } finally {
+                btn.innerText = "Envoyer ma demande";
+                btn.disabled = false;
+            }
+        });
 
         chargerCatalogue();
     </script>
