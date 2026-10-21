@@ -8,73 +8,201 @@
     <style>
         :root {
             --primary-red: #c1272d;
+            --primary-red-hover: #a01f24;
             --dark-blue: #111827;
             --light-bg: #f8fafc;
             --white: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
         }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--light-bg); color: #334155; margin: 0; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; }
 
-        /* ÉCRAN DE CONNEXION */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--text-dark); 
+            padding: 20px 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            line-height: 1.5;
+        }
+
+        /* ÉCRAN D'AUTHENTIFICATION */
         #auth-screen {
             background: var(--white);
-            padding: 40px;
+            padding: 35px 25px;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             width: 100%;
             max-width: 420px;
-            margin-top: 60px;
+            margin-top: 50px;
             text-align: center;
         }
-        #auth-screen h1 { color: var(--dark-blue); font-size: 24px; margin-bottom: 10px; font-weight: 800; }
-        #auth-screen p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+        #auth-screen h1 { color: var(--dark-blue); font-size: 24px; margin-bottom: 8px; font-weight: 800; }
+        #auth-screen p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
 
         /* PANNEAU CONNECTÉ */
-        #portal-content { display: none; width: 100%; max-width: 950px; }
+        #portal-content { display: none; width: 100%; max-width: 1050px; }
         
         .portal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--dark-blue); color: var(--white);
-            padding: 20px 30px; border-radius: 12px; margin-bottom: 30px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: var(--dark-blue); 
+            color: var(--white);
+            padding: 16px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
-        .portal-header h2 { font-size: 20px; font-weight: 700; }
-        .btn-logout { background: #dc2626; color: var(--white); border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .portal-header h2 { font-size: 20px; font-weight: 800; }
+        .header-links { display: flex; align-items: center; gap: 15px; }
+        .btn-logout { 
+            background: #dc2626; 
+            color: var(--white); 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-family: inherit;
+            cursor: pointer; 
+        }
 
         .card-box {
-            background: var(--white); padding: 35px; border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 35px;
+            background: var(--white); 
+            padding: 25px 20px; 
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+            margin-bottom: 25px;
         }
-        h3 { color: var(--dark-blue); font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--primary-red); padding-bottom: 8px; display: inline-block; }
+        h3 { 
+            color: var(--dark-blue); 
+            font-size: 19px; 
+            margin-bottom: 20px; 
+            border-bottom: 3px solid var(--primary-red); 
+            padding-bottom: 6px; 
+            display: inline-block; 
+            font-weight: 800;
+        }
 
-        .form-group { margin-bottom: 18px; text-align: left; }
+        /* FORMULAIRES */
+        .form-group { margin-bottom: 16px; text-align: left; }
         label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: var(--dark-blue); }
         input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
-            width: 100%; padding: 11px; border: 1.5px solid #cbd5e1; border-radius: 6px;
-            font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none;
+            width: 100%; padding: 11px 13px; border: 1.5px solid #cbd5e1; border-radius: 8px;
+            font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;
         }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-red); }
         textarea { resize: vertical; min-height: 80px; }
-        textarea.large { min-height: 180px; }
+        textarea.large { min-height: 140px; }
 
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
         .checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
 
-        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
-        button {
-            flex: 1; background: var(--primary-red); color: white; border: none; padding: 14px;
-            font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: 0.3s;
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        button.btn-primary {
+            flex: 1; min-width: 200px; background: var(--primary-red); color: white; border: none; padding: 13px;
+            font-size: 15px; font-weight: 700; border-radius: 8px; cursor: pointer; font-family: inherit;
         }
-        button:hover { opacity: 0.9; }
-        .btn-secondary { background: #64748b; display: none; }
+        button.btn-primary:hover { background: var(--primary-red-hover); }
+        .btn-secondary { background: #64748b; color: #fff; border: none; padding: 13px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: none; }
 
-        #group-categorie { background: #f8fafc; padding: 15px; border-left: 4px solid var(--primary-red); border-radius: 4px; display: none; }
+        #group-categorie { background: #f8fafc; padding: 14px; border-left: 4px solid var(--primary-red); border-radius: 6px; display: none; }
 
-        /* TABLEAUX */
-        .table-container { width: 100%; overflow-x: auto; }
+        /* BARRE DE RECHERCHE & FILTRES CATALOGUE */
+        .catalog-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-input-wrapper { flex: 2; min-width: 220px; }
+        .filter-select-wrapper { flex: 1; min-width: 160px; }
+
+        /* GESTION RESPONSIVE DES DEMANDES DE CONTACT */
+        .desktop-table-view { display: block; width: 100%; overflow-x: auto; }
+        .mobile-cards-view { display: none; flex-direction: column; gap: 14px; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         th { background-color: #f1f5f9; color: var(--dark-blue); font-weight: 700; }
-        .miniature-img { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: #fff; border: 1px solid #eee; }
-        .btn-sm-edit { background: #0284c7; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .btn-sm-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-left: 5px; }
+        .miniature-img { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; background: #fff; border: 1px solid #eee; }
+
+        .btn-sm-edit { background: #0284c7; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .btn-sm-del { background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; margin-left: 4px; }
+
+        /* CARTES CONTACT FORMAT MOBILE (9:16) */
+        .contact-card-mobile {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contact-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .contact-card-date {
+            font-size: 11px;
+            background: #e2e8f0;
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .contact-card-name { font-size: 16px; font-weight: 800; color: var(--dark-blue); }
+        .contact-card-badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: var(--primary-red);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        .contact-card-info {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0284c7;
+            word-break: break-all;
+        }
+        .contact-card-msg {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #475569;
+            white-space: pre-line;
+        }
+        .contact-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        /* ADAPTATIONS MOBILES (SMARTPHONES) */
+        @media (max-width: 768px) {
+            body { padding: 12px 8px; }
+            .card-box { padding: 18px 14px; }
+            .desktop-table-view { display: none; }
+            .mobile-cards-view { display: flex; }
+            .portal-header { flex-direction: column; align-items: flex-start; }
+            .header-links { width: 100%; justify-content: space-between; margin-top: 8px; }
+            .catalog-controls { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
@@ -82,7 +210,7 @@
     <!-- ÉCRAN D'AUTHENTIFICATION -->
     <div id="auth-screen">
         <h1>Carapace Portail</h1>
-        <p>Connexion sécurisée à votre espace de gestion</p>
+        <p>Connexion sécurisée administrateur</p>
         <form id="form-login">
             <div class="form-group">
                 <label for="login-email">Adresse e-mail</label>
@@ -92,47 +220,54 @@
                 <label for="login-password">Mot de passe</label>
                 <input type="password" id="login-password" required placeholder="••••••••">
             </div>
-            <button type="submit" id="btn-login-submit">Se connecter</button>
+            <button type="submit" id="btn-login-submit" class="btn-primary" style="width: 100%;">Se connecter</button>
             <p id="auth-error" style="display:none; color: #dc2626; margin-top: 15px; font-size: 13px; font-weight: 600;"></p>
         </form>
     </div>
 
-    <!-- PANNEAU D'ADMINISTRATION CONNECTÉ -->
+    <!-- PANNEAU CONNECTÉ -->
     <div id="portal-content">
         <div class="portal-header">
             <div>
                 <h2>Carapace Portail</h2>
-                <span id="user-display" style="font-size: 13px; opacity: 0.8;">Connecté</span>
+                <span id="user-display" style="font-size: 12px; opacity: 0.85;">Connecté</span>
             </div>
-            <div>
-                <a href="index.html" style="color: #fff; text-decoration: underline; margin-right: 15px; font-size: 13px;">Voir le site</a>
+            <div class="header-links">
+                <a href="index.html" style="color: #fff; text-decoration: underline; font-size: 13px; font-weight: 600;">Voir le site</a>
                 <button class="btn-logout" id="btn-logout">Déconnexion</button>
             </div>
         </div>
 
-        <!-- 1. BOÎTE DE RÉCEPTION DES DEMANDES CLIENTS -->
+        <!-- 1. DEMANDES DE CONTACT ADAPTÉES MOBILE & PC -->
         <div class="card-box">
-            <h3>📬 Demandes de contact reçues</h3>
-            <div class="table-container">
+            <h3>📬 Demandes de devis & contact</h3>
+            
+            <!-- Vue Ordinateur (Tableau) -->
+            <div class="desktop-table-view">
                 <table>
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Client</th>
-                            <th>Contact (Mail/Tél)</th>
+                            <th>Coordonnées</th>
                             <th>Motif</th>
                             <th>Message</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-contacts">
-                        <tr><td colspan="6" style="text-align: center;">Chargement des messages...</td></tr>
+                        <tr><td colspan="6" style="text-align: center;">Chargement des demandes...</td></tr>
                     </tbody>
                 </table>
             </div>
+
+            <!-- Vue Téléphone (Cartes verticales 9:16) -->
+            <div class="mobile-cards-view" id="cards-contacts-mobile">
+                <div style="text-align:center; font-size:13px; color:var(--text-muted);">Chargement des demandes...</div>
+            </div>
         </div>
 
-        <!-- 2. GESTION DU CATALOGUE PRODUITS -->
+        <!-- 2. FORMULAIRE D'AJOUT ET MODIFICATION DE PRODUIT -->
         <div class="card-box">
             <h3 id="form-prod-title">➕ Ajouter un équipement</h3>
             <form id="form-produit">
@@ -151,7 +286,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="nom">Nom du produit</label>
+                    <label for="nom">Nom de l'équipement</label>
                     <input type="text" id="nom" required placeholder="Ex : StarterKit Cam Plus">
                 </div>
 
@@ -161,43 +296,58 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image">Nom de l'image (ex : camera.png ou ./camera.png)</label>
+                    <label for="image">Nom ou lien de l'image (ex : starterkit.png)</label>
                     <input type="text" id="image" required placeholder="starterkit.png">
                 </div>
 
                 <div class="form-group">
-                    <label for="desc">Description courte (liste du catalogue)</label>
-                    <textarea id="desc"></textarea>
+                    <label for="desc">Description courte (vitrine)</label>
+                    <textarea id="desc" placeholder="Résumé visible sur la vignette..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="desc_longue">Description détaillée (fiche produit)</label>
-                    <textarea id="desc_longue" class="large"></textarea>
+                    <label for="desc_longue">Description détaillée (page dédiée)</label>
+                    <textarea id="desc_longue" class="large" placeholder="Caractéristiques complètes, contenu du kit..."></textarea>
                 </div>
 
                 <div class="form-group checkbox-group">
                     <input type="checkbox" id="pack">
-                    <label for="pack">Afficher comme un PACK complet (liseré rouge)</label>
+                    <label for="pack">Afficher comme un PACK complet (bordure rouge distinctive)</label>
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" id="btn-save-prod">➕ Ajouter au catalogue</button>
+                    <button type="submit" id="btn-save-prod" class="btn-primary">➕ Ajouter au catalogue</button>
                     <button type="button" id="btn-cancel-edit" class="btn-secondary" onclick="annulerEdition()">Annuler</button>
                 </div>
             </form>
         </div>
 
-        <!-- 3. LISTE DES PRODUITS EN LIGNE -->
+        <!-- 3. CATALOGUE AVEC RECHERCHE ET FILTRE PAR MARQUE -->
         <div class="card-box">
-            <h3>📋 Catalogue actuel</h3>
-            <div class="table-container">
+            <h3>📋 Catalogue en ligne</h3>
+            
+            <div class="catalog-controls">
+                <div class="search-input-wrapper">
+                    <input type="text" id="admin-search-prod" placeholder="🔍 Rechercher par nom, catégorie..." oninput="filtrerProduitsAdmin()">
+                </div>
+                <div class="filter-select-wrapper">
+                    <select id="admin-filter-brand" onchange="filtrerProduitsAdmin()">
+                        <option value="all">Toutes les marques</option>
+                        <option value="ajax">Ajax uniquement</option>
+                        <option value="somfy">Somfy uniquement</option>
+                        <option value="yale">Yale Home uniquement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="width: 100%; overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
-                            <th>Image</th>
-                            <th>Nom</th>
+                            <th>Visuel</th>
+                            <th>Nom & Catégorie</th>
                             <th>Marque</th>
-                            <th>Prix</th>
+                            <th>Prix TTC</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -209,7 +359,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT FIREBASE -->
+    <!-- SCRIPTS FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -230,6 +380,7 @@
 
         let modeEdition = false;
         let idEditionCourant = null;
+        window.produitsData = {};
 
         const categoriesParMarque = {
             ajax: [
@@ -269,7 +420,7 @@
         selectMarque.addEventListener('change', mettreAJourCategories);
         mettreAJourCategories();
 
-        // GESTION AUTHENTIFICATION (SESSION)
+        // GESTION SESSION AUTH
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-screen').style.display = 'none';
@@ -283,7 +434,7 @@
             }
         });
 
-        // FORMULAIRE DE CONNEXION
+        // CONNEXION
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-login-submit');
@@ -292,7 +443,9 @@
             btn.innerText = "Connexion...";
 
             try {
-                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+                const emailClean = document.getElementById('login-email').value.trim();
+                const passClean = document.getElementById('login-password').value;
+                await signInWithEmailAndPassword(auth, emailClean, passClean);
             } catch (err) {
                 errP.innerText = "Identifiant ou mot de passe incorrect.";
                 errP.style.display = 'block';
@@ -303,76 +456,137 @@
 
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-        // CHARGER LES DEMANDES DE CONTACT
+        // CHARGER ET AFFICHER LES DEMANDES CLIENTS
         async function chargerContactsAdmin() {
             const tbody = document.getElementById('tbody-contacts');
+            const mobileContainer = document.getElementById('cards-contacts-mobile');
             try {
                 const querySnapshot = await getDocs(collection(db, "demandes_contact"));
                 tbody.innerHTML = "";
+                mobileContainer.innerHTML = "";
+
                 if(querySnapshot.empty) {
-                    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Aucune demande de devis en attente.</td></tr>";
+                    const emptyMsg = "Aucune demande de devis reçue pour le moment.";
+                    tbody.innerHTML = `<tr><td colspan='6' style='text-align:center;'>${emptyMsg}</td></tr>`;
+                    mobileContainer.innerHTML = `<div style='text-align:center; padding:15px; color:var(--text-muted); font-size:13px;'>${emptyMsg}</div>`;
                     return;
                 }
+
                 querySnapshot.forEach((docSnap) => {
                     const d = docSnap.data();
                     const id = docSnap.id;
-                    const dateFormatted = d.date ? new Date(d.date.seconds * 1000).toLocaleDateString('fr-FR') : '-';
+                    const dateFormatted = d.date ? new Date(d.date.seconds * 1000).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '-';
+                    const isPhone = /^[0-9+ .-]+$/.test(d.contact.replace(/\s/g, ''));
+                    const contactLink = isPhone ? `tel:${d.contact}` : `mailto:${d.contact}`;
+
+                    // Ligne vue Desktop
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${dateFormatted}</td>
+                        <td style="white-space: nowrap;">${dateFormatted}</td>
                         <td><strong>${d.nom} ${d.prenom}</strong></td>
-                        <td>${d.contact}</td>
-                        <td>${d.raison}</td>
-                        <td style="max-width: 250px;">${d.message || '<em>Aucune précision</em>'}</td>
+                        <td><a href="${contactLink}" style="color:#0284c7; font-weight:600; text-decoration:none;">${d.contact}</a></td>
+                        <td><span style="background:#fee2e2; color:var(--primary-red); padding:3px 8px; border-radius:4px; font-weight:700; font-size:11px;">${d.raison}</span></td>
+                        <td style="max-width: 260px; font-size:12px;">${d.message || '<em>Aucune précision</em>'}</td>
                         <td><button class="btn-sm-del" onclick="supprimerContact('${id}')">Supprimer</button></td>
                     `;
                     tbody.appendChild(tr);
+
+                    // Carte vue Mobile (Format vertical 9:16)
+                    const card = document.createElement('div');
+                    card.className = "contact-card-mobile";
+                    card.innerHTML = `
+                        <div class="contact-card-header">
+                            <span class="contact-card-name">${d.nom} ${d.prenom}</span>
+                            <span class="contact-card-date">${dateFormatted}</span>
+                        </div>
+                        <span class="contact-card-badge">${d.raison}</span>
+                        <div class="contact-card-info">
+                            📞 / ✉️ <a href="${contactLink}" style="color:#0284c7; text-decoration:none;">${d.contact}</a>
+                        </div>
+                        ${d.message ? `<div class="contact-card-msg">${d.message}</div>` : ''}
+                        <div class="contact-card-footer">
+                            <a href="${contactLink}" class="btn-sm-edit" style="text-decoration:none; display:inline-block;">Contacter</a>
+                            <button class="btn-sm-del" onclick="supprimerContact('${id}')">Supprimer</button>
+                        </div>
+                    `;
+                    mobileContainer.appendChild(card);
                 });
             } catch (e) {
                 console.error(e);
-                tbody.innerHTML = "<tr><td colspan='6' style='color:red;'>Erreur lors du chargement des demandes.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='6' style='color:red;'>Erreur de chargement.</td></tr>";
             }
         }
 
         window.supprimerContact = async function(id) {
-            if(confirm("Marquer cette demande comme traitée et la supprimer ?")) {
+            if(confirm("Confirmer la suppression de cette demande de contact ?")) {
                 await deleteDoc(doc(db, "demandes_contact", id));
                 chargerContactsAdmin();
             }
         };
 
-        // CHARGER LE CATALOGUE PRODUITS
+        // CHARGEMENT DU CATALOGUE PRODUITS
         async function chargerProduitsAdmin() {
-            const tbody = document.getElementById('tbody-produits');
             try {
                 const querySnapshot = await getDocs(collection(db, "produits"));
-                tbody.innerHTML = "";
                 window.produitsData = {};
-                if(querySnapshot.empty) {
-                    tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Aucun équipement enregistré.</td></tr>";
-                    return;
-                }
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const id = docSnap.id;
-                    window.produitsData[id] = data;
+                    window.produitsData[docSnap.id] = docSnap.data();
+                });
+                filtrerProduitsAdmin();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // MOTEUR DE RECHERCHE ET FILTRE PAR MARQUE
+        window.filtrerProduitsAdmin = function() {
+            const tbody = document.getElementById('tbody-produits');
+            const searchVal = document.getElementById('admin-search-prod').value.toLowerCase().trim();
+            const brandVal = document.getElementById('admin-filter-brand').value;
+
+            tbody.innerHTML = "";
+            const ids = Object.keys(window.produitsData);
+
+            if (ids.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Aucun produit dans le catalogue.</td></tr>";
+                return;
+            }
+
+            let nbCorrespondances = 0;
+
+            ids.forEach((id) => {
+                const data = window.produitsData[id];
+                const matchMarque = (brandVal === 'all') || (data.marque === brandVal);
+                const matchRecherche = searchVal === "" || 
+                    (data.nom && data.nom.toLowerCase().includes(searchVal)) || 
+                    (data.categorie && data.categorie.toLowerCase().includes(searchVal)) ||
+                    (data.description && data.description.toLowerCase().includes(searchVal));
+
+                if (matchMarque && matchRecherche) {
+                    nbCorrespondances++;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><img src="${data.image}" class="miniature-img" alt="Img"></td>
-                        <td><strong>${data.nom}</strong>${data.est_pack ? ' <span style="color:red;font-size:10px;">(PACK)</span>' : ''}</td>
-                        <td>${data.marque.toUpperCase()}</td>
-                        <td>${parseFloat(data.prix).toFixed(2)} €</td>
+                        <td><img src="${data.image}" class="miniature-img" alt="Produit"></td>
                         <td>
+                            <strong>${data.nom}</strong>
+                            ${data.est_pack ? ' <span style="color:var(--primary-red);font-size:10px;font-weight:700;">[PACK]</span>' : ''}
+                            ${data.categorie ? `<div style="font-size:11px; color:var(--text-muted);">${data.categorie}</div>` : ''}
+                        </td>
+                        <td><strong style="text-transform: uppercase; font-size:12px;">${data.marque}</strong></td>
+                        <td style="font-weight:700; white-space:nowrap;">${parseFloat(data.prix).toFixed(2)} €</td>
+                        <td style="white-space:nowrap;">
                             <button class="btn-sm-edit" onclick="preparerEdition('${id}')">Modifier</button>
                             <button class="btn-sm-del" onclick="supprimerProduit('${id}')">Supprimer</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
-                });
-            } catch (e) {
-                console.error(e);
+                }
+            });
+
+            if (nbCorrespondances === 0) {
+                tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; color:var(--text-muted);'>Aucun équipement ne correspond à votre recherche.</td></tr>";
             }
-        }
+        };
 
         window.preparerEdition = function(id) {
             const data = window.produitsData[id];
@@ -389,8 +603,8 @@
             document.getElementById('pack').checked = data.est_pack || false;
             document.getElementById('form-prod-title').innerText = "✏️ Modifier le produit";
             document.getElementById('btn-save-prod').innerText = "💾 Enregistrer les modifications";
-            document.getElementById('btn-cancel-edit').style.display = "block";
-            window.scrollTo({ top: 300, behavior: 'smooth' });
+            document.getElementById('btn-cancel-edit').style.display = "inline-block";
+            window.scrollTo({ top: 350, behavior: 'smooth' });
         };
 
         window.annulerEdition = function() {
@@ -407,7 +621,8 @@
             if(confirm("Confirmer la suppression définitive de cet équipement ?")) {
                 await deleteDoc(doc(db, "produits", id));
                 if(idEditionCourant === id) annulerEdition();
-                chargerProduitsAdmin();
+                delete window.produitsData[id];
+                filtrerProduitsAdmin();
             }
         };
 
@@ -421,11 +636,11 @@
                 const produitData = {
                     marque: selectMarque.value,
                     categorie: selectCategorie.value !== "" ? selectCategorie.value : null,
-                    nom: document.getElementById('nom').value,
+                    nom: document.getElementById('nom').value.trim(),
                     prix: parseFloat(document.getElementById('prix').value),
-                    image: document.getElementById('image').value,
-                    description: document.getElementById('desc').value,
-                    description_longue: document.getElementById('desc_longue').value.replace(/\n/g, '<br>'),
+                    image: document.getElementById('image').value.trim(),
+                    description: document.getElementById('desc').value.trim(),
+                    description_longue: document.getElementById('desc_longue').value.trim().replace(/\n/g, '<br>'),
                     est_pack: document.getElementById('pack').checked
                 };
 
