@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carapace Portail - Administration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #c1272d;
+            --dark-blue: #111827;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+        }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--light-bg); color: #334155; margin: 0; padding: 30px 15px; display: flex; flex-direction: column; align-items: center; }
+
+        /* ÉCRAN DE CONNEXION */
+        #auth-screen {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 420px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        #auth-screen h1 { color: var(--dark-blue); font-size: 24px; margin-bottom: 10px; font-weight: 800; }
+        #auth-screen p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+
+        /* PANNEAU CONNECTÉ */
+        #portal-content { display: none; width: 100%; max-width: 950px; }
+        
+        .portal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--dark-blue); color: var(--white);
+            padding: 20px 30px; border-radius: 12px; margin-bottom: 30px;
+        }
+        .portal-header h2 { font-size: 20px; font-weight: 700; }
+        .btn-logout { background: #dc2626; color: var(--white); border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+        .card-box {
+            background: var(--white); padding: 35px; border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 35px;
+        }
+        h3 { color: var(--dark-blue); font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--primary-red); padding-bottom: 8px; display: inline-block; }
+
+        .form-group { margin-bottom: 18px; text-align: left; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: var(--dark-blue); }
+        input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+            width: 100%; padding: 11px; border: 1.5px solid #cbd5e1; border-radius: 6px;
+            font-family: inherit; font-size: 14px; box-sizing: border-box; outline: none;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        textarea.large { min-height: 180px; }
+
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
+
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
+        button {
+            flex: 1; background: var(--primary-red); color: white; border: none; padding: 14px;
+            font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { opacity: 0.9; }
+        .btn-secondary { background: #64748b; display: none; }
+
+        #group-categorie { background: #f8fafc; padding: 15px; border-left: 4px solid var(--primary-red); border-radius: 4px; display: none; }
+
+        /* TABLEAUX */
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+        th { background-color: #f1f5f9; color: var(--dark-blue); font-weight: 700; }
+        .miniature-img { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: #fff; border: 1px solid #eee; }
+        .btn-sm-edit { background: #0284c7; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn-sm-del { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-left: 5px; }
+    </style>
+</head>
+<body>
+
+    <!-- ÉCRAN D'AUTHENTIFICATION -->
+    <div id="auth-screen">
+        <h1>Carapace Portail</h1>
+        <p>Connexion sécurisée à votre espace de gestion</p>
+        <form id="form-login">
+            <div class="form-group">
+                <label for="login-email">Adresse e-mail</label>
+                <input type="email" id="login-email" required placeholder="admin@carapace.fr">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Mot de passe</label>
+                <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" id="btn-login-submit">Se connecter</button>
+            <p id="auth-error" style="display:none; color: #dc2626; margin-top: 15px; font-size: 13px; font-weight: 600;"></p>
+        </form>
+    </div>
+
+    <!-- PANNEAU D'ADMINISTRATION CONNECTÉ -->
+    <div id="portal-content">
+        <div class="portal-header">
+            <div>
+                <h2>Carapace Portail</h2>
+                <span id="user-display" style="font-size: 13px; opacity: 0.8;">Connecté</span>
+            </div>
+            <div>
+                <a href="index.html" style="color: #fff; text-decoration: underline; margin-right: 15px; font-size: 13px;">Voir le site</a>
+                <button class="btn-logout" id="btn-logout">Déconnexion</button>
+            </div>
+        </div>
+
+        <!-- 1. BOÎTE DE RÉCEPTION DES DEMANDES CLIENTS -->
+        <div class="card-box">
+            <h3>📬 Demandes de contact reçues</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Contact (Mail/Tél)</th>
+                            <th>Motif</th>
+                            <th>Message</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-contacts">
+                        <tr><td colspan="6" style="text-align: center;">Chargement des messages...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. GESTION DU CATALOGUE PRODUITS -->
+        <div class="card-box">
+            <h3 id="form-prod-title">➕ Ajouter un équipement</h3>
+            <form id="form-produit">
+                <div class="form-group">
+                    <label for="marque">Marque</label>
+                    <select id="marque" required>
+                        <option value="ajax">Ajax</option>
+                        <option value="somfy">Somfy</option>
+                        <option value="yale">Yale Home</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="group-categorie">
+                    <label for="categorie" id="label-categorie">Sous-catégorie</label>
+                    <select id="categorie"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nom">Nom du produit</label>
+                    <input type="text" id="nom" required placeholder="Ex : StarterKit Cam Plus">
+                </div>
+
+                <div class="form-group">
+                    <label for="prix">Prix TTC (€)</label>
+                    <input type="number" id="prix" step="0.01" required placeholder="890.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Nom de l'image (ex : camera.png ou ./camera.png)</label>
+                    <input type="text" id="image" required placeholder="starterkit.png">
+                </div>
+
+                <div class="form-group">
+                    <label for="desc">Description courte (liste du catalogue)</label>
+                    <textarea id="desc"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="desc_longue">Description détaillée (fiche produit)</label>
+                    <textarea id="desc_longue" class="large"></textarea>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="pack">
+                    <label for="pack">Afficher comme un PACK complet (liseré rouge)</label>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" id="btn-save-prod">➕ Ajouter au catalogue</button>
+                    <button type="button" id="btn-cancel-edit" class="btn-secondary" onclick="annulerEdition()">Annuler</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. LISTE DES PRODUITS EN LIGNE -->
+        <div class="card-box">
+            <h3>📋 Catalogue actuel</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Nom</th>
+                            <th>Marque</th>
+                            <th>Prix</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-produits">
+                        <tr><td colspan="5" style="text-align: center;">Chargement des produits...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYP0rgV0ERd0uN3KWwylgLkAKPTjfYWtw",
+            authDomain: "carapace-6ffff.firebaseapp.com",
+            projectId: "carapace-6ffff",
+            storageBucket: "carapace-6ffff.firebasestorage.app",
+            messagingSenderId: "123068428000",
+            appId: "1:123068428000:web:a13c5245dd64b6a5dd6a85"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let modeEdition = false;
+        let idEditionCourant = null;
+
+        const categoriesParMarque = {
+            ajax: [
+                "Boîtiers", "Boutons & télécommandes", "Centrales", "Claviers", 
+                "Détecteurs de bris de glace", "Détecteurs de mouvements", 
+                "Détecteurs d'ouverture", "Kits de démarrage", "Modules d'intégration", 
+                "Modules d'interphonie", "Prolongateurs de portée", "Relais", "Sirènes", "Unités d'alimentation"
+            ],
+            yale: [
+                "Maison connectée", "Serrures connectées", "Coffres-forts", 
+                "Alarmes", "Caméras", "Equipements de porte", "Cadenas et antivols"
+            ],
+            somfy: []
+        };
+
+        const selectMarque = document.getElementById('marque');
+        const selectCategorie = document.getElementById('categorie');
+        const groupCategorie = document.getElementById('group-categorie');
+        const labelCategorie = document.getElementById('label-categorie');
+
+        function mettreAJourCategories() {
+            const marque = selectMarque.value;
+            selectCategorie.innerHTML = '<option value="">-- Sélectionnez une catégorie --</option>';
+            if (categoriesParMarque[marque] && categoriesParMarque[marque].length > 0) {
+                categoriesParMarque[marque].forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.text = cat;
+                    selectCategorie.appendChild(opt);
+                });
+                groupCategorie.style.display = 'block';
+                labelCategorie.innerText = `Sous-catégorie (${marque.toUpperCase()})`;
+            } else {
+                groupCategorie.style.display = 'none';
+            }
+        }
+        selectMarque.addEventListener('change', mettreAJourCategories);
+        mettreAJourCategories();
+
+        // GESTION AUTHENTIFICATION (SESSION)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('portal-content').style.display = 'block';
+                document.getElementById('user-display').innerText = `Connecté : ${user.email}`;
+                chargerContactsAdmin();
+                chargerProduitsAdmin();
+            } else {
+                document.getElementById('auth-screen').style.display = 'block';
+                document.getElementById('portal-content').style.display = 'none';
+            }
+        });
+
+        // FORMULAIRE DE CONNEXION
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login-submit');
+            const errP = document.getElementById('auth-error');
+            errP.style.display = 'none';
+            btn.innerText = "Connexion...";
+
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+            } catch (err) {
+                errP.innerText = "Identifiant ou mot de passe incorrect.";
+                errP.style.display = 'block';
+            } finally {
+                btn.innerText = "Se connecter";
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+
+        // CHARGER LES DEMANDES DE CONTACT
+        async function chargerContactsAdmin() {
+            const tbody = document.getElementById('tbody-contacts');
+            try {
+                const querySnapshot = await getDocs(collection(db, "demandes_contact"));
+                tbody.innerHTML = "";
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Aucune demande de devis en attente.</td></tr>";
+                    return;
+                }
+                querySnapshot.forEach((docSnap) => {
+                    const d = docSnap.data();
+                    const id = docSnap.id;
+                    const dateFormatted = d.date ? new Date(d.date.seconds * 1000).toLocaleDateString('fr-FR') : '-';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${dateFormatted}</td>
+                        <td><strong>${d.nom} ${d.prenom}</strong></td>
+                        <td>${d.contact}</td>
+                        <td>${d.raison}</td>
+                        <td style="max-width: 250px;">${d.message || '<em>Aucune précision</em>'}</td>
+                        <td><button class="btn-sm-del" onclick="supprimerContact('${id}')">Supprimer</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = "<tr><td colspan='6' style='color:red;'>Erreur lors du chargement des demandes.</td></tr>";
+            }
+        }
+
+        window.supprimerContact = async function(id) {
+            if(confirm("Marquer cette demande comme traitée et la supprimer ?")) {
+                await deleteDoc(doc(db, "demandes_contact", id));
+                chargerContactsAdmin();
+            }
+        };
+
+        // CHARGER LE CATALOGUE PRODUITS
+        async function chargerProduitsAdmin() {
+            const tbody = document.getElementById('tbody-produits');
+            try {
+                const querySnapshot = await getDocs(collection(db, "produits"));
+                tbody.innerHTML = "";
+                window.produitsData = {};
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Aucun équipement enregistré.</td></tr>";
+                    return;
+                }
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    window.produitsData[id] = data;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><img src="${data.image}" class="miniature-img" alt="Img"></td>
+                        <td><strong>${data.nom}</strong>${data.est_pack ? ' <span style="color:red;font-size:10px;">(PACK)</span>' : ''}</td>
+                        <td>${data.marque.toUpperCase()}</td>
+                        <td>${parseFloat(data.prix).toFixed(2)} €</td>
+                        <td>
+                            <button class="btn-sm-edit" onclick="preparerEdition('${id}')">Modifier</button>
+                            <button class="btn-sm-del" onclick="supprimerProduit('${id}')">Supprimer</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.preparerEdition = function(id) {
+            const data = window.produitsData[id];
+            modeEdition = true;
+            idEditionCourant = id;
+            selectMarque.value = data.marque;
+            mettreAJourCategories();
+            if (data.categorie) selectCategorie.value = data.categorie;
+            document.getElementById('nom').value = data.nom;
+            document.getElementById('prix').value = data.prix;
+            document.getElementById('image').value = data.image;
+            document.getElementById('desc').value = data.description || '';
+            document.getElementById('desc_longue').value = (data.description_longue || '').replace(/<br>/g, '\n');
+            document.getElementById('pack').checked = data.est_pack || false;
+            document.getElementById('form-prod-title').innerText = "✏️ Modifier le produit";
+            document.getElementById('btn-save-prod').innerText = "💾 Enregistrer les modifications";
+            document.getElementById('btn-cancel-edit').style.display = "block";
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        };
+
+        window.annulerEdition = function() {
+            modeEdition = false;
+            idEditionCourant = null;
+            document.getElementById('form-produit').reset();
+            mettreAJourCategories();
+            document.getElementById('form-prod-title').innerText = "➕ Ajouter un équipement";
+            document.getElementById('btn-save-prod').innerText = "➕ Ajouter au catalogue";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+        };
+
+        window.supprimerProduit = async function(id) {
+            if(confirm("Confirmer la suppression définitive de cet équipement ?")) {
+                await deleteDoc(doc(db, "produits", id));
+                if(idEditionCourant === id) annulerEdition();
+                chargerProduitsAdmin();
+            }
+        };
+
+        document.getElementById('form-produit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-prod');
+            btn.innerText = "Sauvegarde...";
+            btn.disabled = true;
+
+            try {
+                const produitData = {
+                    marque: selectMarque.value,
+                    categorie: selectCategorie.value !== "" ? selectCategorie.value : null,
+                    nom: document.getElementById('nom').value,
+                    prix: parseFloat(document.getElementById('prix').value),
+                    image: document.getElementById('image').value,
+                    description: document.getElementById('desc').value,
+                    description_longue: document.getElementById('desc_longue').value.replace(/\n/g, '<br>'),
+                    est_pack: document.getElementById('pack').checked
+                };
+
+                if (modeEdition && idEditionCourant) {
+                    await updateDoc(doc(db, "produits", idEditionCourant), produitData);
+                    alert("✅ Produit mis à jour.");
+                    annulerEdition();
+                } else {
+                    produitData.date_ajout = new Date();
+                    await addDoc(collection(db, "produits"), produitData);
+                    alert("✅ Produit ajouté.");
+                    document.getElementById('form-produit').reset();
+                    mettreAJourCategories();
+                }
+                chargerProduitsAdmin();
+            } catch (err) {
+                alert("Erreur : " + err.message);
+            } finally {
+                btn.innerText = modeEdition ? "💾 Enregistrer les modifications" : "➕ Ajouter au catalogue";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
