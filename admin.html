@@ -31,7 +31,6 @@
             line-height: 1.5;
         }
 
-        /* ÉCRAN D'AUTHENTIFICATION */
         #auth-screen {
             background: var(--white);
             padding: 35px 25px;
@@ -45,7 +44,6 @@
         #auth-screen h1 { color: var(--dark-blue); font-size: 24px; margin-bottom: 8px; font-weight: 800; }
         #auth-screen p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
 
-        /* PANNEAU CONNECTÉ */
         #portal-content { display: none; width: 100%; max-width: 1050px; }
         
         .portal-header {
@@ -90,7 +88,6 @@
             font-weight: 800;
         }
 
-        /* FORMULAIRES */
         .form-group { margin-bottom: 16px; text-align: left; }
         label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: var(--dark-blue); }
         input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
@@ -114,7 +111,6 @@
 
         #group-categorie { background: #f8fafc; padding: 14px; border-left: 4px solid var(--primary-red); border-radius: 6px; display: none; }
 
-        /* BARRE DE RECHERCHE & FILTRES CATALOGUE */
         .catalog-controls {
             display: flex;
             gap: 12px;
@@ -124,7 +120,6 @@
         .search-input-wrapper { flex: 2; min-width: 220px; }
         .filter-select-wrapper { flex: 1; min-width: 160px; }
 
-        /* GESTION RESPONSIVE DES DEMANDES DE CONTACT */
         .desktop-table-view { display: block; width: 100%; overflow-x: auto; }
         .mobile-cards-view { display: none; flex-direction: column; gap: 14px; }
 
@@ -136,7 +131,6 @@
         .btn-sm-edit { background: #0284c7; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; }
         .btn-sm-del { background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; margin-left: 4px; }
 
-        /* CARTES CONTACT FORMAT MOBILE (9:16) */
         .contact-card-mobile {
             background: #f8fafc;
             border: 1px solid var(--border-color);
@@ -146,11 +140,7 @@
             flex-direction: column;
             gap: 10px;
         }
-        .contact-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .contact-card-header { display: flex; justify-content: space-between; align-items: center; }
         .contact-card-date {
             font-size: 11px;
             background: #e2e8f0;
@@ -170,12 +160,7 @@
             border-radius: 6px;
             width: fit-content;
         }
-        .contact-card-info {
-            font-size: 14px;
-            font-weight: 600;
-            color: #0284c7;
-            word-break: break-all;
-        }
+        .contact-card-info { font-size: 14px; font-weight: 600; color: #0284c7; word-break: break-all; }
         .contact-card-msg {
             background: var(--white);
             border: 1px solid #e2e8f0;
@@ -194,7 +179,6 @@
             border-top: 1px dashed var(--border-color);
         }
 
-        /* ADAPTATIONS MOBILES (SMARTPHONES) */
         @media (max-width: 768px) {
             body { padding: 12px 8px; }
             .card-box { padding: 18px 14px; }
@@ -208,7 +192,6 @@
 </head>
 <body>
 
-    <!-- ÉCRAN D'AUTHENTIFICATION -->
     <div id="auth-screen">
         <h1>Carapace Portail</h1>
         <p>Connexion sécurisée administrateur</p>
@@ -226,7 +209,6 @@
         </form>
     </div>
 
-    <!-- PANNEAU CONNECTÉ -->
     <div id="portal-content">
         <div class="portal-header">
             <div>
@@ -234,16 +216,14 @@
                 <span id="user-display" style="font-size: 12px; opacity: 0.85;">Connecté</span>
             </div>
             <div class="header-links">
-                <a href="index.html" style="color: #fff; text-decoration: underline; font-size: 13px; font-weight: 600;">Voir le site</a>
+                <a href="site.html" style="color: #fff; text-decoration: underline; font-size: 13px; font-weight: 600;">Voir le site</a>
                 <button class="btn-logout" id="btn-logout">Déconnexion</button>
             </div>
         </div>
 
-        <!-- 1. DEMANDES DE CONTACT ADAPTÉES MOBILE & PC -->
+        <!-- 1. DEMANDES CLIENTS -->
         <div class="card-box">
             <h3>📬 Demandes de devis & contact</h3>
-            
-            <!-- Vue Ordinateur (Tableau) -->
             <div class="desktop-table-view">
                 <table>
                     <thead>
@@ -261,14 +241,12 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Vue Téléphone (Cartes verticales 9:16) -->
             <div class="mobile-cards-view" id="cards-contacts-mobile">
                 <div style="text-align:center; font-size:13px; color:var(--text-muted);">Chargement des demandes...</div>
             </div>
         </div>
 
-        <!-- 2. FORMULAIRE D'AJOUT ET MODIFICATION DE PRODUIT -->
+        <!-- 2. GESTION DES PRODUITS -->
         <div class="card-box">
             <h3 id="form-prod-title">➕ Ajouter un équipement</h3>
             <form id="form-produit">
@@ -297,8 +275,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image">Nom ou lien de l'image (ex : starterkit.png)</label>
-                    <input type="text" id="image" required placeholder="starterkit.png">
+                    <label for="image">Visuel principal (nom du fichier ou lien URL)</label>
+                    <input type="text" id="image" required placeholder="starterkit.png ou https://...">
+                </div>
+
+                <div class="form-group">
+                    <label for="images_secondaires">Photos secondaires / Détail individuel (facultatif)</label>
+                    <textarea id="images_secondaires" placeholder="hub2plus.png, motioncam.png, doorprotect.png (séparées par virgules ou retours à la ligne)"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -323,7 +306,7 @@
             </form>
         </div>
 
-        <!-- 3. CATALOGUE AVEC RECHERCHE ET FILTRE PAR MARQUE -->
+        <!-- 3. CATALOGUE ACTUEL -->
         <div class="card-box">
             <h3>📋 Catalogue en ligne</h3>
             
@@ -360,7 +343,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -421,7 +403,6 @@
         selectMarque.addEventListener('change', mettreAJourCategories);
         mettreAJourCategories();
 
-        // GESTION SESSION AUTH
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-screen').style.display = 'none';
@@ -435,7 +416,6 @@
             }
         });
 
-        // CONNEXION
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-login-submit');
@@ -457,7 +437,6 @@
 
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-        // CHARGER ET AFFICHER LES DEMANDES CLIENTS
         async function chargerContactsAdmin() {
             const tbody = document.getElementById('tbody-contacts');
             const mobileContainer = document.getElementById('cards-contacts-mobile');
@@ -480,7 +459,6 @@
                     const isPhone = /^[0-9+ .-]+$/.test(d.contact.replace(/\s/g, ''));
                     const contactLink = isPhone ? `tel:${d.contact}` : `mailto:${d.contact}`;
 
-                    // Ligne vue Desktop
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="white-space: nowrap;">${dateFormatted}</td>
@@ -492,7 +470,6 @@
                     `;
                     tbody.appendChild(tr);
 
-                    // Carte vue Mobile (Format vertical 9:16)
                     const card = document.createElement('div');
                     card.className = "contact-card-mobile";
                     card.innerHTML = `
@@ -525,7 +502,6 @@
             }
         };
 
-        // CHARGEMENT DU CATALOGUE PRODUITS
         async function chargerProduitsAdmin() {
             try {
                 const querySnapshot = await getDocs(collection(db, "produits"));
@@ -539,7 +515,6 @@
             }
         }
 
-        // MOTEUR DE RECHERCHE ET FILTRE PAR MARQUE
         window.filtrerProduitsAdmin = function() {
             const tbody = document.getElementById('tbody-produits');
             const searchVal = document.getElementById('admin-search-prod').value.toLowerCase().trim();
@@ -599,6 +574,7 @@
             document.getElementById('nom').value = data.nom;
             document.getElementById('prix').value = data.prix;
             document.getElementById('image').value = data.image;
+            document.getElementById('images_secondaires').value = (data.images_secondaires || []).join(', ');
             document.getElementById('desc').value = data.description || '';
             document.getElementById('desc_longue').value = (data.description_longue || '').replace(/<br>/g, '\n');
             document.getElementById('pack').checked = data.est_pack || false;
@@ -634,12 +610,18 @@
             btn.disabled = true;
 
             try {
+                const photosSecondaires = document.getElementById('images_secondaires').value
+                    .split(/[,\n]/)
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0);
+
                 const produitData = {
                     marque: selectMarque.value,
                     categorie: selectCategorie.value !== "" ? selectCategorie.value : null,
                     nom: document.getElementById('nom').value.trim(),
                     prix: parseFloat(document.getElementById('prix').value),
                     image: document.getElementById('image').value.trim(),
+                    images_secondaires: photosSecondaires,
                     description: document.getElementById('desc').value.trim(),
                     description_longue: document.getElementById('desc_longue').value.trim().replace(/\n/g, '<br>'),
                     est_pack: document.getElementById('pack').checked
