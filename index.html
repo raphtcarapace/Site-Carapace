@@ -30,7 +30,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER & NAVIGATION */
+        /* HEADER */
         header { 
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -55,7 +55,6 @@
         }
         nav a:hover, nav a.active { color: var(--primary-red); }
 
-        /* BOUTON PORTAIL DANS LE MENU */
         .btn-portail-nav {
             background: var(--dark-blue);
             color: var(--white) !important;
@@ -73,7 +72,7 @@
         .page-section { display: none; animation: fadeIn 0.5s ease; }
         .page-section.active { display: block; }
 
-        /* HERO */
+        /* ACCUEIL */
         .hero { 
             background: linear-gradient(rgba(17, 24, 39, 0.5), rgba(17, 24, 39, 0.8)), url('./villa.png') center/cover no-repeat; 
             color: var(--white); text-align: center; padding: 160px 20px; 
@@ -143,7 +142,7 @@
             overflow: hidden; display: flex; align-items: center; justify-content: center; 
             background-color: var(--white); padding: 10px; 
         }
-        .product-image-container img { width: 100%; height: 100%; object-fit: contain; max-width: 140px; max-height: 140px; transition: transform 0.4s ease; }
+        .product-image-container img { width: 100%; height: 100%; object-fit: contain; max-width: 150px; max-height: 150px; transition: transform 0.4s ease; }
         .product-card:hover .product-image-container img { transform: scale(1.08); }
 
         .product-title { font-size: 18px; font-weight: 700; color: var(--dark-blue); margin-bottom: 10px; }
@@ -151,26 +150,186 @@
         .product-price { font-size: 24px; font-weight: 800; color: var(--primary-red); }
         .product-tva { font-size: 12px; color: #94a3b8; font-weight: 600; }
 
-        /* FICHE DÉTAIL */
+        /* FICHE DÉTAIL PRODUIT */
         .detail-container { 
             background: var(--white); border-radius: 16px; box-shadow: var(--shadow-soft); 
-            padding: 40px; margin-bottom: 70px; display: flex; gap: 50px; align-items: flex-start; 
+            padding: 45px; margin-bottom: 70px; display: flex; gap: 50px; align-items: flex-start; 
         }
+        
+        .detail-gallery-column {
+            flex: 0 0 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .detail-image-box { 
-            flex: 0 0 400px; height: 400px; background: var(--white); border: 1px solid #f1f5f9; 
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 25px; 
+            width: 100%; height: 420px; background: #ffffff; border: 1px solid #edf2f7; 
+            border-radius: 14px; display: flex; align-items: center; justify-content: center; padding: 25px; 
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+            position: relative;
         }
-        .detail-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .detail-image-box img { 
+            max-width: 85% !important; 
+            max-height: 85% !important; 
+            object-fit: contain; 
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.12));
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+        .detail-image-box img:hover { transform: scale(1.03); }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .detail-thumbnails-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .thumb-item {
+            width: 74px;
+            height: 74px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .thumb-item:hover, .thumb-item.active {
+            border-color: var(--primary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193,39,45,0.18);
+        }
+        .thumb-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
         .detail-info { flex: 1; }
         .detail-marque { color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; display: block; }
         .detail-title { font-size: 34px; color: var(--dark-blue); margin-bottom: 15px; font-weight: 800; line-height: 1.2; }
-        .detail-price { font-size: 36px; font-weight: 800; color: var(--primary-red); margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
-        .detail-desc-courte { font-size: 17px; font-weight: 600; color: var(--text-main); margin-bottom: 20px; }
-        .detail-desc-longue { font-size: 15px; color: var(--text-light); line-height: 1.8; margin-bottom: 40px; }
+        .detail-price { font-size: 36px; font-weight: 800; color: var(--primary-red); margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
+        .detail-desc-courte { font-size: 17px; font-weight: 600; color: var(--text-main); margin-bottom: 25px; line-height: 1.5; }
+        .detail-desc-longue { margin-bottom: 35px; }
+
+        .box-composition-auto {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary-red);
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin: 25px 0;
+        }
+        .box-composition-auto h4 {
+            margin-bottom: 12px;
+            color: var(--dark-blue);
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .box-composition-auto ul { list-style: none; padding: 0; margin: 0; }
+        .box-composition-auto li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .box-composition-auto li:last-child { border-bottom: none; }
+
+        .box-specs-auto { margin: 25px 0; }
+        .box-specs-auto h4 {
+            margin-bottom: 14px;
+            color: var(--dark-blue);
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .specs-grid-auto {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+        .spec-item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #475569;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .spec-item-card strong {
+            color: var(--dark-blue);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
         .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); font-weight: 600; margin-bottom: 25px; cursor: pointer; text-transform: uppercase; font-size: 14px; }
         .btn-back:hover { color: var(--primary-red); }
 
-        /* FORMULAIRE DE CONTACT */
+        /* VISIONNEUSE PLEIN ÉCRAN (LIGHTBOX) */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 24, 39, 0.94);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        .lightbox-modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        .lightbox-modal img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+            padding: 15px;
+            cursor: default;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #ffffff;
+            font-size: 42px;
+            font-weight: 300;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .lightbox-close:hover { color: var(--primary-red); }
+
+        /* CONTACT */
         .contact-card-box {
             background: var(--white);
             border-radius: 16px;
@@ -205,7 +364,12 @@
         .social-icon svg { width: 22px; height: 22px; fill: currentColor; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 900px) { .detail-container { flex-direction: column; } .detail-image-box { width: 100%; height: 320px; flex: none; } }
+        
+        @media (max-width: 900px) { 
+            .detail-container { flex-direction: column; } 
+            .detail-gallery-column { width: 100%; flex: none; }
+            .detail-image-box { width: 100%; height: 320px; } 
+        }
         @media (max-width: 768px) { 
             header { flex-direction: column; gap: 15px; } 
             nav ul { flex-wrap: wrap; justify-content: center; gap: 12px; } 
@@ -227,12 +391,12 @@
                 <li><a onclick="showPage('somfy')" id="nav-somfy">Somfy</a></li>
                 <li><a onclick="showPage('yale')" id="nav-yale">Yale Home</a></li>
                 <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
-                <!-- LIEN CARAPACE PORTAIL -->
                 <li><a href="admin.html" class="btn-portail-nav">Carapace Portail 🔒</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- ACCUEIL -->
     <div id="page-home" class="page-section active">
         <section class="hero">
             <div class="badge-devis">Expertise & Sérénité</div>
@@ -283,6 +447,7 @@
         </section>
     </div>
 
+    <!-- AJAX -->
     <div id="page-ajax" class="page-section">
         <div class="brand-header">
             <h1>Gamme AJAX</h1>
@@ -295,19 +460,21 @@
         </div>
     </div>
 
+    <!-- SOMFY -->
     <div id="page-somfy" class="page-section">
         <div class="brand-header">
             <h1>Gamme SOMFY</h1>
             <p>L'excellence française pour votre maison connectée. Des solutions globales alliant sécurité et confort au quotidien.</p>
         </div>
         <div class="container">
-            <h2 class="section-title">Nos Packs Sécurité Somfy</h2>
+            <h2 class="section-title">Nos Packs Somfy</h2>
             <div class="products-grid" id="somfy-packs"></div>
             <h2 class="section-title">Produits à la carte Somfy</h2>
             <div class="products-grid" id="somfy-produits"></div>
         </div>
     </div>
 
+    <!-- YALE HOME -->
     <div id="page-yale" class="page-section">
         <div class="brand-header">
             <h1>Yale Home</h1>
@@ -318,16 +485,23 @@
         </div>
     </div>
 
+    <!-- DÉTAIL PRODUIT -->
     <div id="page-detail" class="page-section">
         <div class="container" style="margin-top: 40px;">
             <a onclick="retourMarque()" class="btn-back">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Retour aux produits
             </a>
+            
             <div class="detail-container">
-                <div class="detail-image-box">
-                    <img id="detail-image" src="" alt="Produit">
+                <div class="detail-gallery-column">
+                    <div class="detail-image-box" onclick="ouvrirPleinEcran()">
+                        <img id="detail-image" src="" alt="Produit">
+                        <span class="zoom-hint">🔍 Cliquer pour agrandir</span>
+                    </div>
+                    <div id="detail-thumbnails" class="detail-thumbnails-grid"></div>
                 </div>
+
                 <div class="detail-info">
                     <span id="detail-marque" class="detail-marque">Marque</span>
                     <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
@@ -340,7 +514,13 @@
         </div>
     </div>
 
-    <!-- PAGE CONTACT AVEC LE FORMULAIRE INTÉGRÉ -->
+    <!-- VISIONNEUSE PLEIN ÉCRAN -->
+    <div id="lightbox-modal" class="lightbox-modal" onclick="fermerPleinEcran(event)">
+        <span class="lightbox-close" onclick="fermerPleinEcran(event)">&times;</span>
+        <img id="lightbox-img" src="" alt="Zoom produit" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- CONTACT -->
     <div id="page-contact" class="page-section">
         <div class="brand-header">
             <h1>Contactez nos experts</h1>
@@ -390,7 +570,7 @@
         </div>
     </div>
 
-    <!-- FOOTER AVEC LE FORMULAIRE DIRECT -->
+    <!-- FOOTER -->
     <footer id="contact-footer">
         <h2>Un projet en tête&nbsp;?</h2>
         <p style="margin-bottom: 30px; font-size: 17px; opacity: 0.9;">Nos experts étudient vos besoins et vous garantissent un chiffrage rapide.</p>
@@ -407,6 +587,7 @@
         <p style="margin-top: 40px; font-size: 13px; opacity: 0.4; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">© 2026 Carapace - Protection & Domotique. Tous droits réservés.</p>
     </footer>
 
+    <!-- NAVIGATION & PLEIN ÉCRAN -->
     <script>
         let pagePrecedente = "home";
 
@@ -430,6 +611,26 @@
             }
         }
 
+        /* GESTION DU PLEIN ÉCRAN */
+        function ouvrirPleinEcran() {
+            const currentImgSrc = document.getElementById('detail-image').src;
+            if (!currentImgSrc) return;
+            document.getElementById('lightbox-img').src = currentImgSrc;
+            document.getElementById('lightbox-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fermerPleinEcran(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('lightbox-modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') fermerPleinEcran();
+        });
+
+        /* QUIZZ */
         let choixLogement = ""; let choixBesoin = ""; let choixMarque = "";
 
         function repondre(etape, choix) {
@@ -490,6 +691,7 @@
         }
     </script>
 
+    <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -508,22 +710,124 @@
 
         window.produitsDataSite = {};
 
+        function formaterDescriptionAutomatique(texteBrut) {
+            if (!texteBrut) return "Plus d'informations disponibles sur demande.";
+
+            const lignes = texteBrut.split(/<br>|\n/).map(l => l.trim()).filter(l => l.length > 0);
+            let htmlResultat = "";
+            let sectionEnCours = "intro";
+            let listeItems = [];
+
+            function fermerSection() {
+                if (listeItems.length === 0) return;
+
+                if (sectionEnCours === "composition") {
+                    htmlResultat += `
+                        <div class="box-composition-auto">
+                            <h4>📦 Composition du kit</h4>
+                            <ul>
+                                ${listeItems.map(item => {
+                                    const parties = item.split(':');
+                                    if (parties.length > 1) {
+                                        return `<li><strong>${parties[0].trim()} :</strong>${parties.slice(1).join(':')}</li>`;
+                                    }
+                                    return `<li>${item}</li>`;
+                                }).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else if (sectionEnCours === "specs") {
+                    htmlResultat += `
+                        <div class="box-specs-auto">
+                            <h4>⚡ Points forts & Spécifications</h4>
+                            <div class="specs-grid-auto">
+                                ${listeItems.map(item => {
+                                    const parties = item.split(':');
+                                    if (parties.length > 1) {
+                                        return `
+                                            <div class="spec-item-card">
+                                                <strong>${parties[0].trim()}</strong>
+                                                <span>${parties.slice(1).join(':').trim()}</span>
+                                            </div>
+                                        `;
+                                    }
+                                    return `<div class="spec-item-card"><span>${item}</span></div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                listeItems = [];
+            }
+
+            lignes.forEach((ligne) => {
+                const ligneLower = ligne.toLowerCase();
+
+                if (ligneLower.includes("composition du kit")) {
+                    fermerSection();
+                    sectionEnCours = "composition";
+                    return;
+                }
+
+                if (ligneLower.includes("points forts") || ligneLower.includes("caractéristiques")) {
+                    fermerSection();
+                    sectionEnCours = "specs";
+                    return;
+                }
+
+                if (sectionEnCours === "intro") {
+                    htmlResultat += `<p style="margin-bottom: 15px; color: #475569; line-height: 1.7;">${ligne}</p>`;
+                } else {
+                    listeItems.push(ligne);
+                }
+            });
+
+            fermerSection();
+            return htmlResultat;
+        }
+
         window.ouvrirDetailProduit = function(id) {
             const produit = window.produitsDataSite[id];
             if (!produit) return;
 
-            document.getElementById('detail-image').src = produit.image || '';
-            document.getElementById('detail-image').alt = produit.nom || '';
+            const mainImg = document.getElementById('detail-image');
+            mainImg.src = produit.image || '';
+            mainImg.alt = produit.nom || '';
+
             document.getElementById('detail-titre').innerText = produit.nom || '';
             document.getElementById('detail-prix').innerHTML = parseFloat(produit.prix).toFixed(2) + ' € <span class="product-tva">TTC</span>';
             document.getElementById('detail-desc-courte').innerText = produit.description || "";
-            document.getElementById('detail-desc-longue').innerHTML = produit.description_longue || "Plus d'informations disponibles sur demande.";
+            document.getElementById('detail-desc-longue').innerHTML = formaterDescriptionAutomatique(produit.description_longue);
             
             let nomMarqueFormate = produit.marque;
             if(produit.marque === 'ajax') nomMarqueFormate = "Gamme AJAX";
             if(produit.marque === 'somfy') nomMarqueFormate = "Gamme SOMFY";
             if(produit.marque === 'yale') nomMarqueFormate = "Yale Home";
             document.getElementById('detail-marque').innerText = nomMarqueFormate;
+
+            const thumbsContainer = document.getElementById('detail-thumbnails');
+            thumbsContainer.innerHTML = "";
+
+            const toutesLesImages = [produit.image, ...(produit.images_secondaires || [])].filter(Boolean);
+
+            if (toutesLesImages.length > 1) {
+                toutesLesImages.forEach((imgSrc, index) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = `thumb-item ${index === 0 ? 'active' : ''}`;
+                    thumb.innerHTML = `<img src="${imgSrc}" alt="Vue ${index + 1}">`;
+                    
+                    thumb.onclick = () => {
+                        mainImg.src = imgSrc;
+                        document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+                        thumb.classList.add('active');
+                    };
+                    
+                    thumbsContainer.appendChild(thumb);
+                });
+                thumbsContainer.style.display = "flex";
+            } else {
+                thumbsContainer.style.display = "none";
+            }
 
             showPage('detail');
         };
@@ -537,9 +841,9 @@
                 let htmlSomfyProduits = "";
                 let categoriesYale = {}; 
                 
-                querySnapshot.forEach((doc) => {
-                    const produit = doc.data();
-                    const id = doc.id; 
+                querySnapshot.forEach((docSnap) => {
+                    const produit = docSnap.data();
+                    const id = docSnap.id; 
                     window.produitsDataSite[id] = produit; 
                     
                     const carteHTML = `
@@ -600,7 +904,6 @@
             }
         }
 
-        // ENVOI DU FORMULAIRE DE CONTACT VERS FIREBASE
         document.getElementById('form-contact-client').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-submit-contact');
