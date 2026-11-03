@@ -782,6 +782,9 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--ink); line-height: 
 .order-recap .recap-total { border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 4px; font-family: var(--font-head); font-weight: 900; }
 .order-recap .recap-total b, .order-number { color: var(--red); }
 .order-note { color: var(--muted); font-size: 13px; margin-top: 14px; }
+.achat-note { margin: 0 16px 12px; padding: 12px 14px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); color: var(--text); font-size: 13.5px; line-height: 1.5; }
+.achat-note a { color: var(--red); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.order-layout .achat-note { grid-column: 1 / -1; margin: 0; }
 .order-error { color: #dc2626; font-weight: 700; margin: 4px 0 14px; }
 .order-error[hidden] { display: none; }
 .pay-choice { border: 0; margin: 0 0 18px; padding: 0; display: grid; gap: 10px; }

@@ -596,10 +596,11 @@
     <div class="container">
       <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Commande</span></nav>
       <h1>Votre commande</h1>
-      <p>Vérifiez le récapitulatif, indiquez l’adresse d’installation, puis choisissez d’être rappelé ou de payer en ligne.</p>
+      <p>Vérifiez le récapitulatif, indiquez l’adresse de livraison, puis choisissez d’être rappelé ou de payer en ligne.</p>
     </div>
   </div>
   <div class="container order-layout">
+    <p class="achat-note">Achat en ligne : matériel seul, sans installation. Pour une installation par nos techniciens, <a href="#contact" data-page="contact">demandez un devis</a>.</p>
     <aside class="card order-recap">
       <h2>Récapitulatif</h2>
       <ul id="commande-recap"><li class="recap-vide">Chargement des prix…</li></ul>
@@ -608,7 +609,7 @@
     <div class="card contact-card-box">
       <form id="form-commande" novalidate>
         <h2>Vos coordonnées</h2>
-        <p>Les champs marqués d’un * sont obligatoires. Ils servent à vous rappeler ou à préparer l’installation.</p>
+        <p>Les champs marqués d’un * sont obligatoires. Ils servent à vous rappeler et à livrer le matériel.</p>
         <div class="form-row">
           <div class="form-group-contact">
             <label for="cmd-nom">Nom *</label>
@@ -634,9 +635,9 @@
           </div>
         </div>
         <div class="form-group-contact">
-          <label for="cmd-adresse">Adresse d’installation *</label>
+          <label for="cmd-adresse">Adresse de livraison *</label>
           <input type="text" id="cmd-adresse" required autocomplete="street-address" maxlength="200">
-          <div class="field-error">Indiquez l’adresse d’installation.</div>
+          <div class="field-error">Indiquez l’adresse de livraison.</div>
         </div>
         <div class="form-row">
           <div class="form-group-contact">
@@ -652,10 +653,9 @@
         </div>
         <div class="form-group-contact">
           <label for="cmd-message">Message (facultatif)</label>
-          <textarea id="cmd-message" maxlength="2000" placeholder="Précisions sur l’accès, les horaires, le chantier…"></textarea>
+          <textarea id="cmd-message" maxlength="2000" placeholder="Précisions pour la livraison (digicode, étage, horaires…)"></textarea>
           <div class="field-error">Le message est trop long.</div>
         </div>
-        <label class="consent"><input type="checkbox" id="cmd-installation"> <span>Je souhaite une installation par Carapace</span></label>
         <fieldset class="pay-choice">
           <legend>Comment souhaitez-vous finaliser ?</legend>
           <label class="pay-option">
@@ -767,6 +767,7 @@
     </div>
     <p class="panier-vide" id="panier-vide">Votre panier est vide. Parcourez les gammes Ajax, Somfy et Yale Home pour ajouter un équipement.</p>
     <ul class="panier-lignes" id="panier-lignes"></ul>
+    <p class="achat-note">Achat en ligne : matériel seul, sans installation. Pour une installation par nos techniciens, <a href="#contact" data-page="contact">demandez un devis</a>.</p>
     <div class="panier-pied" id="panier-pied" hidden>
       <div class="panier-total-row"><span>Total TTC</span><b id="panier-total">—</b></div>
       <button type="button" class="btn btn-primary btn-block" id="btn-panier-commander">Commander</button>

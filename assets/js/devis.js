@@ -452,16 +452,6 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
             prix_catalogue_ttc: Number(a.prix) || 0,
             pu_ht: versHt(a.prix)
         }));
-        if (cmd.installation) {
-            lignes.push({
-                type: 'libre',
-                designation: 'Installation sur site',
-                description: 'Le client a demandé une installation.',
-                quantite: 1,
-                unite: '',
-                pu_ht: 0
-            });
-        }
         const adresse = [c.adresse, [c.code_postal, c.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
         ouvrirEditeur(nouveauDevis({
             objet: cmd.numero ? `Commande ${cmd.numero}` : 'Commande en ligne',

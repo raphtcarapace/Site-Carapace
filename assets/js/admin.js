@@ -683,8 +683,8 @@ function rendreDetailCommande(c) {
                 <p><strong>${esc(nom || 'Sans nom')}</strong></p>
                 <p><a class="contact-link" href="tel:${esc(tel)}">${esc(client.telephone || '—')}</a></p>
                 <p><a class="contact-link" href="mailto:${esc(client.email || '')}">${esc(client.email || '—')}</a></p>
+                <p class="hint">Adresse de livraison</p>
                 <p>${esc(client.adresse || '')}<br>${esc(client.code_postal || '')} ${esc(client.ville || '')}</p>
-                <p class="hint">${c.installation ? 'Installation souhaitée' : 'Sans installation demandée'}</p>
             </div>
             <div>
                 <p>Mode : <strong>${esc(MODES_CMD[c.mode] || c.mode || '—')}</strong></p>
@@ -693,7 +693,7 @@ function rendreDetailCommande(c) {
                 <p class="cmd-total">Total TTC : ${esc(eurCmd(c.total))}</p>
             </div>
         </div>
-        ${c.paiement === 'paye_en_ligne' ? '<p class="cmd-warn">Vérifiez dans votre compte PayPal que ce paiement est bien reçu avant d’expédier ou d’installer. Un paiement confirmé seulement dans le navigateur du client n’est pas garanti par un serveur.</p>' : ''}
+        ${c.paiement === 'paye_en_ligne' ? '<p class="cmd-warn">Vérifiez dans votre compte PayPal que ce paiement est bien reçu avant d’expédier. Un paiement confirmé seulement dans le navigateur du client n’est pas garanti par un serveur.</p>' : ''}
         <table class="cmd-articles"><thead><tr><th>Article</th><th>Qté</th><th>Prix TTC</th></tr></thead><tbody>
             ${articles.map((a) => `<tr><td>${esc(a.nom || a.id || '')}</td><td>${esc(a.quantite)}</td><td>${esc(eurCmd(a.prix))}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Aucun article</td></tr>'}
         </tbody></table>

@@ -257,7 +257,6 @@ function emailOk(v) {
     return s.length >= 6 && s.length <= 150 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 function lireFormulaire() {
-    const installation = !!champ("cmd-installation")?.checked;
     const modeEl = document.querySelector('input[name="cmd-mode"]:checked');
     return {
         nom: champ("cmd-nom").value.trim(),
@@ -268,7 +267,6 @@ function lireFormulaire() {
         code_postal: champ("cmd-cp").value.trim(),
         ville: champ("cmd-ville").value.trim(),
         message: champ("cmd-message").value.trim(),
-        installation,
         mode: modeEl ? modeEl.value : "rappel"
     };
 }
@@ -315,7 +313,8 @@ function payloadDe(snapshot, mode, paypalOrderId) {
         client: snapshot.client,
         articles: snapshot.articles.map((a) => ({ id: a.id, nom: a.nom, prix: a.prix, quantite: a.quantite })),
         total: snapshot.total,
-        installation: !!snapshot.installation,
+        // Toujours false : les règles Firestore exigent le booléen, et l'achat en ligne est du matériel seul.
+        installation: false,
         message: snapshot.message || "",
         mode: mode,
         paiement: mode === "en_ligne" ? "paye_en_ligne" : "a_encaisser",
@@ -367,7 +366,7 @@ async function preparerSnapshot(formulaire) {
         client: clientDe(formulaire),
         articles: frais.articles,
         total: frais.total,
-        installation: formulaire.installation,
+        installation: false,
         message: formulaire.message,
         mode: formulaire.mode
     };
@@ -497,6 +496,7 @@ function init() {
     restaurerConfirmation();
 
     document.addEventListener("click", (e) => {
+        if (e.target.closest("#panier-drawer [data-page]")) fermer();
         if (e.target.closest("[data-open-cart]")) { e.preventDefault(); ouvrir(); return; }
         if (e.target.closest("#panier-fermer") || e.target.id === "panier-backdrop") { fermer(); return; }
         const qte = e.target.closest("[data-qte]");
