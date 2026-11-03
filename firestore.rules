@@ -1,0 +1,52 @@
+// =====================================================================
+//  Règles de sécurité Firestore pour Carapace - VERSION PRÊTE À PUBLIER
+//  À copier-coller EN ENTIER dans :
+//  Console Firebase > Firestore Database > onglet « Règles » > Publier
+//
+//  - L'UID qQDrA5N6atXjrRCuKGJR3NdFIyf2 est celui de votre compte administrateur :
+//    connectez-vous au portail admin avec CE compte (Authentication > Utilisateurs).
+//  - Collections : produits, demandes_contact, devis (nouveau).
+// =====================================================================
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estAdmin() {
+      return request.auth != null && request.auth.uid in ['qQDrA5N6atXjrRCuKGJR3NdFIyf2'];
+    }
+
+    // Catalogue : lecture publique (le site doit l'afficher), écriture admin seulement
+    match /produits/{id} {
+      allow read: if true;
+      allow write: if estAdmin();
+    }
+
+    // Demandes de contact : tout le monde peut CRÉER une demande valide,
+    // mais seul l'admin peut les LIRE ou les SUPPRIMER (données personnelles !)
+    match /demandes_contact/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['nom', 'prenom', 'contact', 'raison', 'message', 'date'])
+                    && request.resource.data.nom is string && request.resource.data.nom.size() > 0 && request.resource.data.nom.size() <= 100
+                    && request.resource.data.prenom is string && request.resource.data.prenom.size() <= 100
+                    && request.resource.data.contact is string && request.resource.data.contact.size() > 3 && request.resource.data.contact.size() <= 150
+                    && request.resource.data.raison is string && request.resource.data.raison.size() <= 200
+                    && request.resource.data.message is string && request.resource.data.message.size() <= 5000
+                    && request.resource.data.date is timestamp;
+      allow read, delete: if estAdmin();
+      allow update: if false;
+    }
+
+    // Devis : données commerciales privées, lecture ET écriture réservées à l'admin
+    match /devis/{id} {
+      allow read, delete: if estAdmin();
+      allow create, update: if estAdmin()
+                            && request.resource.data.numero is string
+                            && request.resource.data.numero.size() > 0 && request.resource.data.numero.size() <= 40
+                            && request.resource.data.statut in ['brouillon', 'envoye', 'accepte', 'refuse'];
+    }
+
+    // Tout le reste est fermé
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

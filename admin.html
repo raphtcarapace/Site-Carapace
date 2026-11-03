@@ -31,6 +31,7 @@
     <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
     <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
@@ -126,6 +127,7 @@
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
+      <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
     </nav>
 
     <!-- 1. DEMANDES CLIENTS -->
@@ -248,6 +250,141 @@
         </div>
       </div>
     </section>
+
+    <!-- 4. DEVIS -->
+    <section class="panel" id="panel-devis">
+      <!-- Liste des devis -->
+      <div class="card-box" id="devis-liste-box">
+        <div class="section-head">
+          <h3><svg class="i"><use href="#i-file"/></svg>Mes devis <span class="badge blue" id="devis-count">0</span></h3>
+          <div class="tools">
+            <div class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="devis-search" placeholder="N° de devis, client..."></div>
+            <select id="devis-filter-statut" aria-label="Filtrer par statut">
+              <option value="all">Tous les statuts</option>
+              <option value="brouillon">Brouillon</option>
+              <option value="envoye">Envoyé</option>
+              <option value="accepte">Accepté</option>
+              <option value="refuse">Refusé</option>
+            </select>
+            <button class="btn btn-primary" id="btn-nouveau-devis" type="button"><svg class="i"><use href="#i-plus"/></svg>Nouveau devis</button>
+          </div>
+        </div>
+        <div class="devis-kpis" id="devis-kpis"></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>N°</th><th>Client</th><th>Date</th><th>Total TTC</th><th>Statut</th><th>Actions</th></tr></thead>
+            <tbody id="tbody-devis"><tr><td colspan="6" class="empty">Chargement des devis...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Éditeur de devis -->
+      <div id="devis-editeur" hidden>
+        <div class="devis-topbar">
+          <button class="btn btn-ghost" type="button" id="btn-devis-retour"><svg class="i"><use href="#i-back"/></svg>Retour aux devis</button>
+          <div class="devis-topbar-title"><span id="dv-titre">Nouveau devis</span> <span class="statut-pill" id="dv-statut-pill">Brouillon</span></div>
+          <div class="devis-topbar-actions">
+            <button class="btn btn-secondary" type="button" id="btn-devis-pdf"><svg class="i"><use href="#i-download"/></svg>PDF</button>
+            <button class="btn btn-primary" type="button" id="btn-devis-save"><svg class="i"><use href="#i-check-circle"/></svg>Enregistrer</button>
+          </div>
+        </div>
+
+        <form id="form-devis" class="devis-grid" novalidate>
+          <div class="devis-main">
+            <div class="card-box">
+              <h3><svg class="i"><use href="#i-file"/></svg>Informations</h3>
+              <div class="form-grid g4">
+                <div class="form-group"><label for="dv-numero">N° de devis</label><input type="text" id="dv-numero" required></div>
+                <div class="form-group"><label for="dv-date">Date</label><input type="date" id="dv-date" required></div>
+                <div class="form-group"><label for="dv-validite">Valable jusqu'au</label><input type="date" id="dv-validite" required></div>
+                <div class="form-group"><label for="dv-statut">Statut</label>
+                  <select id="dv-statut"><option value="brouillon">Brouillon</option><option value="envoye">Envoyé</option><option value="accepte">Accepté</option><option value="refuse">Refusé</option></select></div>
+                <div class="form-group full"><label for="dv-objet">Objet du devis</label><input type="text" id="dv-objet" placeholder="Ex : Installation d'une alarme Ajax - maison avec extérieur"></div>
+              </div>
+            </div>
+
+            <div class="card-box">
+              <h3><svg class="i"><use href="#i-users"/></svg>Client <span class="badge blue" id="dv-demande-lien" hidden>Lié à une demande</span></h3>
+              <div class="form-grid">
+                <div class="form-group"><label for="dv-client-nom">Nom *</label><input type="text" id="dv-client-nom" required></div>
+                <div class="form-group"><label for="dv-client-prenom">Prénom</label><input type="text" id="dv-client-prenom"></div>
+                <div class="form-group"><label for="dv-client-societe">Société (facultatif)</label><input type="text" id="dv-client-societe"></div>
+                <div class="form-group"><label for="dv-client-contact">E-mail / téléphone</label><input type="text" id="dv-client-contact"></div>
+                <div class="form-group full"><label for="dv-client-adresse">Adresse (chantier / facturation)</label><textarea id="dv-client-adresse" rows="2" placeholder="N° et rue, code postal, ville"></textarea></div>
+              </div>
+            </div>
+
+            <div class="card-box">
+              <div class="section-head">
+                <h3><svg class="i"><use href="#i-box"/></svg>Prestations &amp; équipements</h3>
+                <div class="tools">
+                  <button class="btn btn-secondary" type="button" id="btn-ligne-catalogue"><svg class="i"><use href="#i-search"/></svg>Depuis le catalogue</button>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary" type="button" id="btn-ligne-libre"><svg class="i"><use href="#i-plus"/></svg>Ligne libre</button>
+                    <div class="dropdown-menu" id="menu-ligne-libre">
+                      <button type="button" data-preset="Installation et mise en service">Installation et mise en service</button>
+                      <button type="button" data-preset="Main d'œuvre" data-unite="h">Main d'œuvre (heure)</button>
+                      <button type="button" data-preset="Déplacement">Déplacement</button>
+                      <button type="button" data-preset="Paramétrage de l'application et formation">Paramétrage de l'application et formation</button>
+                      <button type="button" data-preset="">Ligne vide</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="lignes">
+                  <thead><tr><th style="width:44%">Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Total HT</th><th></th></tr></thead>
+                  <tbody id="dv-lignes"></tbody>
+                </table>
+              </div>
+              <p class="hint" id="dv-lignes-hint">Les prix du catalogue sont TTC : ils sont convertis automatiquement en HT selon le taux de TVA choisi.</p>
+            </div>
+
+            <div class="card-box">
+              <h3><svg class="i"><use href="#i-edit"/></svg>Notes &amp; conditions</h3>
+              <div class="form-group"><label for="dv-notes">Note au client (affichée sur le devis)</label><textarea id="dv-notes" rows="3" placeholder="Ex : Suite à notre visite du..., voici la proposition pour..."></textarea></div>
+              <div class="form-group"><label for="dv-conditions">Conditions</label><textarea id="dv-conditions" rows="5"></textarea></div>
+            </div>
+          </div>
+
+          <aside class="devis-side">
+            <div class="card-box totals-card">
+              <h3><svg class="i"><use href="#i-star"/></svg>Totaux</h3>
+              <div class="form-group"><label for="dv-tva">TVA</label>
+                <select id="dv-tva">
+                  <option value="20">TVA 20 %</option>
+                  <option value="10">TVA 10 % (travaux dans un logement de plus de 2 ans)</option>
+                  <option value="5.5">TVA 5,5 %</option>
+                  <option value="0">TVA 0 %</option>
+                  <option value="franchise">TVA non applicable, art. 293 B du CGI</option>
+                </select></div>
+              <div class="form-grid">
+                <div class="form-group"><label for="dv-remise">Remise</label><input type="number" id="dv-remise" min="0" step="0.01" value="0"></div>
+                <div class="form-group"><label for="dv-remise-type">Type</label><select id="dv-remise-type"><option value="%">%</option><option value="€">€ HT</option></select></div>
+              </div>
+              <div class="form-group"><label for="dv-acompte">Acompte à la signature (%)</label><input type="number" id="dv-acompte" min="0" max="100" step="1" value="30"></div>
+              <dl class="totaux" id="dv-totaux"></dl>
+            </div>
+            <div class="card-box side-actions">
+              <button class="btn btn-secondary btn-block" type="button" id="btn-devis-dupliquer"><svg class="i"><use href="#i-copy"/></svg>Dupliquer ce devis</button>
+              <p class="hint">Le PDF se télécharge sur votre appareil : vous pouvez ensuite l'envoyer au client par e-mail ou WhatsApp.</p>
+            </div>
+          </aside>
+        </form>
+      </div>
+    </section>
+
+    <!-- Sélecteur de produits du catalogue -->
+    <div class="picker" id="picker" hidden>
+      <div class="picker-box" role="dialog" aria-modal="true" aria-label="Ajouter un produit du catalogue">
+        <div class="picker-head">
+          <div class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="picker-search" placeholder="Rechercher un produit..."></div>
+          <select id="picker-brand"><option value="all">Toutes marques</option><option value="ajax">Ajax</option><option value="somfy">Somfy</option><option value="yale">Yale Home</option></select>
+          <button class="icon-btn" type="button" id="picker-close" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="picker-list" id="picker-list"></div>
+      </div>
+    </div>
   </main>
 </div>
 

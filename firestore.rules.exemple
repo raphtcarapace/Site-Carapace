@@ -4,6 +4,7 @@
 //
 //  1) Remplacez ADMIN_UID par l'UID de votre compte administrateur
 //     (Console Firebase > Authentication > Utilisateurs > colonne « UID »).
+//     Collections : produits, demandes_contact, devis.
 //  2) Testez avec le simulateur de règles avant de publier.
 // =====================================================================
 rules_version = '2';
@@ -32,6 +33,15 @@ service cloud.firestore {
                     && request.resource.data.date is timestamp;
       allow read, delete: if estAdmin();
       allow update: if false;
+    }
+
+    // Devis : données commerciales privées, lecture ET écriture réservées à l'admin
+    match /devis/{id} {
+      allow read, delete: if estAdmin();
+      allow create, update: if estAdmin()
+                            && request.resource.data.numero is string
+                            && request.resource.data.numero.size() > 0 && request.resource.data.numero.size() <= 40
+                            && request.resource.data.statut in ['brouillon', 'envoye', 'accepte', 'refuse'];
     }
 
     // Tout le reste est fermé

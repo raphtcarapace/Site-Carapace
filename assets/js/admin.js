@@ -5,6 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
+import { initDevis } from "./devis.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -71,6 +72,9 @@ function ouvrirOnglet(id) {
     document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('active', p.id === id));
 }
 document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => ouvrirOnglet(t.dataset.tab)));
+
+// ---------- Devis ----------
+const devis = initDevis({ db, toast, ouvrirOnglet, getProduits: () => window.produitsData || {} });
 
 // ---------- Catégories ----------
 const categoriesParMarque = {
@@ -161,6 +165,7 @@ onAuthStateChanged(auth, (user) => {
         $('hello').innerText = (h >= 18 || h < 5 ? 'Bonsoir' : 'Bonjour') + ' 👋';
         chargerContactsAdmin();
         chargerProduitsAdmin();
+        devis.chargerDevis();
     } else {
         $('auth-screen').style.display = '';
         $('portal-content').style.display = 'none';
@@ -176,6 +181,7 @@ $('quick-add-product').addEventListener('click', () => {
 $('refresh-dashboard').addEventListener('click', async () => {
     await chargerContactsAdmin();
     await chargerProduitsAdmin();
+    await devis.chargerDevis();
     toast('Données actualisées');
 });
 
@@ -248,8 +254,14 @@ async function chargerContactsAdmin() {
         afficherContacts();
     } catch (e) {
         console.error(e);
-        tbody.innerHTML = "<tr><td colspan='6' class='empty' style='color:var(--red);'>Erreur de chargement.</td></tr>";
-        mobileContainer.innerHTML = "<div class='empty' style='color:var(--red);'>Erreur de chargement.</div>";
+        // Diagnostic clair : le cas le plus fréquent est un compte non autorisé par les règles Firestore
+        const u = auth.currentUser;
+        const msg = e && e.code === 'permission-denied'
+            ? `<strong>Accès refusé par les règles Firestore.</strong><br>Le compte connecté (${esc(u ? u.email : '?')}) a l'UID <code>${esc(u ? u.uid : '?')}</code>.
+               Cet UID doit être celui écrit dans vos règles Firestore (fonction estAdmin), et les règles doivent être <em>publiées</em> dans la console Firebase.`
+            : `Erreur de chargement des demandes${e && e.code ? ' (' + esc(e.code) + ')' : ''}. Vérifiez votre connexion internet puis cliquez sur « Actualiser ».`;
+        tbody.innerHTML = `<tr><td colspan='6' class='empty diag'>${msg}</td></tr>`;
+        mobileContainer.innerHTML = `<div class='empty diag'>${msg}</div>`;
     }
 }
 
@@ -296,7 +308,7 @@ function afficherContacts() {
             <td><a href="${esc(contactLink)}" class="contact-link">${esc(contact) || '—'}</a></td>
             <td><span class="badge">${esc(d.raison || '—')}</span></td>
             <td class="msg-cell">${d.message ? esc(d.message) : '<em>Aucune précision</em>'}</td>
-            <td style="white-space:nowrap;"><button class="btn-sm-del" data-del-contact="${esc(id)}"><svg class="i"><use href="#i-trash"/></svg>Supprimer</button></td>`;
+            <td style="white-space:nowrap;"><button class="btn-sm-edit" data-devis-contact="${esc(id)}"><svg class="i"><use href="#i-file"/></svg>Créer un devis</button> <button class="btn-sm-del" data-del-contact="${esc(id)}" title="Supprimer"><svg class="i"><use href="#i-trash"/></svg></button></td>`;
         tbody.appendChild(tr);
 
         const card = document.createElement('div');
@@ -310,7 +322,8 @@ function afficherContacts() {
             <div class="contact-card-info"><a href="${esc(contactLink)}" class="contact-link">${esc(contact) || '—'}</a></div>
             ${d.message ? `<div class="contact-card-msg">${esc(d.message)}</div>` : ''}
             <div class="contact-card-footer">
-                <a href="${esc(contactLink)}" class="btn-sm-edit">Contacter</a>
+                <a href="${esc(contactLink)}" class="btn-sm">Contacter</a>
+                <button class="btn-sm-edit" data-devis-contact="${esc(id)}">Créer un devis</button>
                 <button class="btn-sm-del" data-del-contact="${esc(id)}">Supprimer</button>
             </div>`;
         mobileContainer.appendChild(card);
@@ -321,6 +334,11 @@ $('admin-filter-raison').addEventListener('change', afficherContacts);
 document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-del-contact]');
     if (b) window.supprimerContact(b.getAttribute('data-del-contact'));
+    const dv = e.target.closest('[data-devis-contact]');
+    if (dv) {
+        const dem = contactsData.find((c) => c.id === dv.getAttribute('data-devis-contact'));
+        if (dem) devis.creerDepuisDemande(dem);
+    }
 });
 
 window.supprimerContact = async function (id) {

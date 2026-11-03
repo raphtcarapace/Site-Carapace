@@ -703,7 +703,7 @@
       $('#msg-succes-contact').classList.add('show');
       $('#msg-succes-contact').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
     } catch (error) {
-      console.error('Erreur contact :', error);
+      console.error('Erreur contact :', error && error.code, error);
       err.textContent = "Erreur lors de l'envoi de votre demande. Merci de réessayer ou de nous contacter via Facebook.";
       err.style.display = 'block';
     } finally { btn.innerHTML = label; btn.disabled = false; }
