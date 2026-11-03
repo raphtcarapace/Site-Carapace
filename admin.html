@@ -39,6 +39,7 @@
     <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></symbol>
     <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H7"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
@@ -126,6 +127,7 @@
 
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
+      <button class="tab" data-tab="panel-commandes" role="tab"><svg class="i"><use href="#i-cart"/></svg>Commandes <span class="count" id="tab-count-commandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
       <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
     </nav>
@@ -148,6 +150,41 @@
           </table>
         </div>
         <div class="mobile-cards-view" id="cards-contacts-mobile"><div class="empty">Chargement des demandes...</div></div>
+      </div>
+    </section>
+
+    <!-- COMMANDES EN LIGNE -->
+    <section class="panel" id="panel-commandes">
+      <div class="card-box" id="commande-detail" hidden>
+        <div class="section-head">
+          <h3><svg class="i"><use href="#i-cart"/></svg><span id="cmd-detail-titre">Commande</span></h3>
+          <button class="btn btn-ghost" type="button" id="cmd-detail-fermer">Fermer</button>
+        </div>
+        <div id="cmd-detail-body"></div>
+      </div>
+      <div class="card-box">
+        <div class="section-head">
+          <h3><svg class="i"><use href="#i-cart"/></svg>Commandes en ligne <span class="pill">Live</span></h3>
+          <div class="tools">
+            <div class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="admin-search-commandes" placeholder="N°, client, e-mail, ville..."></div>
+            <select id="admin-filter-commandes" aria-label="Filtrer par statut">
+              <option value="all">Tous les statuts</option>
+              <option value="nouvelle">Nouvelles</option>
+              <option value="confirmee">Confirmées</option>
+              <option value="en_preparation">En préparation</option>
+              <option value="installee">Installées</option>
+              <option value="livree">Livrées</option>
+              <option value="annulee">Annulées</option>
+            </select>
+          </div>
+        </div>
+        <div class="desktop-table-view table-scroll">
+          <table>
+            <thead><tr><th>Date</th><th>N°</th><th>Client</th><th>Total TTC</th><th>Mode</th><th>Statut</th><th>Paiement</th><th>Action</th></tr></thead>
+            <tbody id="tbody-commandes"><tr><td colspan="8" class="empty">Chargement des commandes...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="mobile-cards-view" id="cards-commandes-mobile"><div class="empty">Chargement des commandes...</div></div>
       </div>
     </section>
 

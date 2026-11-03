@@ -228,6 +228,23 @@ td .sub { font-size: 12px; color: var(--muted); margin-top: 2px; max-width: 320p
 .statut-pill.s-accepte { background: rgba(22,163,74,.12); color: var(--green); border-color: transparent; }
 .statut-pill.s-refuse { background: var(--red-soft); color: var(--red); border-color: transparent; }
 .statut-pill.s-brouillon { color: var(--amber); background: rgba(245,158,11,.1); border-color: transparent; }
+.statut-pill.s-nouvelle { color: var(--red); background: var(--red-soft); border-color: transparent; }
+.statut-pill.s-confirmee { color: var(--blue); background: rgba(2,132,199,.1); border-color: transparent; }
+.statut-pill.s-en_preparation { color: var(--amber); background: rgba(245,158,11,.12); border-color: transparent; }
+.statut-pill.s-installee, .statut-pill.s-livree { color: var(--green); background: rgba(22,163,74,.12); border-color: transparent; }
+.statut-pill.s-annulee { color: var(--muted); }
+.cmd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
+.cmd-total { font-family: var(--font-head); font-weight: 900; font-size: 18px; color: var(--red); margin-top: 8px; }
+.cmd-articles { width: 100%; border-collapse: collapse; margin: 8px 0 14px; }
+.cmd-articles th, .cmd-articles td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.cmd-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 14px; }
+.cmd-actions label { display: grid; gap: 6px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.cmd-actions select { padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); min-width: 160px; }
+.cmd-warn { margin: 12px 0; padding: 12px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px dashed var(--amber); font-size: 13px; }
+@media (max-width: 720px) {
+  .cmd-grid { grid-template-columns: 1fr; }
+  .cmd-actions .btn { flex: 1 1 100%; justify-content: center; }
+}
 
 .devis-topbar { position: sticky; top: 74px; z-index: 20; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 12px 14px; margin-bottom: 18px; border-radius: 16px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(12px); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .devis-topbar-title { flex: 1; display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 900; font-size: 18px; min-width: 0; }

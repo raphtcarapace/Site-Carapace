@@ -3,7 +3,7 @@
 // mêmes collections ("produits", "demandes_contact") et mêmes champs.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 import { initDevis } from "./devis.js";
 
@@ -166,7 +166,9 @@ onAuthStateChanged(auth, (user) => {
         chargerContactsAdmin();
         chargerProduitsAdmin();
         devis.chargerDevis();
+        ecouterCommandes();
     } else {
+        if (typeof arretCommandes === 'function') arretCommandes();
         $('auth-screen').style.display = '';
         $('portal-content').style.display = 'none';
     }
@@ -182,6 +184,7 @@ $('refresh-dashboard').addEventListener('click', async () => {
     await chargerContactsAdmin();
     await chargerProduitsAdmin();
     await devis.chargerDevis();
+    ecouterCommandes();
     toast('Données actualisées');
 });
 
@@ -559,4 +562,189 @@ $('form-produit').addEventListener('submit', async (e) => {
         btn.innerText = modeEdition ? "💾 Enregistrer les modifications" : "➕ Ajouter au catalogue";
         btn.disabled = false;
     }
+});
+
+// ---------- Commandes en ligne ----------
+const STATUTS_CMD = {
+    nouvelle: 'Nouvelle',
+    confirmee: 'Confirmée',
+    en_preparation: 'En préparation',
+    installee: 'Installée',
+    livree: 'Livrée',
+    annulee: 'Annulée'
+};
+const PAIEMENTS_CMD = { a_encaisser: 'À encaisser', paye_en_ligne: 'Payé en ligne', paye: 'Payé' };
+const MODES_CMD = { rappel: 'Être rappelé', en_ligne: 'Paiement en ligne' };
+let commandesData = [];
+let commandeOuverte = null;
+let unsubCommandes = null;
+
+function arretCommandes() {
+    if (unsubCommandes) { unsubCommandes(); unsubCommandes = null; }
+}
+
+function eurCmd(n) {
+    const x = Number(n);
+    return isFinite(x) ? x.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) : '—';
+}
+
+function ecouterCommandes() {
+    arretCommandes();
+    unsubCommandes = onSnapshot(collection(db, 'commandes'), (snap) => {
+        commandesData = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        commandesData.sort((a, b) => (toDate(b.date)?.getTime() || 0) - (toDate(a.date)?.getTime() || 0));
+        const nouvelles = commandesData.filter((c) => c.statut === 'nouvelle').length;
+        $('tab-count-commandes').textContent = String(nouvelles);
+        afficherCommandes();
+        if (commandeOuverte) {
+            const encore = commandesData.find((c) => c.id === commandeOuverte);
+            if (encore) rendreDetailCommande(encore);
+            else fermerDetailCommande();
+        }
+    }, (e) => {
+        console.error('Commandes :', e);
+        const msg = e && e.code === 'permission-denied'
+            ? 'Accès refusé. Publiez les règles Firestore (collection commandes) puis reconnectez-vous avec le compte administrateur.'
+            : 'Impossible de charger les commandes.';
+        $('tbody-commandes').innerHTML = `<tr><td colspan="8" class="empty diag">${esc(msg)}</td></tr>`;
+        $('cards-commandes-mobile').innerHTML = `<div class="empty diag">${esc(msg)}</div>`;
+    });
+}
+
+function afficherCommandes() {
+    const q = $('admin-search-commandes').value.toLowerCase().trim();
+    const filtre = $('admin-filter-commandes').value;
+    const tbody = $('tbody-commandes');
+    const mobile = $('cards-commandes-mobile');
+    const liste = commandesData.filter((c) => {
+        if (filtre !== 'all' && c.statut !== filtre) return false;
+        if (!q) return true;
+        const client = c.client || {};
+        const txt = [c.numero, client.nom, client.prenom, client.email, client.telephone, client.ville, c.message].join(' ').toLowerCase();
+        return txt.includes(q);
+    });
+    if (!liste.length) {
+        const msg = commandesData.length ? 'Aucune commande ne correspond à votre recherche.' : 'Aucune commande pour le moment.';
+        tbody.innerHTML = `<tr><td colspan="8" class="empty">${msg}</td></tr>`;
+        mobile.innerHTML = `<div class="empty">${msg}</div>`;
+        return;
+    }
+    tbody.innerHTML = '';
+    mobile.innerHTML = '';
+    liste.forEach((c) => {
+        const client = c.client || {};
+        const nom = `${client.prenom || ''} ${client.nom || ''}`.trim() || 'Sans nom';
+        const dt = toDate(c.date);
+        const date = dt ? dt.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="white-space:nowrap">${esc(date)}</td>
+            <td><strong>${esc(c.numero || '—')}</strong></td>
+            <td>${esc(nom)}<div class="sub">${esc(client.ville || '')}</div></td>
+            <td>${esc(eurCmd(c.total))}</td>
+            <td>${esc(MODES_CMD[c.mode] || c.mode || '—')}</td>
+            <td><span class="statut-pill s-${esc(c.statut)}">${esc(STATUTS_CMD[c.statut] || c.statut || '—')}</span></td>
+            <td>${esc(PAIEMENTS_CMD[c.paiement] || c.paiement || '—')}</td>
+            <td><button class="btn-sm-edit" type="button" data-voir-commande="${esc(c.id)}">Voir</button></td>`;
+        tbody.appendChild(tr);
+
+        const card = document.createElement('div');
+        card.className = 'contact-card-mobile';
+        card.innerHTML = `
+            <div class="contact-card-header">
+                <span class="contact-card-name">${esc(c.numero || 'Commande')}</span>
+                <span class="contact-card-date">${esc(date)}</span>
+            </div>
+            <span class="contact-card-badge badge">${esc(STATUTS_CMD[c.statut] || c.statut || '—')}</span>
+            <div class="contact-card-info"><strong>${esc(nom)}</strong> · ${esc(eurCmd(c.total))}</div>
+            <div class="contact-card-msg">${esc(MODES_CMD[c.mode] || '')} · ${esc(PAIEMENTS_CMD[c.paiement] || '')}${client.ville ? ' · ' + esc(client.ville) : ''}</div>
+            <div class="contact-card-footer">
+                <button class="btn-sm-edit" type="button" data-voir-commande="${esc(c.id)}">Voir le détail</button>
+            </div>`;
+        mobile.appendChild(card);
+    });
+}
+
+function optionsHtml(map, courant) {
+    return Object.entries(map).map(([k, label]) => `<option value="${esc(k)}"${k === courant ? ' selected' : ''}>${esc(label)}</option>`).join('');
+}
+
+function rendreDetailCommande(c) {
+    commandeOuverte = c.id;
+    const client = c.client || {};
+    const nom = `${client.prenom || ''} ${client.nom || ''}`.trim();
+    const tel = String(client.telephone || '').replace(/[^0-9+]/g, '');
+    const articles = Array.isArray(c.articles) ? c.articles : [];
+    $('cmd-detail-titre').textContent = c.numero || 'Commande';
+    $('commande-detail').hidden = false;
+    $('cmd-detail-body').innerHTML = `
+        <div class="cmd-grid">
+            <div>
+                <p><strong>${esc(nom || 'Sans nom')}</strong></p>
+                <p><a class="contact-link" href="tel:${esc(tel)}">${esc(client.telephone || '—')}</a></p>
+                <p><a class="contact-link" href="mailto:${esc(client.email || '')}">${esc(client.email || '—')}</a></p>
+                <p>${esc(client.adresse || '')}<br>${esc(client.code_postal || '')} ${esc(client.ville || '')}</p>
+                <p class="hint">${c.installation ? 'Installation souhaitée' : 'Sans installation demandée'}</p>
+            </div>
+            <div>
+                <p>Mode : <strong>${esc(MODES_CMD[c.mode] || c.mode || '—')}</strong></p>
+                <p>Paiement : <strong>${esc(PAIEMENTS_CMD[c.paiement] || c.paiement || '—')}</strong></p>
+                ${c.paypal_order_id ? `<p class="hint">Réf. PayPal : ${esc(c.paypal_order_id)}</p>` : ''}
+                <p class="cmd-total">Total TTC : ${esc(eurCmd(c.total))}</p>
+            </div>
+        </div>
+        ${c.paiement === 'paye_en_ligne' ? '<p class="cmd-warn">Vérifiez dans votre compte PayPal que ce paiement est bien reçu avant d’expédier ou d’installer. Un paiement confirmé seulement dans le navigateur du client n’est pas garanti par un serveur.</p>' : ''}
+        <table class="cmd-articles"><thead><tr><th>Article</th><th>Qté</th><th>Prix TTC</th></tr></thead><tbody>
+            ${articles.map((a) => `<tr><td>${esc(a.nom || a.id || '')}</td><td>${esc(a.quantite)}</td><td>${esc(eurCmd(a.prix))}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Aucun article</td></tr>'}
+        </tbody></table>
+        ${c.message ? `<p class="contact-card-msg">${esc(c.message)}</p>` : ''}
+        <div class="cmd-actions">
+            <label>Statut <select id="cmd-statut">${optionsHtml(STATUTS_CMD, c.statut)}</select></label>
+            <label>Paiement <select id="cmd-paiement">${optionsHtml(PAIEMENTS_CMD, c.paiement)}</select></label>
+            <button class="btn btn-primary" type="button" id="cmd-sauver">Enregistrer</button>
+            <button class="btn btn-secondary" type="button" id="cmd-vers-devis"><svg class="i"><use href="#i-file"/></svg>Créer un devis depuis cette commande</button>
+            <button class="btn btn-secondary" type="button" id="cmd-suppr">Supprimer</button>
+        </div>`;
+    $('cmd-sauver').onclick = () => sauverCommande(c.id);
+    $('cmd-vers-devis').onclick = () => devis.creerDepuisCommande(c);
+    $('cmd-suppr').onclick = () => supprimerCommande(c);
+    $('commande-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fermerDetailCommande() {
+    commandeOuverte = null;
+    $('commande-detail').hidden = true;
+    $('cmd-detail-body').innerHTML = '';
+}
+
+async function sauverCommande(id) {
+    const statut = $('cmd-statut').value;
+    const paiement = $('cmd-paiement').value;
+    try {
+        await updateDoc(doc(db, 'commandes', id), { statut, paiement });
+        toast('Commande mise à jour');
+    } catch (e) {
+        toast('Erreur : ' + (e.message || 'mise à jour refusée'), 'err');
+    }
+}
+
+async function supprimerCommande(c) {
+    if (!confirm(`Supprimer définitivement la commande ${c.numero || ''} ?`)) return;
+    try {
+        await deleteDoc(doc(db, 'commandes', c.id));
+        if (commandeOuverte === c.id) fermerDetailCommande();
+        toast('Commande supprimée');
+    } catch (e) {
+        toast('Erreur : ' + (e.message || 'suppression refusée'), 'err');
+    }
+}
+
+$('admin-search-commandes').addEventListener('input', afficherCommandes);
+$('admin-filter-commandes').addEventListener('change', afficherCommandes);
+$('cmd-detail-fermer').addEventListener('click', fermerDetailCommande);
+document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-voir-commande]');
+    if (!b) return;
+    const c = commandesData.find((x) => x.id === b.getAttribute('data-voir-commande'));
+    if (c) rendreDetailCommande(c);
 });

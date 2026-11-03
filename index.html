@@ -93,6 +93,7 @@
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h12"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H7"/></symbol>
     <symbol id="i-fb" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></symbol>
   </defs>
 </svg>
@@ -119,6 +120,10 @@
       <button class="icon-btn search-trigger" type="button" data-open-search aria-label="Rechercher un produit">
         <svg><use href="#i-search"/></svg><span class="lbl">Rechercher</span><kbd>Ctrl K</kbd>
       </button>
+      <button class="icon-btn cart-trigger" type="button" id="btn-panier" data-open-cart aria-label="Ouvrir le panier" aria-expanded="false" aria-controls="panier-drawer">
+        <svg><use href="#i-cart"/></svg>
+        <span class="cart-count" id="cart-count" hidden>0</span>
+      </button>
       <a class="portal-link" href="admin.html" title="Espace administrateur"><svg><use href="#i-lock"/></svg><span class="lbl">Portail</span></a>
       <a class="btn btn-primary btn-sm header-cta" href="#contact" data-page="contact">Devis gratuit</a>
       <button class="icon-btn burger" type="button" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><svg><use href="#i-menu"/></svg></button>
@@ -140,6 +145,7 @@
     <a class="m-link" href="#faq" data-page="home" data-scroll="faq">Questions fréquentes <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
     <a class="m-link" href="#contact" data-page="contact">Contact <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
     <a class="btn btn-primary" href="#contact" data-page="contact">Demander un devis gratuit</a>
+    <button type="button" class="btn btn-ghost" data-open-cart><svg><use href="#i-cart"/></svg> Voir le panier</button>
     <a class="btn btn-ghost" href="admin.html"><svg><use href="#i-lock"/></svg> Carapace Portail</a>
   </div>
 </div>
@@ -584,6 +590,114 @@
   </div>
 </div>
 
+<!-- ================= COMMANDE ================= -->
+<div id="page-commande" class="page-section">
+  <div class="brand-hero" style="padding-bottom:110px">
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Commande</span></nav>
+      <h1>Votre commande</h1>
+      <p>Vérifiez le récapitulatif, indiquez l’adresse d’installation, puis choisissez d’être rappelé ou de payer en ligne.</p>
+    </div>
+  </div>
+  <div class="container order-layout">
+    <aside class="card order-recap">
+      <h2>Récapitulatif</h2>
+      <ul id="commande-recap"><li class="recap-vide">Chargement des prix…</li></ul>
+      <p class="order-note">Les prix TTC sont ceux du catalogue au moment de la validation.</p>
+    </aside>
+    <div class="card contact-card-box">
+      <form id="form-commande" novalidate>
+        <h2>Vos coordonnées</h2>
+        <p>Les champs marqués d’un * sont obligatoires. Ils servent à vous rappeler ou à préparer l’installation.</p>
+        <div class="form-row">
+          <div class="form-group-contact">
+            <label for="cmd-nom">Nom *</label>
+            <input type="text" id="cmd-nom" required autocomplete="family-name" maxlength="80">
+            <div class="field-error">Indiquez votre nom.</div>
+          </div>
+          <div class="form-group-contact">
+            <label for="cmd-prenom">Prénom *</label>
+            <input type="text" id="cmd-prenom" required autocomplete="given-name" maxlength="80">
+            <div class="field-error">Indiquez votre prénom.</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group-contact">
+            <label for="cmd-telephone">Téléphone *</label>
+            <input type="tel" id="cmd-telephone" required autocomplete="tel" maxlength="20" placeholder="06 12 34 56 78">
+            <div class="field-error">Indiquez un numéro de téléphone valide.</div>
+          </div>
+          <div class="form-group-contact">
+            <label for="cmd-email">E-mail *</label>
+            <input type="email" id="cmd-email" required autocomplete="email" maxlength="150">
+            <div class="field-error">Indiquez un e-mail valide.</div>
+          </div>
+        </div>
+        <div class="form-group-contact">
+          <label for="cmd-adresse">Adresse d’installation *</label>
+          <input type="text" id="cmd-adresse" required autocomplete="street-address" maxlength="200">
+          <div class="field-error">Indiquez l’adresse d’installation.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group-contact">
+            <label for="cmd-cp">Code postal *</label>
+            <input type="text" id="cmd-cp" required inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}">
+            <div class="field-error">Code postal : 5 chiffres.</div>
+          </div>
+          <div class="form-group-contact">
+            <label for="cmd-ville">Ville *</label>
+            <input type="text" id="cmd-ville" required autocomplete="address-level2" maxlength="80">
+            <div class="field-error">Indiquez la ville.</div>
+          </div>
+        </div>
+        <div class="form-group-contact">
+          <label for="cmd-message">Message (facultatif)</label>
+          <textarea id="cmd-message" maxlength="2000" placeholder="Précisions sur l’accès, les horaires, le chantier…"></textarea>
+          <div class="field-error">Le message est trop long.</div>
+        </div>
+        <label class="consent"><input type="checkbox" id="cmd-installation"> <span>Je souhaite une installation par Carapace</span></label>
+        <fieldset class="pay-choice">
+          <legend>Comment souhaitez-vous finaliser ?</legend>
+          <label class="pay-option">
+            <input type="radio" name="cmd-mode" value="rappel" checked>
+            <span><b>Être rappelé</b><small>La commande est enregistrée. Carapace vous appelle pour la valider et encaisser.</small></span>
+          </label>
+          <label class="pay-option" id="pay-online-option">
+            <input type="radio" name="cmd-mode" value="en_ligne">
+            <span><b>Payer en ligne</b><small>Carte bancaire ou PayPal.</small><em class="soon" id="pay-soon" hidden>Bientôt disponible</em></span>
+          </label>
+        </fieldset>
+        <p id="commande-erreur" class="order-error" role="alert" hidden></p>
+        <div id="paypal-zone" hidden>
+          <p class="order-note">Payez ci-dessous. La commande n’est créée qu’une fois le paiement capturé.</p>
+          <div id="paypal-buttons"></div>
+        </div>
+        <button type="button" class="btn btn-outline btn-block" id="btn-reessayer-commande" hidden>Réessayer l’enregistrement de la commande</button>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-valider-commande">Valider ma commande — être rappelé</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONFIRMATION ================= -->
+<div id="page-confirmation" class="page-section">
+  <div class="brand-hero" style="padding-bottom:90px">
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Confirmation</span></nav>
+      <h1>Commande enregistrée</h1>
+    </div>
+  </div>
+  <div class="container order-confirm">
+    <div class="card contact-card-box form-success show">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h2>Merci pour votre commande</h2>
+      <p id="confirm-texte">Votre numéro de commande :</p>
+      <p class="order-number" id="confirm-numero">—</p>
+      <a class="btn btn-primary" href="#accueil" data-page="home">Retour à l’accueil</a>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <!-- ================= PIED DE PAGE ================= -->
@@ -644,7 +758,24 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<div class="panier-drawer" id="panier-drawer" aria-hidden="true">
+  <div class="panier-backdrop" id="panier-backdrop"></div>
+  <aside class="panier-panel" role="dialog" aria-modal="true" aria-labelledby="panier-titre">
+    <div class="panier-head">
+      <h2 id="panier-titre">Votre panier</h2>
+      <button type="button" class="icon-btn" id="panier-fermer" aria-label="Fermer le panier"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <p class="panier-vide" id="panier-vide">Votre panier est vide. Parcourez les gammes Ajax, Somfy et Yale Home pour ajouter un équipement.</p>
+    <ul class="panier-lignes" id="panier-lignes"></ul>
+    <div class="panier-pied" id="panier-pied" hidden>
+      <div class="panier-total-row"><span>Total TTC</span><b id="panier-total">—</b></div>
+      <button type="button" class="btn btn-primary btn-block" id="btn-panier-commander">Commander</button>
+    </div>
+  </aside>
+</div>
+
 <script src="assets/js/site.js"></script>
 <script type="module" src="assets/js/firebase-site.js"></script>
+<script type="module" src="assets/js/panier.js"></script>
 </body>
 </html>

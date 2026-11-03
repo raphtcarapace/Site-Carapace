@@ -434,6 +434,50 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
         toast('Copie créée : pensez à enregistrer.');
     }
 
+    // ---------- Depuis une commande en ligne ----------
+    function creerDepuisCommande(cmd) {
+        if (courant && modifie && !confirm('Un devis est en cours de modification. Le remplacer ?')) return;
+        const c = cmd.client || {};
+        const franchise = !!ENTREPRISE.tva_franchise_defaut;
+        const taux = franchise ? 0 : Number(ENTREPRISE.tva_defaut ?? 20);
+        const versHt = (ttc) => r2((Number(ttc) || 0) / (1 + taux / 100));
+        const lignes = (Array.isArray(cmd.articles) ? cmd.articles : []).map((a) => ({
+            type: 'produit',
+            produit_id: a.id || '',
+            marque: '',
+            designation: a.nom || '',
+            description: '',
+            quantite: Number(a.quantite) || 1,
+            unite: '',
+            prix_catalogue_ttc: Number(a.prix) || 0,
+            pu_ht: versHt(a.prix)
+        }));
+        if (cmd.installation) {
+            lignes.push({
+                type: 'libre',
+                designation: 'Installation sur site',
+                description: 'Le client a demandé une installation.',
+                quantite: 1,
+                unite: '',
+                pu_ht: 0
+            });
+        }
+        const adresse = [c.adresse, [c.code_postal, c.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+        ouvrirEditeur(nouveauDevis({
+            objet: cmd.numero ? `Commande ${cmd.numero}` : 'Commande en ligne',
+            client: {
+                nom: c.nom || '',
+                prenom: c.prenom || '',
+                societe: '',
+                contact: [c.email, c.telephone].filter(Boolean).join(' · '),
+                adresse
+            },
+            notes: cmd.message ? `Message du client : « ${String(cmd.message).slice(0, 500)} »` : '',
+            lignes
+        }));
+        modifie = true;
+    }
+
     // ---------- Depuis une demande client ----------
     function creerDepuisDemande(dem) {
         if (courant && modifie && !confirm('Un devis est en cours de modification. Le remplacer ?')) return;
@@ -634,5 +678,5 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
     // Avertit si on quitte la page avec un devis non enregistré
     window.addEventListener('beforeunload', (e) => { if (courant && modifie) { e.preventDefault(); e.returnValue = ''; } });
 
-    return { chargerDevis, creerDepuisDemande, genererPDF, ouvrirEditeur, nouveauDevis };
+    return { chargerDevis, creerDepuisDemande, creerDepuisCommande, genererPDF, ouvrirEditeur, nouveauDevis };
 }

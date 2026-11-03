@@ -17,6 +17,8 @@ Site statique (HTML, CSS, JavaScript), sans étape de compilation. Il se publie 
 | `assets/js/firebase-site.js` | Lecture du catalogue et envoi des demandes |
 | `assets/js/admin.js` | Logique du portail |
 | `assets/js/devis.js` | Onglet Devis : création, enregistrement (collection `devis`) et PDF |
+| `assets/js/panier.js` | Panier, commande (rappel ou PayPal) et confirmation |
+| `assets/js/paiement-config.js` | Client ID PayPal public (`PAYPAL_CLIENT_ID`, devise EUR) |
 | `assets/js/entreprise-config.js` | **Vos infos d'entreprise** affichées sur les devis PDF (SIRET, adresse...) : **à compléter** |
 | `assets/img/` | Images optimisées (WebP avec repli JPG/PNG), favicon, image de partage |
 | `firestore.rules` | Règles de sécurité **prêtes à publier** (avec votre UID administrateur) |
@@ -38,7 +40,7 @@ Recherchez `À COMPLÉTER` dans tous les fichiers (Ctrl+Maj+F dans VS Code). Ces
 
 ## Sécurité (important)
 
-Copiez **tout** le contenu de `firestore.rules` dans Console Firebase, puis Firestore Database, onglet Règles, puis **Publier**. Il contient déjà votre UID administrateur et la nouvelle collection `devis`. Connectez-vous au portail avec **ce** compte. Ensuite :
+Copiez **tout** le contenu de `firestore.rules` dans Console Firebase, puis Firestore Database, onglet Règles, puis **Publier**. Il contient déjà votre UID administrateur et les collections `devis` et `commandes`. Connectez-vous au portail avec **ce** compte. Ensuite :
 
 - dans Authentication, désactivez la création de comptes par les visiteurs si elle est active ;
 - vérifiez qu'il n'existe aucun autre compte que le vôtre.
@@ -51,6 +53,15 @@ Copiez **tout** le contenu de `firestore.rules` dans Console Firebase, puis Fire
 - Numéro automatique `DEV-2026-0001`, date de validité, statut (brouillon, envoyé, accepté, refusé), recherche, duplication, suppression.
 - **PDF** téléchargé sur votre appareil, à envoyer vous-même au client (le site n'envoie aucun e-mail).
 - Complétez d'abord `assets/js/entreprise-config.js` (raison sociale, adresse, SIRET, assurance, conditions de paiement) : ces infos apparaissent sur chaque PDF.
+
+## Commande en ligne
+
+- Sur une fiche avec un prix TTC, le visiteur ajoute l'article au panier (mémorisé dans le navigateur). Un produit « Sur devis » (sans prix) ouvre le formulaire de contact, prérempli.
+- À la validation, le site relit le nom et le prix dans Firestore, puis le client choisit **Être rappelé** (`paiement: a_encaisser`) ou **Payer en ligne**.
+- Le paiement utilise le SDK PayPal (boutons PayPal et carte), sans serveur. Renseignez `PAYPAL_CLIENT_ID` dans `assets/js/paiement-config.js`. Tant qu'il est vide, « Payer en ligne » reste désactivé (« Bientôt disponible »).
+- Avant d'expédier ou d'installer, vérifiez dans votre compte PayPal que le paiement est bien reçu : un paiement confirmé seulement dans le navigateur du client n'est pas garanti par un serveur.
+- L'onglet **Commandes** du portail suit les statuts. « Créer un devis depuis cette commande » ouvre le module devis déjà rempli.
+- Numéro de commande : `CMD-AAAAMMJJ-XXXX`.
 
 ## Une demande n'apparaît pas dans le portail ?
 

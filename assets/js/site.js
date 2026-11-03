@@ -50,7 +50,7 @@
   const list = () => Object.entries(state.products).map(([id, p]) => ({ id, ...p }));
 
   /* ---------- Navigation (pages) ---------- */
-  const PAGES = ['home', 'ajax', 'somfy', 'yale', 'contact', 'detail'];
+  const PAGES = ['home', 'ajax', 'somfy', 'yale', 'contact', 'detail', 'commande', 'confirmation'];
   const HOME_ANCHORS = ['accueil', 'configurateur', 'faq', 'methode', 'avis', 'zone'];
   const header = $('#site-header');
 
@@ -84,7 +84,7 @@
 
   function updateTitle() {
     const base = 'Carapace — La protection de vos espaces';
-    const titles = { ajax: 'Alarmes Ajax', somfy: 'Somfy — maison connectée', yale: 'Yale Home — serrures connectées', contact: 'Contact & devis gratuit' };
+    const titles = { ajax: 'Alarmes Ajax', somfy: 'Somfy — maison connectée', yale: 'Yale Home — serrures connectées', contact: 'Contact & devis gratuit', commande: 'Votre commande', confirmation: 'Commande confirmée' };
     if (state.currentPage === 'detail') {
       const n = $('#detail-titre').textContent; document.title = n + ' | Carapace';
     } else document.title = titles[state.currentPage] ? titles[state.currentPage] + ' | Carapace' : base;
@@ -134,7 +134,7 @@
   function onScroll() {
     const y = window.scrollY;
     header.classList.toggle('is-solid', y > 30);
-    sticky.classList.toggle('show', y > 640 && state.currentPage !== 'contact');
+    sticky.classList.toggle('show', y > 640 && state.currentPage !== 'contact' && state.currentPage !== 'commande' && state.currentPage !== 'confirmation');
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   $('#to-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }));
@@ -182,6 +182,17 @@
   }, { passive: true });
 
   /* ---------- Cartes produit ---------- */
+  function prixPositif(p) {
+    const n = parseFloat(p && p.prix);
+    return isFinite(n) && n > 0;
+  }
+  function actionProduit(p) {
+    if (prixPositif(p)) return `<button type="button" class="btn btn-primary btn-sm p-action" data-add-cart="${esc(p.id)}">Ajouter au panier</button>`;
+    return `<button type="button" class="btn btn-outline btn-sm p-action" data-devis-produit="${esc(p.id)}">Demander un devis</button>`;
+  }
+  function motifProduit(p) {
+    return p.marque === 'ajax' ? 'Demande de devis alarme Ajax' : p.marque === 'somfy' ? 'Demande de devis Somfy' : p.marque === 'yale' ? 'Demande de devis serrure Yale' : 'Renseignement sur un produit';
+  }
   function productCard(p, opts = {}) {
     const img = safeUrl(p.image);
     const featured = p.a_la_une || p.est_a_la_une || p.featured;
@@ -191,21 +202,23 @@
     else if (featured) badges.push('<span class="badge dark">À la une</span>');
     const desc = p.description ? stripTags(p.description) : '';
     return `
-      <button type="button" class="card spot product-card ${p.est_pack ? 'pack' : ''}" data-product="${esc(p.id)}" aria-label="${esc(p.nom)} — ${esc(fmtPrice(p.prix))}">
-        <div class="p-media">
-          <div class="p-badges">${badges.join('')}</div>
-          ${img ? `<img src="${esc(img)}" alt="${esc(p.nom)}" loading="lazy" decoding="async">` : ''}
-        </div>
-        <div class="p-body">
-          <div class="p-brand">${esc(BRAND_SHORT[p.marque] || p.marque || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}</div>
-          <div class="p-title">${esc(p.nom)}</div>
-          ${desc ? `<div class="p-desc">${esc(desc)}</div>` : '<div class="p-desc"></div>'}
-          <div class="p-foot">
-            <span class="p-price">${esc(fmtPrice(p.prix))}${isFinite(parseFloat(p.prix)) && parseFloat(p.prix) > 0 ? '<small>TTC</small>' : ''}</span>
-            <span class="p-go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>
+      <article class="card spot product-card ${p.est_pack ? 'pack' : ''}">
+        <button type="button" class="p-open" data-product="${esc(p.id)}" aria-label="${esc(p.nom)} — ${esc(fmtPrice(p.prix))}">
+          <div class="p-media">
+            <div class="p-badges">${badges.join('')}</div>
+            ${img ? `<img src="${esc(img)}" alt="${esc(p.nom)}" loading="lazy" decoding="async">` : ''}
           </div>
+          <div class="p-body">
+            <div class="p-brand">${esc(BRAND_SHORT[p.marque] || p.marque || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}</div>
+            <div class="p-title">${esc(p.nom)}</div>
+            ${desc ? `<div class="p-desc">${esc(desc)}</div>` : '<div class="p-desc"></div>'}
+          </div>
+        </button>
+        <div class="p-foot">
+          <span class="p-price">${esc(fmtPrice(p.prix))}${prixPositif(p) ? '<small>TTC</small>' : ''}</span>
+          ${actionProduit(p)}
         </div>
-      </button>`;
+      </article>`;
   }
   function skeletons(n) {
     return Array.from({ length: n }, () => '<div class="card product-card skeleton" aria-hidden="true"><div class="p-media"></div><div class="sk"></div><div class="sk w60"></div><div class="sk w40"></div></div>').join('');
@@ -215,8 +228,21 @@
   }
 
   document.addEventListener('click', (e) => {
+    const add = e.target.closest('[data-add-cart]');
+    if (add) {
+      e.preventDefault();
+      if (window.CarapacePanier) window.CarapacePanier.ajouter(add.getAttribute('data-add-cart'));
+      return;
+    }
+    const devisBtn = e.target.closest('[data-devis-produit]');
+    if (devisBtn) {
+      e.preventDefault();
+      const p = state.products[devisBtn.getAttribute('data-devis-produit')] || {};
+      ouvrirContactAvecMotif(p.nom || 'ce produit', { raison: motifProduit(p) });
+      return;
+    }
     const card = e.target.closest('[data-product]');
-    if (card) { e.preventDefault(); ouvrirDetailProduit(card.dataset.product); }
+    if (card && card.dataset.product) { e.preventDefault(); ouvrirDetailProduit(card.dataset.product); }
   });
 
   /* ---------- Produits phares (même logique que l'original) ---------- */
@@ -384,7 +410,13 @@
     const brandLink = $('#detail-crumb-brand');
     brandLink.textContent = BRAND_LABEL[p.marque] || p.marque || 'Gamme';
     const n = parseFloat(p.prix);
-    $('#detail-prix').innerHTML = esc(fmtPrice(p.prix)) + (isFinite(n) && n > 0 ? ' <span class="product-tva">TTC</span>' : '');
+    const vendable = isFinite(n) && n > 0;
+    $('#detail-prix').innerHTML = esc(fmtPrice(p.prix)) + (vendable ? ' <span class="product-tva">TTC</span>' : '');
+    const btnDetail = $('#detail-devis');
+    btnDetail.dataset.vendable = vendable ? '1' : '0';
+    btnDetail.innerHTML = vendable
+      ? 'Ajouter au panier <svg class="arrow"><use href="#i-cart"/></svg>'
+      : 'Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg>';
     $('#detail-desc-courte').textContent = stripTags(p.description || '');
     $('#detail-desc-longue').innerHTML = formaterDescriptionAutomatique(p.description_longue);
     $('#detail-marque').textContent = (BRAND_LABEL[p.marque] || p.marque || '') + (p.categorie ? ' · ' + p.categorie : '');
@@ -419,8 +451,11 @@
 
   $('#detail-devis').addEventListener('click', () => {
     const p = state.products[currentDetailId] || {};
-    const raison = p.marque === 'ajax' ? 'Demande de devis alarme Ajax' : p.marque === 'somfy' ? 'Demande de devis Somfy' : p.marque === 'yale' ? 'Demande de devis serrure Yale' : 'Renseignement sur un produit';
-    ouvrirContactAvecMotif($('#detail-titre').textContent, { raison });
+    if (prixPositif(p)) {
+      if (window.CarapacePanier) window.CarapacePanier.ajouter(currentDetailId);
+      return;
+    }
+    ouvrirContactAvecMotif($('#detail-titre').textContent, { raison: motifProduit(p) });
   });
   $('#detail-share').addEventListener('click', async () => {
     const url = location.href, title = $('#detail-titre').textContent;
@@ -497,7 +532,7 @@
   });
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); sModal.classList.contains('active') ? closeSearch() : openSearch(); }
-    if (e.key === 'Escape') { fermerPleinEcran(); closeSearch(); closeMenu(); }
+    if (e.key === 'Escape') { fermerPleinEcran(); closeSearch(); closeMenu(); if (window.CarapacePanier) window.CarapacePanier.fermer(); }
   });
 
   /* ---------- Configurateur (quiz) ---------- */
@@ -719,8 +754,11 @@
       if (dernierResultat) afficherRecommandations();
       if (state.pendingDetail) { const id = state.pendingDetail; state.pendingDetail = null; if (state.products[id]) renderDetail(id); else showPage('home'); }
       if (sModal.classList.contains('active')) renderSearch();
+      document.dispatchEvent(new CustomEvent('carapace-catalogue'));
       observeReveals();
     },
+    getProduct(id) { return state.products[id] || null; },
+    toast,
     setError(err) {
       state.error = true; state.loaded = false;
       console.error('Erreur lors du chargement du catalogue:', err);
@@ -730,7 +768,7 @@
   };
 
   // Fonctions globales conservées (compatibilité avec l'ancienne version)
-  Object.assign(window, { showPage, retourMarque, ouvrirContactAvecMotif, ouvrirPleinEcran, fermerPleinEcran, repondre, recommencerQuizz, ouvrirDetailProduit });
+  Object.assign(window, { showPage, setHash, retourMarque, ouvrirContactAvecMotif, ouvrirPleinEcran, fermerPleinEcran, repondre, recommencerQuizz, ouvrirDetailProduit });
 
   /* ---------- Démarrage ---------- */
   $('#year').textContent = new Date().getFullYear();

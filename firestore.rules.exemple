@@ -4,7 +4,7 @@
 //
 //  1) Remplacez ADMIN_UID par l'UID de votre compte administrateur
 //     (Console Firebase > Authentication > Utilisateurs > colonne « UID »).
-//     Collections : produits, demandes_contact, devis.
+//     Collections : produits, demandes_contact, devis, commandes.
 //  2) Testez avec le simulateur de règles avant de publier.
 // =====================================================================
 rules_version = '2';
@@ -42,6 +42,124 @@ service cloud.firestore {
                             && request.resource.data.numero is string
                             && request.resource.data.numero.size() > 0 && request.resource.data.numero.size() <= 40
                             && request.resource.data.statut in ['brouillon', 'envoye', 'accepte', 'refuse'];
+    }
+
+
+    // Commandes en ligne : création publique d'une commande valide,
+    // lecture / modification / suppression réservées à l'admin.
+    // Le site relit les prix dans "produits" avant d'écrire ; les règles
+    // bornent la forme du document (pas de get() sur chaque article : limite de 10 lectures).
+    function articleValide(a) {
+      return a is map
+             && a.keys().hasOnly(['id', 'nom', 'prix', 'quantite'])
+             && a.id is string && a.id.size() > 0 && a.id.size() <= 120
+             && a.nom is string && a.nom.size() > 0 && a.nom.size() <= 200
+             && a.prix is number && a.prix > 0 && a.prix < 100000
+             && a.quantite is int && a.quantite >= 1 && a.quantite <= 99;
+    }
+
+    function articlesValides(arts) {
+      return arts is list
+             && arts.size() >= 1
+             && arts.size() <= 50
+             && (arts.size() < 1 || articleValide(arts[0]))
+             && (arts.size() < 2 || articleValide(arts[1]))
+             && (arts.size() < 3 || articleValide(arts[2]))
+             && (arts.size() < 4 || articleValide(arts[3]))
+             && (arts.size() < 5 || articleValide(arts[4]))
+             && (arts.size() < 6 || articleValide(arts[5]))
+             && (arts.size() < 7 || articleValide(arts[6]))
+             && (arts.size() < 8 || articleValide(arts[7]))
+             && (arts.size() < 9 || articleValide(arts[8]))
+             && (arts.size() < 10 || articleValide(arts[9]))
+             && (arts.size() < 11 || articleValide(arts[10]))
+             && (arts.size() < 12 || articleValide(arts[11]))
+             && (arts.size() < 13 || articleValide(arts[12]))
+             && (arts.size() < 14 || articleValide(arts[13]))
+             && (arts.size() < 15 || articleValide(arts[14]))
+             && (arts.size() < 16 || articleValide(arts[15]))
+             && (arts.size() < 17 || articleValide(arts[16]))
+             && (arts.size() < 18 || articleValide(arts[17]))
+             && (arts.size() < 19 || articleValide(arts[18]))
+             && (arts.size() < 20 || articleValide(arts[19]))
+             && (arts.size() < 21 || articleValide(arts[20]))
+             && (arts.size() < 22 || articleValide(arts[21]))
+             && (arts.size() < 23 || articleValide(arts[22]))
+             && (arts.size() < 24 || articleValide(arts[23]))
+             && (arts.size() < 25 || articleValide(arts[24]))
+             && (arts.size() < 26 || articleValide(arts[25]))
+             && (arts.size() < 27 || articleValide(arts[26]))
+             && (arts.size() < 28 || articleValide(arts[27]))
+             && (arts.size() < 29 || articleValide(arts[28]))
+             && (arts.size() < 30 || articleValide(arts[29]))
+             && (arts.size() < 31 || articleValide(arts[30]))
+             && (arts.size() < 32 || articleValide(arts[31]))
+             && (arts.size() < 33 || articleValide(arts[32]))
+             && (arts.size() < 34 || articleValide(arts[33]))
+             && (arts.size() < 35 || articleValide(arts[34]))
+             && (arts.size() < 36 || articleValide(arts[35]))
+             && (arts.size() < 37 || articleValide(arts[36]))
+             && (arts.size() < 38 || articleValide(arts[37]))
+             && (arts.size() < 39 || articleValide(arts[38]))
+             && (arts.size() < 40 || articleValide(arts[39]))
+             && (arts.size() < 41 || articleValide(arts[40]))
+             && (arts.size() < 42 || articleValide(arts[41]))
+             && (arts.size() < 43 || articleValide(arts[42]))
+             && (arts.size() < 44 || articleValide(arts[43]))
+             && (arts.size() < 45 || articleValide(arts[44]))
+             && (arts.size() < 46 || articleValide(arts[45]))
+             && (arts.size() < 47 || articleValide(arts[46]))
+             && (arts.size() < 48 || articleValide(arts[47]))
+             && (arts.size() < 49 || articleValide(arts[48]))
+             && (arts.size() < 50 || articleValide(arts[49]));
+    }
+
+    function clientCommandeValide(c) {
+      return c is map
+             && c.keys().hasOnly(['nom', 'prenom', 'telephone', 'email', 'adresse', 'code_postal', 'ville'])
+             && c.nom is string && c.nom.size() > 0 && c.nom.size() <= 80
+             && c.prenom is string && c.prenom.size() > 0 && c.prenom.size() <= 80
+             && c.telephone is string && c.telephone.size() >= 8 && c.telephone.size() <= 20
+             && c.telephone.matches('^[0-9+(). -]{8,20}$')
+             && c.email is string && c.email.size() >= 6 && c.email.size() <= 150
+             && c.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+             && c.adresse is string && c.adresse.size() > 0 && c.adresse.size() <= 200
+             && c.code_postal is string && c.code_postal.matches('^[0-9]{5}$')
+             && c.ville is string && c.ville.size() > 0 && c.ville.size() <= 80;
+    }
+
+    match /commandes/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['numero', 'client', 'articles', 'total', 'installation', 'message', 'mode', 'paiement', 'paypal_order_id', 'statut', 'date'])
+                    && request.resource.data.numero is string
+                    && request.resource.data.numero.matches('^CMD-[0-9]{8}-[A-Z0-9]{4}$')
+                    && clientCommandeValide(request.resource.data.client)
+                    && articlesValides(request.resource.data.articles)
+                    && request.resource.data.total is number
+                    && request.resource.data.total > 0
+                    && request.resource.data.total < 100000
+                    && request.resource.data.installation is bool
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 2000
+                    && request.resource.data.mode in ['rappel', 'en_ligne']
+                    && request.resource.data.paiement in ['a_encaisser', 'paye_en_ligne']
+                    && request.resource.data.paypal_order_id is string
+                    && request.resource.data.paypal_order_id.size() <= 40
+                    && (
+                      (request.resource.data.mode == 'rappel'
+                        && request.resource.data.paiement == 'a_encaisser'
+                        && request.resource.data.paypal_order_id.size() == 0)
+                      ||
+                      (request.resource.data.mode == 'en_ligne'
+                        && request.resource.data.paiement == 'paye_en_ligne'
+                        && request.resource.data.paypal_order_id.size() >= 5
+                        && request.resource.data.paypal_order_id.matches('^[A-Za-z0-9_-]+$'))
+                    )
+                    && request.resource.data.statut == 'nouvelle'
+                    && request.resource.data.date == request.time;
+      allow read, delete: if estAdmin();
+      allow update: if estAdmin()
+                    && request.resource.data.statut in ['nouvelle', 'confirmee', 'en_preparation', 'installee', 'livree', 'annulee']
+                    && request.resource.data.paiement in ['a_encaisser', 'paye_en_ligne', 'paye'];
     }
 
     // Tout le reste est fermé
