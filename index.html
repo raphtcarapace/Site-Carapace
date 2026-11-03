@@ -1,1582 +1,650 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="no-js">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carapace - La protection de vos espaces</title>
-    <link rel="icon" type="image/png" href="./logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-red: #d72638;
-            --primary-red-soft: #fef2f2;
-            --primary-red-hover: #bc1d2d;
-            --dark-blue: #0f172a;
-            --dark-blue-2: #111827;
-            --midnight: #0b1020;
-            --light-bg: #f4f7fb;
-            --white: #ffffff;
-            --text-main: #1f2937;
-            --text-light: #64748b;
-            --stroke: rgba(15, 23, 42, 0.08);
-            --shadow-soft: 0 20px 60px -25px rgba(15, 23, 42, 0.32);
-            --shadow-hover: 0 30px 70px -25px rgba(215, 38, 56, 0.22);
-            --success: #16a34a;
-            --amber: #f59e0b;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Carapace — Alarme, vidéosurveillance & domotique | Ajax, Somfy, Yale Home</title>
+    <meta name="description" content="Carapace, la protection de vos espaces : alarmes sans fil Ajax, maison connectée Somfy, serrures connectées Yale Home. Étude personnalisée et devis gratuit pour particuliers et professionnels.">
+    <meta name="theme-color" content="#0b1020">
+    <!-- [À COMPLÉTER] : remplacez par l'adresse finale de votre site (ex. https://www.carapace.fr/) -->
+    <!-- <link rel="canonical" href="https://VOTRE-DOMAINE/"> -->
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    <!-- Partage réseaux sociaux (Open Graph / Facebook / WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Carapace">
+    <meta property="og:title" content="Carapace — La protection de vos espaces">
+    <meta property="og:description" content="Alarmes, vidéosurveillance et domotique haut de gamme : Ajax, Somfy, Yale Home. Devis gratuit.">
+    <!-- [À COMPLÉTER] : mettez l'adresse complète de l'image une fois le site en ligne (ex. https://www.carapace.fr/assets/img/og-image.jpg) -->
+    <meta property="og:image" content="assets/img/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
 
-        html { scroll-behavior: smooth; }
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-32.png">
+    <link rel="apple-touch-icon" href="assets/img/icon-180.png">
+    <link rel="manifest" href="site.webmanifest">
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(215, 38, 56, 0.08), transparent 30%),
-                radial-gradient(circle at top right, rgba(15, 23, 42, 0.06), transparent 35%),
-                var(--light-bg);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            text-rendering: optimizeLegibility;
-        }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="assets/img/villa-1200.webp" type="image/webp" media="(min-width: 700px)">
+    <link rel="stylesheet" href="assets/css/style.css">
 
-        a { text-decoration: none; }
-        button, input, select, textarea { font-family: inherit; }
-
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 5%;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-        }
-
-        .logo {
-            cursor: pointer;
-            transition: transform 0.25s ease;
-            display: flex;
-            align-items: center;
-        }
-        .logo:hover { transform: translateY(-2px) scale(1.02); }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 22px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            transition: color 0.25s ease, transform 0.25s ease;
-            cursor: pointer;
-            position: relative;
-            padding: 8px 0;
-        }
-        nav a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: -2px;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-red), #f97316);
-            transition: width 0.25s ease;
-        }
-        nav a:hover::after,
-        nav a.active::after {
-            width: 100%;
-        }
-        nav a:hover, nav a.active { color: var(--primary-red); }
-
-        .btn-portail-nav {
-            background: linear-gradient(135deg, var(--dark-blue), #1e293b);
-            color: var(--white) !important;
-            padding: 11px 18px !important;
-            border-radius: 12px;
-            font-size: 11px !important;
-            letter-spacing: 1.1px;
-            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
-            transition: all 0.25s ease !important;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .btn-portail-nav:hover {
-            background: linear-gradient(135deg, var(--primary-red), var(--primary-red-hover)) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 18px 32px rgba(215, 38, 56, 0.22);
-        }
-
-        .page-section { display: none; animation: fadeIn 0.35s ease; }
-        .page-section.active { display: block; }
-
-        .hero {
-            position: relative;
-            background: linear-gradient(120deg, rgba(11, 16, 32, 0.78), rgba(15, 23, 42, 0.58)), url('./villa.png') center/cover no-repeat;
-            color: var(--white);
-            text-align: center;
-            padding: 170px 20px 120px;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(215, 38, 56, 0.14), transparent 40%, rgba(255, 255, 255, 0.06));
-        }
-        .hero > * { position: relative; z-index: 1; }
-
-        .badge-devis {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary-red), #f43f5e);
-            color: var(--white);
-            padding: 10px 28px;
-            font-weight: 800;
-            border-radius: 999px;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 1.5px;
-            margin-bottom: 24px;
-            box-shadow: 0 16px 34px rgba(215, 38, 56, 0.35);
-        }
-
-        .hero h1 {
-            font-size: clamp(2.7rem, 5vw, 5rem);
-            margin-bottom: 20px;
-            font-weight: 900;
-            letter-spacing: -2px;
-            line-height: 0.98;
-            max-width: 820px;
-            margin-inline: auto;
-        }
-        .hero p {
-            font-size: clamp(1.05rem, 1.8vw, 1.38rem);
-            font-weight: 400;
-            max-width: 760px;
-            margin: 0 auto;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .btn-action, .btn-secondary-hero {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 28px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            font-family: inherit;
-        }
-        .btn-action {
-            background: linear-gradient(135deg, var(--primary-red), var(--primary-red-hover));
-            color: var(--white);
-            box-shadow: 0 18px 35px rgba(215, 38, 56, 0.28);
-        }
-        .btn-action:hover { transform: translateY(-2px); }
-
-        .btn-secondary-hero {
-            background: rgba(255,255,255,0.1);
-            color: var(--white);
-            border: 1px solid rgba(255,255,255,0.26);
-            backdrop-filter: blur(8px);
-        }
-        .btn-secondary-hero:hover {
-            background: rgba(255,255,255,0.18);
-            transform: translateY(-2px);
-        }
-
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            max-width: 940px;
-            margin: 56px auto 0;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255,255,255,0.14);
-            backdrop-filter: blur(8px);
-            border-radius: 18px;
-            padding: 22px 18px;
-            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.15);
-        }
-        .stat-card strong {
-            display: block;
-            font-size: clamp(1.4rem, 2vw, 2rem);
-            font-weight: 900;
-            color: var(--white);
-        }
-        .stat-card span {
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-        }
-
-        .feature-band {
-            max-width: 1180px;
-            margin: -40px auto 20px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-card {
-            background: rgba(255,255,255,0.92);
-            border: 1px solid var(--stroke);
-            border-radius: 22px;
-            padding: 26px 20px;
-            box-shadow: var(--shadow-soft);
-            text-align: left;
-        }
-
-        .solutions-section {
-            max-width: 1180px;
-            margin: 0 auto 80px auto;
-            padding: 0 20px;
-        }
-        .solutions-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
-            gap: 16px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
-        }
-        .solutions-header h2 {
-            font-size: clamp(1.8rem, 2.8vw, 2.5rem);
-            color: var(--dark-blue);
-            font-weight: 900;
-            letter-spacing: -0.04em;
-        }
-        .solutions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(220px, 1fr));
-            gap: 18px;
-        }
-        .solution-card {
-            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.98));
-            border: 1px solid rgba(148,163,184,0.18);
-            border-radius: 24px;
-            padding: 24px 20px 20px;
-            box-shadow: 0 18px 40px rgba(15,23,42,0.06);
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .solution-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 26px 52px rgba(15,23,42,0.12);
-            border-color: rgba(215,38,56,0.26);
-        }
-        .solution-emoji {
-            width: 54px;
-            height: 54px;
-            display: grid;
-            place-items: center;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #fff1f2, #fff7ed);
-            font-size: 28px;
-        }
-        .solution-card h3 {
-            font-size: 1.05rem;
-            color: var(--dark-blue);
-            margin: 0;
-            font-weight: 900;
-        }
-        .solution-card p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            line-height: 1.65;
-            flex: 1;
-        }
-        .solution-link {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--primary-red);
-        }
-
-        .featured-products-section {
-            max-width: 1180px;
-            margin: 0 auto 80px auto;
-            padding: 0 20px;
-        }
-        .featured-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: end;
-            gap: 16px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
-        }
-        .featured-header h2 {
-            font-size: clamp(1.8rem, 2.8vw, 2.5rem);
-            color: var(--dark-blue);
-            font-weight: 900;
-            letter-spacing: -0.04em;
-        }
-        .featured-header .eyebrow {
-            color: var(--primary-red);
-            font-size: 12px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(220px, 1fr));
-            gap: 18px;
-        }
-        .featured-card {
-            background: rgba(255,255,255,0.96);
-            border: 1px solid rgba(148,163,184,0.18);
-            border-radius: 24px;
-            padding: 18px;
-            box-shadow: 0 18px 40px rgba(15,23,42,0.06);
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            animation: featureCardReveal 0.7s ease both;
-        }
-        .featured-card:nth-child(2) { animation-delay: 0.08s; }
-        .featured-card:nth-child(3) { animation-delay: 0.16s; }
-        .featured-card:nth-child(4) { animation-delay: 0.24s; }
-        .featured-card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 28px 55px rgba(15,23,42,0.12);
-            border-color: rgba(215,38,56,0.28);
-        }
-        .featured-image {
-            width: 100%;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #fff5f5, #f8fafc);
-            border: 1px solid rgba(148,163,184,0.14);
-            overflow: hidden;
-        }
-        .featured-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            max-width: 160px;
-            max-height: 140px;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        .featured-card:hover .featured-image img {
-            transform: scale(1);
-        }
-        .featured-tag {
-            display: inline-block;
-            width: fit-content;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            background: rgba(215,38,56,0.08);
-            color: var(--primary-red);
-            border-radius: 999px;
-            padding: 6px 9px;
-        }
-        .featured-card h3 {
-            color: var(--dark-blue);
-            font-size: 1.18rem;
-            font-weight: 900;
-            line-height: 1.25;
-            margin: 0;
-        }
-        .featured-card p {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            line-height: 1.6;
-            margin: 0;
-            flex: 1;
-        }
-        .featured-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            margin-top: 8px;
-        }
-        .featured-price {
-            color: var(--primary-red);
-            font-weight: 900;
-            font-size: 1.1rem;
-        }
-        .featured-link {
-            color: var(--dark-blue);
-            font-weight: 800;
-            cursor: pointer;
-        }
-        @keyframes featureCardReveal {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .feature-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #fff1f2, #fff7ed);
-            color: var(--primary-red);
-            font-size: 26px;
-            margin-bottom: 18px;
-            box-shadow: inset 0 0 0 1px rgba(215, 38, 56, 0.08);
-        }
-        .feature-card h3 {
-            color: var(--dark-blue);
-            font-size: 17px;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-        .feature-card p {
-            color: var(--text-light);
-            font-size: 13px;
-            line-height: 1.65;
-        }
-
-        .quiz-container {
-            max-width: 930px;
-            margin: 30px auto 80px auto;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            border-radius: 28px;
-            box-shadow: var(--shadow-soft);
-            padding: 42px 32px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-        .quiz-container h2 {
-            font-size: clamp(1.8rem, 3vw, 2.6rem);
-            color: var(--dark-blue);
-            margin-bottom: 32px;
-            font-weight: 900;
-        }
-        .question { display: none; }
-        .question.active { display: block; animation: fadeIn 0.4s ease; }
-        .question h3 { font-size: 1.35rem; margin-bottom: 28px; color: var(--text-main); font-weight: 700; }
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .btn-option {
-            background: linear-gradient(180deg, #ffffff, #f8fafc);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            padding: 22px 18px;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-main);
-            border-radius: 18px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.04);
-        }
-        .btn-option:hover {
-            border-color: rgba(215, 38, 56, 0.4);
-            background: linear-gradient(180deg, #fff7f7, #ffffff);
-            color: var(--primary-red);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .result { display: none; text-align: center; padding: 10px; }
-        .result-box {
-            background: linear-gradient(135deg, #fff8f8, #ffffff);
-            border: 1px solid rgba(215, 38, 56, 0.12);
-            border-left: 5px solid var(--primary-red);
-            padding: 30px 26px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            text-align: left;
-            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.05);
-        }
-        .result-box h3 { margin-top: 0; color: var(--dark-blue); }
-        .pack-name { color: var(--primary-red); font-size: 1.9rem; font-weight: 900; margin: 12px 0; }
-
-        .btn-action:hover { background: linear-gradient(135deg, var(--primary-red-hover), var(--primary-red)); transform: translateY(-2px); }
-
-        .brand-header {
-            background: linear-gradient(135deg, var(--midnight), #1f2937 60%, #0f172a);
-            color: var(--white);
-            text-align: center;
-            padding: 96px 20px 80px;
-            margin-bottom: 56px;
-            position: relative;
-            overflow: hidden;
-        }
-        .brand-header::after {
-            content: "";
-            position: absolute;
-            inset: auto -12% -22% auto;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: rgba(215, 38, 56, 0.18);
-            filter: blur(18px);
-        }
-        .brand-header h1 { font-size: clamp(2.3rem, 4vw, 3.6rem); margin-bottom: 12px; font-weight: 900; position: relative; z-index: 1; }
-        .brand-header p { font-size: 1.05rem; opacity: 0.85; max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section-title { font-size: clamp(1.9rem, 2.4vw, 2.5rem); color: var(--dark-blue); margin-bottom: 28px; font-weight: 900; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin-bottom: 70px; }
-
-        .product-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 22px;
-            box-shadow: var(--shadow-soft);
-            transition: all 0.25s ease;
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-hover);
-            border-color: rgba(215, 38, 56, 0.15);
-        }
-        .product-card.pack { border-top: 5px solid var(--primary-red); }
-
-        .product-image-container {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 18px;
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #fff5f5, #f8fafc);
-            padding: 14px;
-            border: 1px solid rgba(148, 163, 184, 0.15);
-        }
-        .product-image-container img { width: 100%; height: 100%; object-fit: contain; max-width: 150px; max-height: 150px; transition: transform 0.4s ease; }
-        .product-card:hover .product-image-container img { transform: scale(1.08); }
-
-        .product-title { font-size: 1.12rem; font-weight: 800; color: var(--dark-blue); margin-bottom: 10px; }
-        .product-desc { font-size: 0.9rem; color: var(--text-light); flex-grow: 1; margin-bottom: 18px; }
-        .product-price { font-size: 1.8rem; font-weight: 900; color: var(--primary-red); }
-        .product-tva { font-size: 0.78rem; color: #94a3b8; font-weight: 700; }
-
-        .detail-container {
-            background: rgba(255,255,255,0.95);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            border-radius: 28px;
-            box-shadow: var(--shadow-soft);
-            padding: 42px;
-            margin-bottom: 70px;
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-
-        .detail-gallery-column {
-            flex: 0 0 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .detail-image-box {
-            position: relative;
-            background: linear-gradient(135deg, #fff5f5, #f8fafc);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            border-radius: 22px;
-            padding: 18px;
-            height: 260px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 18px 32px rgba(15, 23, 42, 0.05);
-        }
-        #detail-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            max-width: 220px;
-            max-height: 220px;
-            transform: scale(0.9);
-            filter: drop-shadow(0 16px 24px rgba(15, 23, 42, 0.08));
-        }
-        .detail-thumbnails-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-        }
-        .thumb-item {
-            background: #fff;
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            border-radius: 14px;
-            padding: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .thumb-item:hover, .thumb-item.active {
-            border-color: rgba(215, 38, 56, 0.45);
-            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
-            transform: translateY(-2px);
-        }
-        .thumb-item img { width: 100%; height: 100%; object-fit: contain; }
-        .zoom-hint { position: absolute; bottom: 14px; right: 14px; background: rgba(15,23,42,0.84); color: var(--white); padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-
-        .detail-info { flex: 1; }
-        .detail-marque { color: var(--text-light); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 12px; display: block; }
-        .detail-title { font-size: clamp(2rem, 3vw, 2.8rem); color: var(--dark-blue); margin-bottom: 18px; font-weight: 900; line-height: 1.15; }
-        .detail-price { font-size: clamp(2rem, 3vw, 2.5rem); font-weight: 900; color: var(--primary-red); margin-bottom: 22px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
-        .detail-desc-courte { font-size: 1.08rem; font-weight: 600; color: var(--text-main); margin-bottom: 24px; line-height: 1.6; }
-        .detail-desc-longue { margin-bottom: 34px; }
-
-        .box-composition-auto {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid var(--primary-red);
-            border-radius: 12px;
-            padding: 18px 22px;
-            margin: 24px 0;
-        }
-        .box-composition-auto h4 {
-            margin-bottom: 12px;
-            color: var(--dark-blue);
-            font-size: 15px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .box-composition-auto ul { list-style: none; padding: 0; margin: 0; }
-        .box-composition-auto li {
-            padding: 8px 0;
-            font-size: 14px;
-            color: #475569;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .box-composition-auto li:last-child { border-bottom: none; }
-
-        .box-specs-auto { margin: 25px 0; }
-        .box-specs-auto h4 {
-            margin-bottom: 14px;
-            color: var(--dark-blue);
-            font-size: 15px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .specs-grid-auto {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 12px;
-        }
-        .spec-item-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: #475569;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .spec-item-card strong {
-            color: var(--dark-blue);
-            display: block;
-            margin-bottom: 4px;
-            font-size: 13px;
-        }
-
-        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-light); font-weight: 700; margin-bottom: 25px; cursor: pointer; text-transform: uppercase; font-size: 13px; }
-        .btn-back:hover { color: var(--primary-red); }
-
-        .lightbox-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(6px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
-        }
-        .lightbox-modal.active {
-            display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-        .lightbox-modal img {
-            max-width: 90vw;
-            max-height: 90vh;
-            object-fit: contain;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            background: #ffffff;
-            padding: 15px;
-            cursor: default;
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 25px;
-            right: 35px;
-            color: #ffffff;
-            font-size: 42px;
-            font-weight: 300;
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s ease;
-        }
-        .lightbox-close:hover { color: var(--primary-red); }
-
-        .contact-card-box {
-            background: rgba(255,255,255,0.95);
-            border-radius: 28px;
-            box-shadow: var(--shadow-soft);
-            padding: 42px 36px;
-            max-width: 780px;
-            margin: 0 auto 60px auto;
-            border: 1px solid rgba(148, 163, 184, 0.2);
-        }
-        .form-row { display: flex; gap: 18px; }
-        .form-col { flex: 1; }
-        .form-group-contact { margin-bottom: 22px; text-align: left; }
-        .form-group-contact label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: var(--dark-blue); }
-        .form-group-contact input, .form-group-contact select, .form-group-contact textarea {
-            width: 100%; padding: 13px 15px; border: 1.5px solid #e2e8f0; border-radius: 12px;
-            font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.25s ease, box-shadow 0.25s ease;
-            background: #f8fafc;
-        }
-        .form-group-contact input:focus, .form-group-contact select:focus, .form-group-contact textarea:focus {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 0 4px rgba(215, 38, 56, 0.08);
-            background: #fff;
-        }
-        .form-group-contact textarea { resize: vertical; min-height: 110px; }
-
-        footer {
-            background: linear-gradient(135deg, var(--midnight), #1f2937 60%, #111827);
-            color: var(--white);
-            text-align: center;
-            padding: 70px 20px 50px;
-            margin-top: 60px;
-        }
-        footer h2 { font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 900; margin-bottom: 14px; }
-        .social-links { margin: 30px 0; display: flex; justify-content: center; gap: 20px; }
-        .social-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 52px;
-            height: 52px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 50%;
-            color: var(--white);
-            transition: all 0.25s ease;
-        }
-        .social-icon:hover { background: linear-gradient(135deg, var(--primary-red), var(--primary-red-hover)); transform: translateY(-3px); }
-        .social-icon svg { width: 22px; height: 22px; fill: currentColor; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        @media (max-width: 900px) {
-            .feature-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-            .detail-container { flex-direction: column; }
-            .detail-gallery-column { width: 100%; flex: none; }
-            .detail-image-box { width: 100%; height: 320px; }
-        }
-        @media (max-width: 768px) {
-            header { flex-direction: column; gap: 15px; }
-            nav ul { flex-wrap: wrap; justify-content: center; gap: 12px; }
-            .hero { padding-top: 140px; }
-            .hero-stats, .feature-grid { grid-template-columns: 1fr; }
-            .form-row { flex-direction: column; gap: 0; }
-            .quiz-container, .contact-card-box { padding: 28px 20px; }
-        }
-    </style>
+    <!-- Données structurées (Google) : complétez les champs [À COMPLÉTER] -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Carapace",
+      "description": "Installation d'alarmes, vidéosurveillance, domotique et serrures connectées (Ajax, Somfy, Yale Home) pour particuliers et professionnels.",
+      "slogan": "La protection de vos espaces",
+      "image": "assets/img/og-image.jpg",
+      "logo": "assets/img/logo.png",
+      "url": "[À COMPLÉTER : adresse du site]",
+      "telephone": "[À COMPLÉTER : téléphone]",
+      "email": "[À COMPLÉTER : e-mail]",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "[À COMPLÉTER : rue]",
+        "postalCode": "[À COMPLÉTER : code postal]",
+        "addressLocality": "[À COMPLÉTER : ville]",
+        "addressCountry": "FR"
+      },
+      "areaServed": "[À COMPLÉTER : zone d'intervention]",
+      "sameAs": ["https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR"]
+    }
+    </script>
+    <script>document.documentElement.classList.remove('no-js');</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Aller au contenu</a>
 
-    <header>
-        <div class="logo" onclick="showPage('home')">
-            <img src="./logo.png" alt="Logo Carapace" style="height: 65px; width: auto; object-fit: contain;">
-        </div>
-        <nav>
-            <ul>
-                <li><a onclick="showPage('home')" id="nav-home" class="active">Accueil & Quizz</a></li>
-                <li><a onclick="showPage('ajax')" id="nav-ajax">Ajax</a></li>
-                <li><a onclick="showPage('somfy')" id="nav-somfy">Somfy</a></li>
-                <li><a onclick="showPage('yale')" id="nav-yale">Yale Home</a></li>
-                <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
-                <li><a href="admin.html" class="btn-portail-nav">Carapace Portail 🔒</a></li>
-            </ul>
-        </nav>
-    </header>
+<!-- ================= ICÔNES (réutilisées partout) ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-radio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4 12 14l-3-3"/></symbol>
+    <symbol id="i-phone-app" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.05Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></symbol>
+    <symbol id="i-tree" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-6"/><path d="M12 2 5 12h4l-3 4h12l-3-4h4z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></symbol>
+  </defs>
+</svg>
 
-    <!-- ACCUEIL -->
-    <div id="page-home" class="page-section active">
-        <section class="hero">
-            <div class="badge-devis">Expertise & Sérénité</div>
-            <h1>La protection de vos espaces</h1>
-            <p>Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour les particuliers et professionnels.</p>
-            <div class="hero-actions">
-                <button onclick="showPage('contact')" class="btn-action">Demander un devis</button>
-                <button onclick="showPage('ajax')" class="btn-secondary-hero">Voir nos solutions</button>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <strong>1200+</strong>
-                    <span>installations</span>
-                </div>
-                <div class="stat-card">
-                    <strong>24h</strong>
-                    <span>réponse moyenne</span>
-                </div>
-                <div class="stat-card">
-                    <strong>4.9/5</strong>
-                    <span>satisfaction</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="feature-band">
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Sécurité sur mesure</h3>
-                    <p>Protection de la maison, appartement et professionnels avec des solutions pensées pour chaque espace.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📡</div>
-                    <h3>Innovation connectée</h3>
-                    <p>Surveillance, contrôle à distance et automatisations pour un confort quotidien plus rassurant.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Installation premium</h3>
-                    <p>Équipements haut de gamme, intégration fluide et accompagnement sur l’ensemble du projet.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>Conseil expert</h3>
-                    <p>Un accompagnement personnalisé pour choisir la configuration la plus adaptée à votre besoin réel.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="solutions-section">
-            <div class="solutions-header">
-                <div>
-                    <div class="eyebrow">Solutions sur mesure</div>
-                    <h2>Choisissez la solution qui correspond à votre besoin</h2>
-                </div>
-                <button onclick="document.getElementById('etape-1').scrollIntoView({ behavior: 'smooth', block: 'start' })" class="btn-action" style="padding: 14px 22px;">Tester mon besoin</button>
-            </div>
-            <div class="solutions-grid">
-                <article class="solution-card">
-                    <div class="solution-emoji">🏢</div>
-                    <h3>Appartement</h3>
-                    <p>Protection intelligente, surveillance discrète et confort quotidien pour un logement plus sûr et plus agréable.</p>
-                    <span class="solution-link">Sécurité moderne</span>
-                </article>
-                <article class="solution-card">
-                    <div class="solution-emoji">🏡</div>
-                    <h3>Maison avec extérieur</h3>
-                    <p>Protection complète des accès, du jardin, des allées et des points d’entrée avec un écosystème cohérent.</p>
-                    <span class="solution-link">Écosystème complet</span>
-                </article>
-                <article class="solution-card">
-                    <div class="solution-emoji">💼</div>
-                    <h3>Locaux pro</h3>
-                    <p>Solutions fiables pour les bureaux, commerces et petites entreprises qui exigent surveillance et contrôle sérieux.</p>
-                    <span class="solution-link">Gestion sécurisée</span>
-                </article>
-                <article class="solution-card">
-                    <div class="solution-emoji">⭐</div>
-                    <h3>Protection totale</h3>
-                    <p>Une logique de pack complète avec alarme, caméra, domotique et accès intelligent pour une maison vraiment connectée.</p>
-                    <span class="solution-link">Pack premium</span>
-                </article>
-            </div>
-        </section>
-
-        <section class="featured-products-section">
-            <div class="featured-header">
-                <div>
-                    <div class="eyebrow">Produits en avant</div>
-                    <h2>Nos meilleurs produits</h2>
-                </div>
-                <button onclick="showPage('ajax')" class="btn-action" style="padding: 14px 22px;">Voir toutes les offres</button>
-            </div>
-            <div class="featured-grid" id="featured-products"></div>
-        </section>
-
-        <section class="quiz-container">
-            <h2>Trouvez la configuration idéale</h2>
-            
-            <div id="etape-1" class="question active">
-                <h3>Que souhaitez-vous équiper en priorité&nbsp;?</h3>
-                <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(1, 'appartement')"><span style="font-size:24px;">🏢</span> Un Appartement</button>
-                    <button class="btn-option" onclick="repondre(1, 'maison')"><span style="font-size:24px;">🏡</span> Une Maison (avec extérieur)</button>
-                    <button class="btn-option" onclick="repondre(1, 'pro')"><span style="font-size:24px;">💼</span> Des locaux professionnels</button>
-                </div>
-            </div>
-            
-            <div id="etape-2" class="question">
-                <h3>Quel est votre objectif principal&nbsp;?</h3>
-                <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(2, 'intrusion')"><span style="font-size:24px;">🛡️</span> Sécurité & Alarmes</button>
-                    <button class="btn-option" onclick="repondre(2, 'domotique')"><span style="font-size:24px;">📱</span> Confort & Domotique</button>
-                    <button class="btn-option" onclick="repondre(2, 'complet')"><span style="font-size:24px;">⭐</span> Protection Totale</button>
-                </div>
-            </div>
-
-            <div id="etape-3" class="question">
-                <h3>Quelle expérience correspond le plus à vos attentes&nbsp;?</h3>
-                <div class="options-grid">
-                    <button class="btn-option" onclick="repondre(3, 'ajax')"><span style="font-size:24px;">⬛</span> Design épuré & 100% Sans Fil</button>
-                    <button class="btn-option" onclick="repondre(3, 'somfy')"><span style="font-size:24px;">🇫🇷</span> Écosystème complet & Excellence Française</button>
-                </div>
-            </div>
-
-            <div id="resultat" class="result">
-                <div class="result-box">
-                    <h3>Notre recommandation personnalisée&nbsp;:</h3>
-                    <div class="pack-name" id="titre-pack">Pack Essentiel</div>
-                    <div class="product-desc" id="description-pack" style="margin-top:10px; font-size: 16px;">...</div>
-                    <p style="margin-top:20px;"><strong>Gamme suggérée&nbsp;:</strong> <span id="marque-pack" style="color:var(--dark-blue); font-weight:bold;">...</span></p>
-                </div>
-                <p style="margin-bottom: 25px; font-weight: 600; color: var(--text-main); font-size: 18px;">Un expert Carapace va concevoir votre devis sur-mesure.</p>
-                <button onclick="ouvrirContactAvecMotif(document.getElementById('titre-pack').innerText)" class="btn-action">Demander mon devis</button>
-                <button onclick="recommencerQuizz()" style="background:none; border:none; color:var(--text-light); text-decoration:underline; font-weight:600; cursor:pointer; margin-left:20px; font-size:15px; font-family: inherit;">Refaire le test</button>
-            </div>
-        </section>
+<!-- ================= EN-TÊTE ================= -->
+<header class="site-header" id="site-header">
+  <div class="container">
+    <a class="brand" href="#accueil" data-page="home" aria-label="Carapace — accueil">
+      <img src="assets/img/logo-mark.png" alt="" width="160" height="200">
+      <span class="brand-text"><strong>CARAPACE</strong><small>La protection de vos espaces</small></span>
+    </a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <ul>
+        <li><a href="#accueil" data-page="home" id="nav-home" class="active">Accueil</a></li>
+        <li><a href="#configurateur" data-page="home" data-scroll="configurateur" id="nav-quiz">Configurateur</a></li>
+        <li><a href="#ajax" data-page="ajax" id="nav-ajax">Ajax</a></li>
+        <li><a href="#somfy" data-page="somfy" id="nav-somfy">Somfy</a></li>
+        <li><a href="#yale" data-page="yale" id="nav-yale">Yale Home</a></li>
+        <li><a href="#faq" data-page="home" data-scroll="faq">FAQ</a></li>
+        <li><a href="#contact" data-page="contact" id="nav-contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn search-trigger" type="button" data-open-search aria-label="Rechercher un produit">
+        <svg><use href="#i-search"/></svg><span class="lbl">Rechercher</span><kbd>Ctrl K</kbd>
+      </button>
+      <a class="portal-link" href="admin.html" title="Espace administrateur"><svg><use href="#i-lock"/></svg><span class="lbl">Portail</span></a>
+      <a class="btn btn-primary btn-sm header-cta" href="#contact" data-page="contact">Devis gratuit</a>
+      <button class="icon-btn burger" type="button" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><svg><use href="#i-menu"/></svg></button>
     </div>
+  </div>
+</header>
 
-    <!-- AJAX -->
-    <div id="page-ajax" class="page-section">
-        <div class="brand-header">
-            <h1>Gamme AJAX</h1>
-            <p>La sécurité sans fil professionnelle. Fiabilité absolue, design épuré et contrôle total depuis votre smartphone.</p>
-        </div>
-        <div class="container">
-            <h2 class="section-title">Nos Packs Sécurité Ajax</h2>
-            <div class="products-grid" id="ajax-packs"></div>
-            <div id="ajax-dynamic-categories"></div>
-        </div>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-panel" role="dialog" aria-label="Menu">
+    <div class="mobile-menu-top">
+      <span class="brand-text"><strong style="color:#fff">CARAPACE</strong></span>
+      <button class="icon-btn" type="button" data-close-menu aria-label="Fermer le menu"><svg><use href="#i-x"/></svg></button>
     </div>
+    <a class="m-link" href="#accueil" data-page="home">Accueil <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#configurateur" data-page="home" data-scroll="configurateur">Configurateur <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#ajax" data-page="ajax">Ajax <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#somfy" data-page="somfy">Somfy <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#yale" data-page="yale">Yale Home <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#faq" data-page="home" data-scroll="faq">Questions fréquentes <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#contact" data-page="contact">Contact <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="btn btn-primary" href="#contact" data-page="contact">Demander un devis gratuit</a>
+    <a class="btn btn-ghost" href="admin.html"><svg><use href="#i-lock"/></svg> Carapace Portail</a>
+  </div>
+</div>
 
-    <!-- SOMFY -->
-    <div id="page-somfy" class="page-section">
-        <div class="brand-header">
-            <h1>Gamme SOMFY</h1>
-            <p>L'excellence française pour votre maison connectée. Des solutions globales alliant sécurité et confort au quotidien.</p>
+<main id="main">
+
+<!-- ================= ACCUEIL ================= -->
+<div id="page-home" class="page-section active">
+
+  <section class="hero" id="accueil">
+    <div class="hero-orb o1"></div><div class="hero-orb o2"></div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-badge"><span class="pulse-dot"></span> Expertise &amp; Sérénité</div>
+        <h1><span class="line"><span>La protection</span></span><span class="line"><span>de <span class="text-grad">vos espaces</span></span></span></h1>
+        <p class="hero-sub">Découvrez nos solutions haut de gamme en sécurité, vidéosurveillance et domotique pour les particuliers et professionnels.</p>
+        <div class="hero-actions">
+          <a href="#contact" data-page="contact" class="btn btn-primary">Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg></a>
+          <a href="#configurateur" data-page="home" data-scroll="configurateur" class="btn btn-ghost"><svg><use href="#i-sliders"/></svg> Trouver ma configuration</a>
         </div>
-        <div class="container">
-            <h2 class="section-title">Nos Packs Somfy</h2>
-            <div class="products-grid" id="somfy-packs"></div>
-            <h2 class="section-title">Produits à la carte Somfy</h2>
-            <div class="products-grid" id="somfy-produits"></div>
+        <div class="hero-stats">
+          <div class="stat"><strong data-count="1200" data-suffix="+">1200+</strong><span>installations</span></div>
+          <div class="stat"><strong data-count="24" data-suffix="h">24h</strong><span>réponse moyenne</span></div>
+          <div class="stat"><strong data-count="4.9" data-decimals="1" data-suffix="/5">4.9/5</strong><span>satisfaction</span></div>
         </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-frame">
+          <picture>
+            <source type="image/webp" srcset="assets/img/villa-700.webp 700w, assets/img/villa-1200.webp 1200w" sizes="(max-width: 1024px) 90vw, 520px">
+            <img src="assets/img/villa-1200.jpg" srcset="assets/img/villa-700.jpg 700w, assets/img/villa-1200.jpg 1200w" sizes="(max-width: 1024px) 90vw, 520px" alt="" width="1200" height="2150" fetchpriority="high">
+          </picture>
+          <div class="scan-line"></div>
+        </div>
+        <div class="float-chip chip-1"><span class="ic ic-red"><svg><use href="#i-shield"/></svg></span><span><b>Alarme activée</b><small><i></i> Mode nuit</small></span></div>
+        <div class="float-chip chip-2"><span class="ic ic-blue"><svg><use href="#i-camera"/></svg></span><span><b>Caméra extérieure</b><small><i></i> En ligne</small></span></div>
+        <div class="float-chip chip-3"><span class="ic ic-green"><svg><use href="#i-lock"/></svg></span><span><b>Porte d'entrée</b><small><i></i> Verrouillée</small></span></div>
+      </div>
     </div>
+    <div class="scroll-hint"><span></span>Découvrir</div>
+  </section>
 
-    <!-- YALE HOME -->
-    <div id="page-yale" class="page-section">
-        <div class="brand-header">
-            <h1>Yale Home</h1>
-            <p>La référence en matière de sécurité résidentielle. Protégez ce qui compte le plus avec nos serrures connectées, alarmes, caméras, coffres-forts et cadenas.</p>
-        </div>
-        <div class="container">
-            <div id="yale-dynamic-categories"></div>
-        </div>
+  <div class="brand-strip" aria-label="Nos marques et domaines">
+    <div class="marquee">
+      <div class="marquee-group">
+        <span class="marquee-item brand-name">AJAX</span><span class="marquee-item"><i class="sep"></i>Alarmes sans fil</span>
+        <span class="marquee-item brand-name">SOMFY</span><span class="marquee-item"><i class="sep"></i>Maison connectée</span>
+        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures connectées</span>
+        <span class="marquee-item"><i class="sep"></i>Vidéosurveillance</span><span class="marquee-item"><i class="sep"></i>Domotique</span>
+      </div>
+      <div class="marquee-group" aria-hidden="true">
+        <span class="marquee-item brand-name">AJAX</span><span class="marquee-item"><i class="sep"></i>Alarmes sans fil</span>
+        <span class="marquee-item brand-name">SOMFY</span><span class="marquee-item"><i class="sep"></i>Maison connectée</span>
+        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures connectées</span>
+        <span class="marquee-item"><i class="sep"></i>Vidéosurveillance</span><span class="marquee-item"><i class="sep"></i>Domotique</span>
+      </div>
     </div>
+  </div>
 
-    <!-- DÉTAIL PRODUIT -->
-    <div id="page-detail" class="page-section">
-        <div class="container" style="margin-top: 40px;">
-            <a onclick="retourMarque()" class="btn-back">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Retour aux produits
-            </a>
-            
-            <div class="detail-container">
-                <div class="detail-gallery-column">
-                    <div class="detail-image-box" onclick="ouvrirPleinEcran()">
-                        <img id="detail-image" src="" alt="Produit">
-                        <span class="zoom-hint">🔍 Cliquer pour agrandir</span>
-                    </div>
-                    <div id="detail-thumbnails" class="detail-thumbnails-grid"></div>
-                </div>
-
-                <div class="detail-info">
-                    <span id="detail-marque" class="detail-marque">Marque</span>
-                    <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
-                    <div id="detail-prix" class="detail-price">0.00 € <span class="product-tva">TTC</span></div>
-                    <div id="detail-desc-courte" class="detail-desc-courte">Description courte du produit.</div>
-                    <div id="detail-desc-longue" class="detail-desc-longue">Description détaillée...</div>
-                    <button onclick="ouvrirContactAvecMotif(document.getElementById('detail-titre').innerText)" class="btn-action" style="width:100%;">Je suis intéressé(e) par ce produit</button>
-                </div>
-            </div>
-        </div>
+  <!-- Points forts -->
+  <section class="section-tight" style="padding-top:clamp(56px,7vw,90px)">
+    <div class="container">
+      <div class="feature-grid">
+        <article class="card spot feature-card reveal"><div class="icon-tile"><svg><use href="#i-shield"/></svg></div><h3>Sécurité sur mesure</h3><p>Protection de la maison, appartement et professionnels avec des solutions pensées pour chaque espace.</p></article>
+        <article class="card spot feature-card reveal" style="--d:.08s"><div class="icon-tile"><svg><use href="#i-radio"/></svg></div><h3>Innovation connectée</h3><p>Surveillance, contrôle à distance et automatisations pour un confort quotidien plus rassurant.</p></article>
+        <article class="card spot feature-card reveal" style="--d:.16s"><div class="icon-tile"><svg><use href="#i-bolt"/></svg></div><h3>Installation premium</h3><p>Équipements haut de gamme, intégration fluide et accompagnement sur l’ensemble du projet.</p></article>
+        <article class="card spot feature-card reveal" style="--d:.24s"><div class="icon-tile"><svg><use href="#i-users"/></svg></div><h3>Conseil expert</h3><p>Un accompagnement personnalisé pour choisir la configuration la plus adaptée à votre besoin réel.</p></article>
+      </div>
     </div>
+  </section>
 
-    <!-- VISIONNEUSE PLEIN ÉCRAN -->
-    <div id="lightbox-modal" class="lightbox-modal" onclick="fermerPleinEcran(event)">
-        <span class="lightbox-close" onclick="fermerPleinEcran(event)">&times;</span>
-        <img id="lightbox-img" src="" alt="Zoom produit" onclick="event.stopPropagation()">
+  <!-- Solutions -->
+  <section class="section" style="padding-top:clamp(40px,5vw,70px)">
+    <div class="container">
+      <div class="section-head reveal">
+        <div><div class="eyebrow">Solutions sur mesure</div><h2>Choisissez la solution qui correspond à votre besoin</h2></div>
+        <a href="#configurateur" data-page="home" data-scroll="configurateur" class="btn btn-dark">Tester mon besoin <svg class="arrow"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="solutions-grid">
+        <button type="button" class="card spot solution-card reveal" data-quiz-start="appartement"><span class="num">01</span><div class="icon-tile"><svg><use href="#i-building"/></svg></div><h3>Appartement</h3><p>Protection intelligente, surveillance discrète et confort quotidien pour un logement plus sûr et plus agréable.</p><span class="go">Sécurité moderne <svg><use href="#i-arrow"/></svg></span></button>
+        <button type="button" class="card spot solution-card reveal" style="--d:.08s" data-quiz-start="maison"><span class="num">02</span><div class="icon-tile"><svg><use href="#i-home"/></svg></div><h3>Maison avec extérieur</h3><p>Protection complète des accès, du jardin, des allées et des points d’entrée avec un écosystème cohérent.</p><span class="go">Écosystème complet <svg><use href="#i-arrow"/></svg></span></button>
+        <button type="button" class="card spot solution-card reveal" style="--d:.16s" data-quiz-start="pro"><span class="num">03</span><div class="icon-tile"><svg><use href="#i-briefcase"/></svg></div><h3>Locaux pro</h3><p>Solutions fiables pour les bureaux, commerces et petites entreprises qui exigent surveillance et contrôle sérieux.</p><span class="go">Gestion sécurisée <svg><use href="#i-arrow"/></svg></span></button>
+        <button type="button" class="card spot solution-card premium reveal" style="--d:.24s" data-quiz-start="maison" data-quiz-need="complet"><span class="num">04</span><div class="icon-tile"><svg><use href="#i-star"/></svg></div><h3>Protection totale</h3><p>Une logique de pack complète avec alarme, caméra, domotique et accès intelligent pour une maison vraiment connectée.</p><span class="go">Pack premium <svg><use href="#i-arrow"/></svg></span></button>
+      </div>
     </div>
+  </section>
 
-    <!-- CONTACT -->
-    <div id="page-contact" class="page-section">
-        <div class="brand-header">
-            <h1>Contactez nos experts</h1>
-            <p>Remplissez le formulaire ci-dessous pour une étude personnalisée ou un devis gratuit. Nous vous répondons sous 24h.</p>
-        </div>
-        <div class="container">
-            <div class="contact-card-box">
-                <form id="form-contact-client">
-                    <div class="form-row">
-                        <div class="form-col form-group-contact">
-                            <label for="client-nom">Nom *</label>
-                            <input type="text" id="client-nom" required placeholder="Dupont">
-                        </div>
-                        <div class="form-col form-group-contact">
-                            <label for="client-prenom">Prénom *</label>
-                            <input type="text" id="client-prenom" required placeholder="Alexandre">
-                        </div>
-                    </div>
-
-                    <div class="form-group-contact">
-                        <label for="client-contact">Adresse e-mail ou Numéro de téléphone *</label>
-                        <input type="text" id="client-contact" required placeholder="06 12 34 56 78 ou contact@exemple.fr">
-                    </div>
-
-                    <div class="form-group-contact">
-                        <label for="client-raison">Raison du contact *</label>
-                        <select id="client-raison" required>
-                            <option value="">-- Sélectionnez un motif --</option>
-                            <option value="Demande de devis alarme Ajax">Demande de devis alarme Ajax</option>
-                            <option value="Demande de devis Somfy">Demande de devis Somfy</option>
-                            <option value="Demande de devis serrure Yale">Demande de devis serrure Yale Home</option>
-                            <option value="Étude globale de sécurité">Étude globale de sécurité (Résidence ou Pro)</option>
-                            <option value="Renseignement sur un produit">Renseignement sur un produit précis</option>
-                            <option value="Autre demande">Autre demande</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group-contact">
-                        <label for="client-message">Précisions sur votre projet (facultatif)</label>
-                        <textarea id="client-message" placeholder="Décrivez votre besoin : surface, nombre d'accès, présence d'animaux, etc."></textarea>
-                    </div>
-
-                    <button type="submit" id="btn-submit-contact" class="btn-action" style="width: 100%;">Envoyer ma demande</button>
-                    <p id="msg-succes-contact" style="display:none; color: #16a34a; font-weight: 700; margin-top: 15px; text-align: center;">✅ Votre demande a été transmise avec succès à l'équipe Carapace&nbsp;! Nous vous recontacterons très vite.</p>
-                </form>
-            </div>
-        </div>
+  <!-- Produits phares -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="section-head reveal">
+        <div><div class="eyebrow">Produits en avant</div><h2>Nos meilleurs produits</h2></div>
+        <a href="#ajax" data-page="ajax" class="btn btn-outline">Voir toutes les offres <svg class="arrow"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="products-grid" id="featured-products"></div>
     </div>
+  </section>
 
-    <!-- FOOTER -->
-    <footer id="contact-footer">
-        <h2>Un projet en tête&nbsp;?</h2>
-        <p style="margin-bottom: 30px; font-size: 17px; opacity: 0.9;">Nos experts étudient vos besoins et vous garantissent un chiffrage rapide.</p>
-        <button onclick="showPage('contact')" class="btn-action" style="background: var(--white); color: var(--dark-blue);">Accéder au formulaire de contact</button>
-        
+  <!-- Méthode -->
+  <section class="section dark-section" id="methode">
+    <div class="container">
+      <div class="section-head center reveal" style="flex-direction:column;align-items:center">
+        <div class="eyebrow">Notre méthode</div>
+        <h2>Votre projet, de la première question à la mise en service</h2>
+        <p class="lead">Un interlocuteur unique, du conseil à l’installation.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div class="step-num">1</div><h3>Premier échange</h3><p>Vous nous décrivez votre besoin via le formulaire ou le configurateur.</p></div>
+        <div class="step reveal" style="--d:.08s"><div class="step-num">2</div><h3>Étude personnalisée</h3><p>Nous analysons vos accès, vos usages et les points sensibles de votre espace.</p></div>
+        <div class="step reveal" style="--d:.16s"><div class="step-num">3</div><h3>Devis gratuit</h3><p>Une proposition claire, adaptée à votre configuration et à votre budget.</p></div>
+        <div class="step reveal" style="--d:.24s"><div class="step-num">4</div><h3>Installation</h3><p>Pose, paramétrage et intégration fluide de tous vos équipements.</p></div>
+        <div class="step reveal" style="--d:.32s"><div class="step-num">5</div><h3>Prise en main</h3><p>Nous vous montrons comment tout piloter depuis votre smartphone.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configurateur -->
+  <section class="section" id="configurateur">
+    <div class="container quiz-wrap">
+      <div class="quiz-aside reveal">
+        <div class="eyebrow">Configurateur</div>
+        <h2>Trouvez la configuration idéale</h2>
+        <p class="lead">Répondez à quelques questions : nous vous proposons immédiatement la solution la plus adaptée, avec les produits correspondants.</p>
+        <ul>
+          <li><svg><use href="#i-check-circle"/></svg> Moins d’une minute, sans engagement</li>
+          <li><svg><use href="#i-check-circle"/></svg> Une recommandation basée sur votre logement et vos priorités</li>
+          <li><svg><use href="#i-check-circle"/></svg> Votre demande de devis pré-remplie automatiquement</li>
+        </ul>
+      </div>
+
+      <div class="card quiz-card reveal" style="--d:.1s" id="quiz">
+        <div class="quiz-progress" id="quiz-progress"><div class="bar"><i id="quiz-bar"></i></div><span id="quiz-step-label">Étape 1 / 4</span></div>
+
+        <div id="etape-1" class="question active">
+          <h3>Que souhaitez-vous équiper en priorité&nbsp;?</h3>
+          <p class="hint">Choisissez le type d’espace à protéger.</p>
+          <div class="options-grid">
+            <button type="button" class="btn-option" data-step="1" data-value="appartement"><span class="o-ic"><svg><use href="#i-building"/></svg></span>Un Appartement<small>Studio, T2, T3…</small></button>
+            <button type="button" class="btn-option" data-step="1" data-value="maison"><span class="o-ic"><svg><use href="#i-home"/></svg></span>Une Maison (avec extérieur)<small>Jardin, allée, garage</small></button>
+            <button type="button" class="btn-option" data-step="1" data-value="pro"><span class="o-ic"><svg><use href="#i-briefcase"/></svg></span>Des locaux professionnels<small>Bureau, commerce, atelier</small></button>
+          </div>
+        </div>
+
+        <div id="etape-2" class="question">
+          <h3>Quel est votre objectif principal&nbsp;?</h3>
+          <p class="hint">Ce qui compte le plus pour vous aujourd’hui.</p>
+          <div class="options-grid">
+            <button type="button" class="btn-option" data-step="2" data-value="intrusion"><span class="o-ic"><svg><use href="#i-shield"/></svg></span>Sécurité &amp; Alarmes<small>Dissuader et alerter</small></button>
+            <button type="button" class="btn-option" data-step="2" data-value="domotique"><span class="o-ic"><svg><use href="#i-phone-app"/></svg></span>Confort &amp; Domotique<small>Accès et pilotage à distance</small></button>
+            <button type="button" class="btn-option" data-step="2" data-value="complet"><span class="o-ic"><svg><use href="#i-star"/></svg></span>Protection Totale<small>Alarme + caméras + domotique</small></button>
+          </div>
+        </div>
+
+        <div id="etape-3" class="question">
+          <h3>Quelle expérience correspond le plus à vos attentes&nbsp;?</h3>
+          <p class="hint">Deux écosystèmes haut de gamme, deux philosophies.</p>
+          <div class="options-grid">
+            <button type="button" class="btn-option" data-step="3" data-value="ajax"><span class="o-ic"><svg><use href="#i-radio"/></svg></span>Design épuré &amp; 100% Sans Fil<small>Gamme Ajax</small></button>
+            <button type="button" class="btn-option" data-step="3" data-value="somfy"><span class="o-ic"><svg><use href="#i-home"/></svg></span>Écosystème complet &amp; Excellence Française<small>Gamme Somfy</small></button>
+          </div>
+        </div>
+
+        <div id="etape-4" class="question">
+          <h3>Des besoins particuliers&nbsp;?</h3>
+          <p class="hint">Facultatif : sélectionnez tout ce qui vous concerne, puis validez.</p>
+          <div class="options-grid">
+            <button type="button" class="btn-option" data-option="cameras" aria-pressed="false"><span class="o-ic"><svg><use href="#i-camera"/></svg></span>Voir à distance<small>Caméras / levée de doute</small></button>
+            <button type="button" class="btn-option" data-option="exterieur" aria-pressed="false"><span class="o-ic"><svg><use href="#i-tree"/></svg></span>Protéger l’extérieur<small>Jardin, façade, allée</small></button>
+            <button type="button" class="btn-option" data-option="acces" aria-pressed="false"><span class="o-ic"><svg><use href="#i-key"/></svg></span>Accès sans clé<small>Serrure connectée</small></button>
+            <button type="button" class="btn-option" data-option="animaux" aria-pressed="false"><span class="o-ic"><svg><use href="#i-paw"/></svg></span>Animaux à la maison<small>Détection adaptée</small></button>
+          </div>
+          <div class="quiz-nav" style="justify-content:flex-end"><button type="button" class="btn btn-primary" id="quiz-finish">Voir ma recommandation <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
+        </div>
+
+        <div id="resultat" class="result" aria-live="polite">
+          <div class="result-hero">
+            <div class="label">Notre recommandation personnalisée</div>
+            <div class="pack-name" id="titre-pack">Pack Essentiel</div>
+            <p id="description-pack">…</p>
+            <div class="result-meta"><span id="marque-pack">…</span><span id="logement-pack">…</span></div>
+          </div>
+          <ul class="result-extras" id="result-extras"></ul>
+          <div id="reco-wrap" style="display:none">
+            <div class="result-reco-title">Produits qui pourraient vous convenir</div>
+            <div class="reco-grid" id="reco-products"></div>
+          </div>
+          <p style="margin-bottom: 18px; font-weight: 600; color: var(--ink);">Un expert Carapace va concevoir votre devis sur-mesure.</p>
+          <div class="result-actions">
+            <button type="button" class="btn btn-primary" id="quiz-devis">Demander mon devis <svg class="arrow"><use href="#i-arrow"/></svg></button>
+            <button type="button" class="btn-link" id="quiz-restart">Refaire le test</button>
+          </div>
+        </div>
+
+        <div class="quiz-nav" id="quiz-nav-bottom"><button type="button" class="quiz-back" id="quiz-back"><svg><use href="#i-back"/></svg> Retour</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avis clients (exemples à remplacer) -->
+  <section class="section" style="padding-top:0" id="avis">
+    <div class="container">
+      <div class="section-head reveal">
+        <div><div class="eyebrow">Ils nous font confiance</div><h2>Ce que disent nos clients</h2></div>
+        <p class="lead"><span class="todo">[À COMPLÉTER]</span> Les avis ci-dessous sont des exemples de mise en page&nbsp;: remplacez-les par de vrais avis clients (avec leur accord) avant la mise en ligne.</p>
+      </div>
+      <div class="testi-grid">
+        <article class="card testi reveal"><span class="placeholder-tag">Exemple — à remplacer</span><div class="stars" aria-hidden="true">★★★★★</div><blockquote>« [À COMPLÉTER : texte d’un vrai avis client, par exemple sur l’installation d’une alarme en appartement.] »</blockquote><div class="who"><span class="avatar">A</span><span><b>[Prénom N.]</b><small>[Ville] · Appartement</small></span></div></article>
+        <article class="card testi reveal" style="--d:.08s"><span class="placeholder-tag">Exemple — à remplacer</span><div class="stars" aria-hidden="true">★★★★★</div><blockquote>« [À COMPLÉTER : texte d’un vrai avis client, par exemple sur la protection d’une maison avec extérieur.] »</blockquote><div class="who"><span class="avatar">B</span><span><b>[Prénom N.]</b><small>[Ville] · Maison</small></span></div></article>
+        <article class="card testi reveal" style="--d:.16s"><span class="placeholder-tag">Exemple — à remplacer</span><div class="stars" aria-hidden="true">★★★★★</div><blockquote>« [À COMPLÉTER : texte d’un vrai avis client professionnel, par exemple un commerce ou un bureau.] »</blockquote><div class="who"><span class="avatar">C</span><span><b>[Prénom N.]</b><small>[Ville] · Local professionnel</small></span></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zone d'intervention -->
+  <section class="section" style="padding-top:0" id="zone">
+    <div class="container zone">
+      <div class="radar reveal" aria-hidden="true">
+        <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="sweep"></div>
+        <span class="ping" style="top:22%;left:64%"></span><span class="ping" style="top:66%;left:24%;animation-delay:-1s"></span><span class="ping" style="top:70%;left:72%"></span>
+        <div class="core"><img src="assets/img/logo-mark.png" alt="" width="160" height="200" loading="lazy"></div>
+      </div>
+      <div class="reveal" style="--d:.1s">
+        <div class="eyebrow">Zone d’intervention</div>
+        <h2 class="h2" style="margin-bottom:16px">Nous intervenons près de chez vous</h2>
+        <p class="lead">Installation, mise en service et accompagnement pour les particuliers et les professionnels de notre secteur&nbsp;: <span class="todo">[À COMPLÉTER : villes / département / rayon d’intervention]</span>.</p>
+        <div class="zone-list">
+          <div><b>Particuliers</b><span>Appartements, maisons, résidences secondaires</span></div>
+          <div><b>Professionnels</b><span>Bureaux, commerces, petites entreprises</span></div>
+          <div><b>Horaires</b><span class="todo">[À COMPLÉTER : jours et horaires]</span></div>
+          <div><b>Réponse</b><span>Sous 24h en moyenne</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" style="padding-top:0" id="faq">
+    <div class="container faq-wrap">
+      <div class="reveal">
+        <div class="eyebrow">Questions fréquentes</div>
+        <h2 class="h2" style="margin-bottom:16px">Tout ce que vous voulez savoir</h2>
+        <p class="lead" style="margin-bottom:24px">Une autre question&nbsp;? Écrivez-nous, nous vous répondons sous 24h.</p>
+        <a href="#contact" data-page="contact" class="btn btn-dark">Poser ma question <svg class="arrow"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="faq-list reveal" style="--d:.1s">
+        <details class="faq-item"><summary>Le devis est-il gratuit&nbsp;? <span class="plus"></span></summary><div class="answer">Oui. Remplissez le formulaire de contact ou le configurateur&nbsp;: nous étudions votre besoin et vous proposons un devis personnalisé gratuitement.</div></details>
+        <details class="faq-item"><summary>Quelle marque choisir&nbsp;: Ajax, Somfy ou Yale Home&nbsp;? <span class="plus"></span></summary><div class="answer">Ajax est une gamme d’alarmes professionnelles 100% sans fil au design épuré. Somfy propose un écosystème complet alliant sécurité et confort (maison connectée). Yale Home est spécialisée dans les serrures connectées et la sécurité des accès. Le configurateur vous aide à choisir, et nous vous conseillons lors de l’étude.</div></details>
+        <details class="faq-item"><summary>Puis-je tout piloter depuis mon smartphone&nbsp;? <span class="plus"></span></summary><div class="answer">Oui, les solutions que nous installons se contrôlent depuis l’application de la marque&nbsp;: activation de l’alarme, notifications, consultation des caméras ou gestion des accès selon les équipements choisis.</div></details>
+        <details class="faq-item"><summary>Faut-il faire des travaux pour installer une alarme sans fil&nbsp;? <span class="plus"></span></summary><div class="answer">Les équipements sans fil limitent fortement les travaux&nbsp;: pas de saignée ni de câblage dans toutes les pièces. Nous vous précisons ce qui est nécessaire lors de l’étude de votre projet.</div></details>
+        <details class="faq-item"><summary>Quel est le délai d’installation&nbsp;? <span class="plus"></span></summary><div class="answer"><span class="todo">[À COMPLÉTER : délai moyen entre l’acceptation du devis et l’installation]</span></div></details>
+        <details class="faq-item"><summary>Quelle garantie et quel suivi après l’installation&nbsp;? <span class="plus"></span></summary><div class="answer"><span class="todo">[À COMPLÉTER : durée de garantie, contrat de maintenance éventuel, SAV]</span></div></details>
+        <details class="faq-item"><summary>Les prix affichés comprennent-ils la pose&nbsp;? <span class="plus"></span></summary><div class="answer"><span class="todo">[À COMPLÉTER : préciser si les prix TTC affichés incluent ou non l’installation]</span></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appel à l'action -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="cta-band reveal">
+        <div><h2>Un projet en tête&nbsp;?</h2><p>Nos experts étudient vos besoins et vous garantissent un chiffrage rapide.</p></div>
+        <div class="actions">
+          <a href="#contact" data-page="contact" class="btn btn-light">Accéder au formulaire de contact <svg class="arrow"><use href="#i-arrow"/></svg></a>
+          <a href="#configurateur" data-page="home" data-scroll="configurateur" class="btn btn-ghost">Lancer le configurateur</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= AJAX ================= -->
+<div id="page-ajax" class="page-section" data-brand="ajax">
+  <div class="brand-hero">
+    <span class="wm" aria-hidden="true">AJAX</span>
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Ajax</span></nav>
+      <h1>Gamme AJAX</h1>
+      <p>La sécurité sans fil professionnelle. Fiabilité absolue, design épuré et contrôle total depuis votre smartphone.</p>
+      <div class="pills"><span>100% sans fil</span><span>Application mobile</span><span>Kits &amp; produits à la carte</span></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="catalog-toolbar" data-toolbar="ajax"></div>
+    <div class="catalog-results">
+      <section class="cat-block"><h2 class="cat-title">Nos Packs Sécurité Ajax</h2><div class="products-grid" id="ajax-packs"></div></section>
+      <div class="card compare-card reveal">
+        <div><div class="eyebrow">Comparatif</div><h2 class="h2" style="font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:12px">Quel kit Ajax choisir&nbsp;?</h2><p class="lead">Centrale, levée de doute photo, canaux de communication, nombre d’appareils… comparez les kits de démarrage en un coup d’œil. Cliquez sur le tableau pour l’agrandir.</p></div>
+        <button type="button" class="shot" data-lightbox="assets/img/tableau_kitajax.jpg" aria-label="Agrandir le tableau comparatif des kits Ajax">
+          <picture><source type="image/webp" srcset="assets/img/tableau_kitajax.webp"><img src="assets/img/tableau_kitajax.jpg" alt="Tableau comparatif des kits Ajax : StarterKit, StarterKit Plus, StarterKit Cam, StarterKit Cam Plus" width="1024" height="559" loading="lazy"></picture>
+        </button>
+      </div>
+      <div id="ajax-dynamic-categories"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SOMFY ================= -->
+<div id="page-somfy" class="page-section" data-brand="somfy">
+  <div class="brand-hero">
+    <span class="wm" aria-hidden="true">SOMFY</span>
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Somfy</span></nav>
+      <h1>Gamme SOMFY</h1>
+      <p>L'excellence française pour votre maison connectée. Des solutions globales alliant sécurité et confort au quotidien.</p>
+      <div class="pills"><span>Maison connectée</span><span>Alarme &amp; caméras</span><span>Confort au quotidien</span></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="catalog-toolbar" data-toolbar="somfy"></div>
+    <div class="catalog-results">
+      <section class="cat-block"><h2 class="cat-title">Nos Packs Somfy</h2><div class="products-grid" id="somfy-packs"></div></section>
+      <section class="cat-block"><h2 class="cat-title">Produits à la carte Somfy</h2><div class="products-grid" id="somfy-produits"></div></section>
+    </div>
+  </div>
+</div>
+
+<!-- ================= YALE HOME ================= -->
+<div id="page-yale" class="page-section" data-brand="yale">
+  <div class="brand-hero">
+    <span class="wm" aria-hidden="true">YALE</span>
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Yale Home</span></nav>
+      <h1>Yale Home</h1>
+      <p>La référence en matière de sécurité résidentielle. Protégez ce qui compte le plus avec nos serrures connectées, alarmes, caméras, coffres-forts et cadenas.</p>
+      <div class="pills"><span>Serrures connectées</span><span>Coffres-forts</span><span>Caméras &amp; alarmes</span></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="catalog-toolbar" data-toolbar="yale"></div>
+    <div class="catalog-results"><div id="yale-dynamic-categories"></div></div>
+  </div>
+</div>
+
+<!-- ================= DÉTAIL PRODUIT ================= -->
+<div id="page-detail" class="page-section">
+  <div class="container detail-page">
+    <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <a href="#ajax" id="detail-crumb-brand" data-back>Gamme</a> / <span id="detail-crumb-name">Produit</span></nav>
+    <a href="#ajax" class="btn-link" data-back style="display:inline-flex;gap:8px;align-items:center;padding-left:0;margin-bottom:16px;text-decoration:none"><svg width="18" height="18"><use href="#i-back"/></svg> Retour aux produits</a>
+    <div class="card detail-container">
+      <div class="detail-gallery-column">
+        <button type="button" class="detail-image-box" id="detail-image-box" aria-label="Agrandir l'image">
+          <img id="detail-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Produit">
+          <span class="zoom-hint"><svg width="14" height="14"><use href="#i-search"/></svg> Cliquer pour agrandir</span>
+        </button>
+        <div id="detail-thumbnails" class="detail-thumbnails-grid"></div>
+      </div>
+      <div class="detail-info">
+        <span id="detail-marque" class="detail-marque">Marque</span>
+        <h1 id="detail-titre" class="detail-title">Nom du Produit</h1>
+        <div id="detail-prix" class="detail-price">— <span class="product-tva">TTC</span></div>
+        <div id="detail-desc-courte" class="detail-desc-courte"></div>
+        <div class="detail-cta">
+          <button type="button" id="detail-devis" class="btn btn-primary">Je suis intéressé(e) par ce produit <svg class="arrow"><use href="#i-arrow"/></svg></button>
+          <button type="button" id="detail-share" class="btn btn-outline" aria-label="Partager ce produit">Partager</button>
+        </div>
+        <div class="detail-perks">
+          <div><svg><use href="#i-tools"/></svg>Installation par nos experts</div>
+          <div><svg><use href="#i-file"/></svg>Devis gratuit et personnalisé</div>
+          <div><svg><use href="#i-users"/></svg>Conseil sur mesure</div>
+        </div>
+        <div id="detail-desc-longue" class="detail-desc-longue"></div>
+      </div>
+    </div>
+    <section class="cat-block" id="similar-wrap" style="display:none"><h2 class="cat-title">Vous aimerez aussi</h2><div class="products-grid" id="similar-products"></div></section>
+  </div>
+</div>
+
+<!-- ================= CONTACT ================= -->
+<div id="page-contact" class="page-section">
+  <div class="brand-hero" style="padding-bottom:110px">
+    <div class="container">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Contact</span></nav>
+      <h1>Contactez nos experts</h1>
+      <p>Remplissez le formulaire ci-dessous pour une étude personnalisée ou un devis gratuit. Nous vous répondons sous 24h.</p>
+    </div>
+  </div>
+  <div class="container contact-grid">
+    <aside class="card contact-aside">
+      <h3>Parlons de votre projet</h3>
+      <ul>
+        <li><span class="ic"><svg><use href="#i-clock"/></svg></span><span><b>Réponse sous 24h</b>Nous revenons vers vous rapidement.</span></li>
+        <li><span class="ic"><svg><use href="#i-file"/></svg></span><span><b>Devis gratuit</b>Étude personnalisée de votre besoin.</span></li>
+        <li><span class="ic"><svg><use href="#i-phone"/></svg></span><span><b>Téléphone</b><span class="todo">[À COMPLÉTER : téléphone]</span></span></li>
+        <li><span class="ic"><svg><use href="#i-mail"/></svg></span><span><b>E-mail</b><span class="todo">[À COMPLÉTER : e-mail]</span></span></li>
+        <li><span class="ic"><svg><use href="#i-pin"/></svg></span><span><b>Zone d’intervention</b><span class="todo">[À COMPLÉTER : secteur]</span></span></li>
+      </ul>
+      <a href="https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR" target="_blank" rel="noopener" class="btn btn-ghost btn-block"><svg style="fill:currentColor"><use href="#i-fb"/></svg> Suivez-nous sur Facebook</a>
+    </aside>
+
+    <div class="card contact-card-box">
+      <form id="form-contact-client" novalidate>
+        <h2>Votre demande</h2>
+        <p>Les champs marqués d’un * sont obligatoires.</p>
+        <div class="form-row">
+          <div class="form-group-contact">
+            <label for="client-nom">Nom *</label>
+            <input type="text" id="client-nom" required autocomplete="family-name" placeholder="Dupont" maxlength="80">
+            <div class="field-error">Merci d’indiquer votre nom.</div>
+          </div>
+          <div class="form-group-contact">
+            <label for="client-prenom">Prénom *</label>
+            <input type="text" id="client-prenom" required autocomplete="given-name" placeholder="Alexandre" maxlength="80">
+            <div class="field-error">Merci d’indiquer votre prénom.</div>
+          </div>
+        </div>
+        <div class="form-group-contact">
+          <label for="client-contact">Adresse e-mail ou Numéro de téléphone *</label>
+          <input type="text" id="client-contact" required placeholder="06 12 34 56 78 ou contact@exemple.fr" maxlength="120">
+          <div class="field-error">Indiquez un e-mail valide ou un numéro de téléphone.</div>
+        </div>
+        <div class="form-group-contact">
+          <label for="client-raison">Raison du contact *</label>
+          <select id="client-raison" required>
+            <option value="">-- Sélectionnez un motif --</option>
+            <option value="Demande de devis alarme Ajax">Demande de devis alarme Ajax</option>
+            <option value="Demande de devis Somfy">Demande de devis Somfy</option>
+            <option value="Demande de devis serrure Yale">Demande de devis serrure Yale Home</option>
+            <option value="Étude globale de sécurité">Étude globale de sécurité (Résidence ou Pro)</option>
+            <option value="Renseignement sur un produit">Renseignement sur un produit précis</option>
+            <option value="Autre demande">Autre demande</option>
+          </select>
+          <div class="field-error">Choisissez un motif.</div>
+        </div>
+        <div class="form-group-contact">
+          <label for="client-message">Précisions sur votre projet (facultatif)</label>
+          <textarea id="client-message" maxlength="3000" placeholder="Décrivez votre besoin : surface, nombre d'accès, présence d'animaux, etc."></textarea>
+        </div>
+        <!-- Anti-spam invisible : laissez ce champ vide -->
+        <div class="hp-field" aria-hidden="true"><label for="client-website">Ne pas remplir</label><input type="text" id="client-website" tabindex="-1" autocomplete="off"></div>
+        <label class="consent"><input type="checkbox" id="client-consent" required> <span>J’accepte que mes informations soient utilisées pour être recontacté(e) au sujet de ma demande. <a href="mentions-legales.html#donnees">En savoir plus</a></span></label>
+        <button type="submit" id="btn-submit-contact" class="btn btn-primary btn-block">Envoyer ma demande <svg class="arrow"><use href="#i-arrow"/></svg></button>
+        <p id="msg-erreur-contact" role="alert" style="display:none;color:#dc2626;font-weight:600;margin-top:14px;text-align:center"></p>
+      </form>
+      <div class="form-success" id="msg-succes-contact" role="status">
+        <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>Demande envoyée&nbsp;!</h3>
+        <p>✅ Votre demande a été transmise avec succès à l'équipe Carapace&nbsp;! Nous vous recontacterons très vite.</p>
+        <button type="button" class="btn btn-outline" id="btn-new-request">Faire une autre demande</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ================= PIED DE PAGE ================= -->
+<footer class="site-footer" id="contact-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logo-light.png" alt="Carapace — La protection de vos espaces" width="360" height="377" loading="lazy">
+        <p>Alarmes, vidéosurveillance, domotique et serrures connectées pour les particuliers et les professionnels.</p>
         <div class="social-links">
-            <a href="https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR" target="_blank" class="social-icon" aria-label="Facebook">
-                <svg viewBox="0 0 24 24">
-                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/>
-                </svg>
-            </a>
+          <a href="https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
         </div>
+      </div>
+      <div>
+        <h4>Nos gammes</h4>
+        <ul><li><a href="#ajax" data-page="ajax">Alarmes Ajax</a></li><li><a href="#somfy" data-page="somfy">Maison connectée Somfy</a></li><li><a href="#yale" data-page="yale">Serrures Yale Home</a></li><li><a href="#configurateur" data-page="home" data-scroll="configurateur">Configurateur</a></li></ul>
+      </div>
+      <div>
+        <h4>Carapace</h4>
+        <ul><li><a href="#methode" data-page="home" data-scroll="methode">Notre méthode</a></li><li><a href="#faq" data-page="home" data-scroll="faq">Questions fréquentes</a></li><li><a href="#contact" data-page="contact">Contact &amp; devis</a></li><li><a href="admin.html">Carapace Portail</a></li></ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><span class="todo">[À COMPLÉTER : téléphone]</span></li>
+          <li><span class="todo">[À COMPLÉTER : e-mail]</span></li>
+          <li><span class="todo">[À COMPLÉTER : adresse / zone]</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> Carapace - Protection &amp; Domotique. Tous droits réservés.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mentions-legales.html#donnees">Données personnelles</a> · Site sans cookies</span>
+    </div>
+  </div>
+</footer>
 
-        <p style="margin-top: 40px; font-size: 13px; opacity: 0.4; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">© 2026 Carapace - Protection & Domotique. Tous droits réservés.</p>
-    </footer>
+<!-- Bouton devis flottant -->
+<div class="sticky-cta" id="sticky-cta">
+  <a href="#contact" data-page="contact" class="btn btn-primary">Devis gratuit <svg class="arrow"><use href="#i-arrow"/></svg></a>
+  <button type="button" class="to-top" id="to-top" aria-label="Revenir en haut"><svg><use href="#i-up"/></svg></button>
+</div>
 
-    <!-- NAVIGATION & PLEIN ÉCRAN -->
-    <script>
-        let pagePrecedente = "home";
+<!-- Recherche globale -->
+<div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Rechercher un produit">
+  <div class="search-panel">
+    <div class="search-field"><svg><use href="#i-search"/></svg><input type="search" id="global-search" placeholder="Rechercher un produit, une gamme, une catégorie…" autocomplete="off"></div>
+    <div class="search-results" id="global-results"></div>
+    <div class="search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> naviguer</span><span><kbd>Entrée</kbd> ouvrir</span><span><kbd>Échap</kbd> fermer</span></div>
+  </div>
+</div>
 
-        function showPage(pageId) {
-            if(pageId !== 'detail') { pagePrecedente = pageId; }
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            if(document.getElementById('nav-' + pageId)) { document.getElementById('nav-' + pageId).classList.add('active'); }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+<!-- Visionneuse plein écran -->
+<div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-label="Image agrandie">
+  <button type="button" class="lightbox-close" aria-label="Fermer">&times;</button>
+  <img id="lightbox-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Zoom produit">
+</div>
 
-        function retourMarque() { showPage(pagePrecedente); }
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-        function ouvrirContactAvecMotif(motif) {
-            showPage('contact');
-            const select = document.getElementById('client-raison');
-            if(select) {
-                const champMsg = document.getElementById('client-message');
-                champMsg.value = "Demande concernant : " + motif;
-            }
-        }
-
-        /* GESTION DU PLEIN ÉCRAN */
-        function ouvrirPleinEcran() {
-            const currentImgSrc = document.getElementById('detail-image').src;
-            if (!currentImgSrc) return;
-            document.getElementById('lightbox-img').src = currentImgSrc;
-            document.getElementById('lightbox-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function fermerPleinEcran(event) {
-            if (event) event.stopPropagation();
-            document.getElementById('lightbox-modal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') fermerPleinEcran();
-        });
-
-        /* QUIZZ */
-        let choixLogement = ""; let choixBesoin = ""; let choixMarque = "";
-
-        function repondre(etape, choix) {
-            if (etape === 1) {
-                choixLogement = choix;
-                document.getElementById('etape-1').classList.remove('active');
-                document.getElementById('etape-2').classList.add('active');
-            } else if (etape === 2) {
-                choixBesoin = choix;
-                if (choixBesoin === 'domotique') {
-                    calculerResultat();
-                } else {
-                    document.getElementById('etape-2').classList.remove('active');
-                    document.getElementById('etape-3').classList.add('active');
-                }
-            } else if (etape === 3) {
-                choixMarque = choix;
-                document.getElementById('etape-3').classList.remove('active');
-                calculerResultat();
-            }
-        }
-
-        function calculerResultat() {
-            let titre = ""; let description = ""; let marqueText = "";
-            if (choixBesoin === 'domotique') {
-                titre = "SOLUTIONS YALE HOME";
-                description = "Sécurisez vos portes avec nos serrures intelligentes et surveillez vos accès à distance.";
-                marqueText = "Gamme Yale Home recommandée";
-            } else {
-                let niveau = "";
-                if (choixLogement === 'appartement') {
-                    niveau = "ESSENTIEL";
-                    description = "La base parfaite : Panneau de commande, détecteur de mouvement, détecteur d'ouverture et télécommande. L'idéal pour sécuriser vos accès.";
-                } else { 
-                    if (choixBesoin === 'complet') {
-                        niveau = "TOUT CONFORT";
-                        description = "Protection et confort absolus : Caméras, alarme complète, création de scénarios domotiques et contrôle centralisé.";
-                    } else {
-                        niveau = "CONFORT";
-                        description = "Dissuasion maximale : Détecteurs extérieurs avec caméra, sirènes intérieures et extérieures. Arrêtez l'effraction avant qu'elle n'arrive.";
-                    }
-                }
-                let nomMarque = choixMarque === 'ajax' ? 'Ajax' : 'Somfy';
-                titre = `PACK ${niveau} ${nomMarque.toUpperCase()}`;
-                marqueText = `Gamme ${nomMarque} privilégiée`;
-            }
-            document.getElementById('titre-pack').innerText = titre;
-            document.getElementById('description-pack').innerText = description;
-            document.getElementById('marque-pack').innerText = marqueText;
-            document.getElementById('resultat').style.display = 'block';
-        }
-
-        function recommencerQuizz() {
-            choixLogement = ""; choixBesoin = ""; choixMarque = "";
-            document.getElementById('resultat').style.display = 'none';
-            document.querySelectorAll('.question').forEach(el => el.classList.remove('active'));
-            document.getElementById('etape-1').classList.add('active');
-        }
-    </script>
-
-    <!-- FIREBASE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBYP0rgV0ERd0uN3KWwylgLkAKPTjfYWtw",
-            authDomain: "carapace-6ffff.firebaseapp.com",
-            projectId: "carapace-6ffff",
-            storageBucket: "carapace-6ffff.firebasestorage.app",
-            messagingSenderId: "123068428000",
-            appId: "1:123068428000:web:a13c5245dd64b6a5dd6a85"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.produitsDataSite = {};
-
-        function formaterDescriptionAutomatique(texteBrut) {
-            if (!texteBrut) return "Plus d'informations disponibles sur demande.";
-
-            const lignes = texteBrut.split(/<br>|\n/).map(l => l.trim()).filter(l => l.length > 0);
-            let htmlResultat = "";
-            let sectionEnCours = "intro";
-            let listeItems = [];
-
-            function fermerSection() {
-                if (listeItems.length === 0) return;
-
-                if (sectionEnCours === "composition") {
-                    htmlResultat += `
-                        <div class="box-composition-auto">
-                            <h4>📦 Composition du kit</h4>
-                            <ul>
-                                ${listeItems.map(item => {
-                                    const parties = item.split(':');
-                                    if (parties.length > 1) {
-                                        return `<li><strong>${parties[0].trim()} :</strong>${parties.slice(1).join(':')}</li>`;
-                                    }
-                                    return `<li>${item}</li>`;
-                                }).join('')}
-                            </ul>
-                        </div>
-                    `;
-                } else if (sectionEnCours === "specs") {
-                    htmlResultat += `
-                        <div class="box-specs-auto">
-                            <h4>⚡ Points forts & Spécifications</h4>
-                            <div class="specs-grid-auto">
-                                ${listeItems.map(item => {
-                                    const parties = item.split(':');
-                                    if (parties.length > 1) {
-                                        return `
-                                            <div class="spec-item-card">
-                                                <strong>${parties[0].trim()}</strong>
-                                                <span>${parties.slice(1).join(':').trim()}</span>
-                                            </div>
-                                        `;
-                                    }
-                                    return `<div class="spec-item-card"><span>${item}</span></div>`;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-                listeItems = [];
-            }
-
-            lignes.forEach((ligne) => {
-                const ligneLower = ligne.toLowerCase();
-
-                if (ligneLower.includes("composition du kit")) {
-                    fermerSection();
-                    sectionEnCours = "composition";
-                    return;
-                }
-
-                if (ligneLower.includes("points forts") || ligneLower.includes("caractéristiques")) {
-                    fermerSection();
-                    sectionEnCours = "specs";
-                    return;
-                }
-
-                if (sectionEnCours === "intro") {
-                    htmlResultat += `<p style="margin-bottom: 15px; color: #475569; line-height: 1.7;">${ligne}</p>`;
-                } else {
-                    listeItems.push(ligne);
-                }
-            });
-
-            fermerSection();
-            return htmlResultat;
-        }
-
-        function tronquerTexte(texte, longueur = 105) {
-            if (!texte) return "Produit premium pour votre sécurité.";
-            const text = texte.replace(/<[^>]+>/g, '').trim();
-            return text.length > longueur ? text.slice(0, longueur).trim() + '…' : text;
-        }
-
-        function afficherProduitsPhares() {
-            const container = document.getElementById('featured-products');
-            if (!container) return;
-
-            const produits = Object.entries(window.produitsDataSite || {})
-                .map(([id, produit]) => ({ id, ...produit }))
-                .filter(produit => produit && produit.image && produit.nom)
-                .map((produit) => {
-                    const isFeatured = Boolean(produit.a_la_une || produit.est_a_la_une || produit.featured);
-                    const score = (
-                        (produit.est_pack ? 5 : 0) +
-                        (isFeatured ? 20 : 0) +
-                        (produit.marque === 'ajax' ? 4 : 0) +
-                        (produit.marque === 'somfy' ? 3 : 0) +
-                        (produit.marque === 'yale' ? 3 : 0) +
-                        (parseFloat(produit.prix || 0) > 0 ? 1 : 0)
-                    );
-                    return { ...produit, isFeatured, score };
-                })
-                .sort((a, b) => b.score - a.score || parseFloat(b.prix || 0) - parseFloat(a.prix || 0));
-
-            let selection = produits.filter(produit => produit.isFeatured).slice(0, 4);
-
-            if (selection.length < 4) {
-                const priorite = ['ajax', 'somfy', 'yale'];
-                priorite.forEach((marque) => {
-                    const match = produits.find((p) => p.marque === marque && !selection.some(item => item.id === p.id));
-                    if (match && selection.length < 4) selection.push(match);
-                });
-            }
-
-            if (selection.length < 4) {
-                produits.forEach((produit) => {
-                    if (selection.length >= 4) return;
-                    const deja = selection.some((item) => item.id === produit.id);
-                    if (!deja) selection.push(produit);
-                });
-            }
-
-            const finalSelection = selection.slice(0, 4);
-
-            if (!finalSelection.length) {
-                container.innerHTML = '<div class="featured-card"><p>Aucun produit phare disponible pour le moment.</p></div>';
-                return;
-            }
-
-            const labelParMarque = {
-                ajax: 'Alarmes',
-                somfy: 'Maison connectée',
-                yale: 'Entrée intelligente'
-            };
-
-            container.innerHTML = finalSelection.map((produit) => `
-                <article class="featured-card" onclick="ouvrirDetailProduit('${produit.id}')">
-                    <div class="featured-image">
-                        <img src="${produit.image}" alt="${produit.nom}">
-                    </div>
-                    <span class="featured-tag">${produit.isFeatured ? 'À la une' : (labelParMarque[produit.marque] || 'Sécurité')}</span>
-                    <h3>${produit.nom}</h3>
-                    <p>${tronquerTexte(produit.description || produit.desc || 'Produit premium conçu pour sécuriser votre habitat.')}</p>
-                    <div class="featured-footer">
-                        <span class="featured-price">${parseFloat(produit.prix || 0).toFixed(2)} €</span>
-                        <span class="featured-link">Voir</span>
-                    </div>
-                </article>
-            `).join('');
-        }
-
-        window.ouvrirDetailProduit = function(id) {
-            const produit = window.produitsDataSite[id];
-            if (!produit) return;
-
-            const mainImg = document.getElementById('detail-image');
-            mainImg.src = produit.image || '';
-            mainImg.alt = produit.nom || '';
-
-            document.getElementById('detail-titre').innerText = produit.nom || '';
-            document.getElementById('detail-prix').innerHTML = parseFloat(produit.prix).toFixed(2) + ' € <span class="product-tva">TTC</span>';
-            document.getElementById('detail-desc-courte').innerText = produit.description || "";
-            document.getElementById('detail-desc-longue').innerHTML = formaterDescriptionAutomatique(produit.description_longue);
-             
-            let nomMarqueFormate = produit.marque;
-            if(produit.marque === 'ajax') nomMarqueFormate = "Gamme AJAX";
-            if(produit.marque === 'somfy') nomMarqueFormate = "Gamme SOMFY";
-            if(produit.marque === 'yale') nomMarqueFormate = "Yale Home";
-            document.getElementById('detail-marque').innerText = nomMarqueFormate;
-
-            const thumbsContainer = document.getElementById('detail-thumbnails');
-            thumbsContainer.innerHTML = "";
-
-            const toutesLesImages = [produit.image, ...(produit.images_secondaires || [])].filter(Boolean);
-
-            if (toutesLesImages.length > 1) {
-                toutesLesImages.forEach((imgSrc, index) => {
-                    const thumb = document.createElement('div');
-                    thumb.className = `thumb-item ${index === 0 ? 'active' : ''}`;
-                    thumb.innerHTML = `<img src="${imgSrc}" alt="Vue ${index + 1}">`;
-                    
-                    thumb.onclick = () => {
-                        mainImg.src = imgSrc;
-                        document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
-                        thumb.classList.add('active');
-                    };
-                    
-                    thumbsContainer.appendChild(thumb);
-                });
-                thumbsContainer.style.display = "flex";
-            } else {
-                thumbsContainer.style.display = "none";
-            }
-
-            showPage('detail');
-        };
-
-        async function chargerCatalogue() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "produits"));
-                let htmlAjaxPacks = "";
-                let categoriesAjax = {}; 
-                let htmlSomfyPacks = "";
-                let htmlSomfyProduits = "";
-                let categoriesYale = {}; 
-                
-                querySnapshot.forEach((docSnap) => {
-                    const produit = docSnap.data();
-                    const id = docSnap.id; 
-                    window.produitsDataSite[id] = produit; 
-                    
-                    const carteHTML = `
-                        <div class="product-card ${produit.est_pack ? 'pack' : ''}" 
-                             onclick="ouvrirDetailProduit('${id}')">
-                            <div class="product-image-container">
-                                <img src="${produit.image}" alt="${produit.nom}">
-                            </div>
-                            <div class="product-title">${produit.nom}</div>
-                            ${produit.description ? `<div class="product-desc">${produit.description}</div>` : ''}
-                            <div class="product-price">${parseFloat(produit.prix).toFixed(2)} € <span class="product-tva">TTC</span></div>
-                        </div>
-                    `;
-
-                    if (produit.marque === 'ajax') {
-                        if (produit.est_pack) {
-                            htmlAjaxPacks += carteHTML;
-                        } else {
-                            const catName = (produit.categorie && produit.categorie !== "") ? produit.categorie : "Autres produits Ajax";
-                            if (!categoriesAjax[catName]) categoriesAjax[catName] = "";
-                            categoriesAjax[catName] += carteHTML;
-                        }
-                    } else if (produit.marque === 'somfy') {
-                        if (produit.est_pack) htmlSomfyPacks += carteHTML;
-                        else htmlSomfyProduits += carteHTML;
-                    } else if (produit.marque === 'yale') {
-                        const catName = (produit.categorie && produit.categorie !== "") ? produit.categorie : "Autres produits Yale";
-                        if (!categoriesYale[catName]) categoriesYale[catName] = "";
-                        categoriesYale[catName] += carteHTML;
-                    }
-                });
-
-                if (htmlAjaxPacks !== "") document.getElementById('ajax-packs').innerHTML = htmlAjaxPacks;
-                
-                const containerAjaxCat = document.getElementById('ajax-dynamic-categories');
-                if (containerAjaxCat) {
-                    let htmlCategories = "";
-                    for (const [nomCategorie, cartesHTML] of Object.entries(categoriesAjax)) {
-                        htmlCategories += `<h2 class="section-title">${nomCategorie}</h2><div class="products-grid">${cartesHTML}</div>`;
-                    }
-                    containerAjaxCat.innerHTML = htmlCategories;
-                }
-
-                if (htmlSomfyPacks !== "") document.getElementById('somfy-packs').innerHTML = htmlSomfyPacks;
-                if (htmlSomfyProduits !== "") document.getElementById('somfy-produits').innerHTML = htmlSomfyProduits;
-
-                const containerYaleCat = document.getElementById('yale-dynamic-categories');
-                if (containerYaleCat) {
-                    let htmlYaleCategories = "";
-                    for (const [nomCategorie, cartesHTML] of Object.entries(categoriesYale)) {
-                        htmlYaleCategories += `<h2 class="section-title">${nomCategorie}</h2><div class="products-grid">${cartesHTML}</div>`;
-                    }
-                    containerYaleCat.innerHTML = htmlYaleCategories;
-                }
-
-                afficherProduitsPhares();
-
-            } catch (error) {
-                console.error("Erreur lors du chargement du catalogue:", error);
-            }
-        }
-
-        document.getElementById('form-contact-client').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-submit-contact');
-            btn.innerText = "Envoi en cours...";
-            btn.disabled = true;
-
-            try {
-                await addDoc(collection(db, "demandes_contact"), {
-                    nom: document.getElementById('client-nom').value.trim(),
-                    prenom: document.getElementById('client-prenom').value.trim(),
-                    contact: document.getElementById('client-contact').value.trim(),
-                    raison: document.getElementById('client-raison').value,
-                    message: document.getElementById('client-message').value.trim(),
-                    date: new Date()
-                });
-
-                document.getElementById('form-contact-client').reset();
-                document.getElementById('msg-succes-contact').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('msg-succes-contact').style.display = 'none';
-                }, 7000);
-            } catch (error) {
-                console.error("Erreur contact :", error);
-                alert("Erreur lors de l'envoi de votre demande : " + error.message);
-            } finally {
-                btn.innerText = "Envoyer ma demande";
-                btn.disabled = false;
-            }
-        });
-
-        chargerCatalogue();
-    </script>
+<script src="assets/js/site.js"></script>
+<script type="module" src="assets/js/firebase-site.js"></script>
 </body>
 </html>

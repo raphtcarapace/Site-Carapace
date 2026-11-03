@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+# [À COMPLÉTER] : remplacez VOTRE-DOMAINE par l'adresse du site une fois en ligne
+Sitemap: https://VOTRE-DOMAINE/sitemap.xml

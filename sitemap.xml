@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- [À COMPLÉTER] : remplacez VOTRE-DOMAINE par l'adresse du site une fois en ligne -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://VOTRE-DOMAINE/</loc><priority>1.0</priority></url>
+  <url><loc>https://VOTRE-DOMAINE/mentions-legales.html</loc><priority>0.3</priority></url>
+</urlset>

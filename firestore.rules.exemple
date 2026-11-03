@@ -1,0 +1,42 @@
+// =====================================================================
+//  EXEMPLE de règles de sécurité Firestore pour Carapace (NON DÉPLOYÉ)
+//  À copier dans : Console Firebase > Firestore Database > Règles > Publier
+//
+//  1) Remplacez ADMIN_UID par l'UID de votre compte administrateur
+//     (Console Firebase > Authentication > Utilisateurs > colonne « UID »).
+//  2) Testez avec le simulateur de règles avant de publier.
+// =====================================================================
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estAdmin() {
+      return request.auth != null && request.auth.uid in ['ADMIN_UID'];
+    }
+
+    // Catalogue : lecture publique (le site doit l'afficher), écriture admin seulement
+    match /produits/{id} {
+      allow read: if true;
+      allow write: if estAdmin();
+    }
+
+    // Demandes de contact : tout le monde peut CRÉER une demande valide,
+    // mais seul l'admin peut les LIRE ou les SUPPRIMER (données personnelles !)
+    match /demandes_contact/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['nom', 'prenom', 'contact', 'raison', 'message', 'date'])
+                    && request.resource.data.nom is string && request.resource.data.nom.size() > 0 && request.resource.data.nom.size() <= 100
+                    && request.resource.data.prenom is string && request.resource.data.prenom.size() <= 100
+                    && request.resource.data.contact is string && request.resource.data.contact.size() > 3 && request.resource.data.contact.size() <= 150
+                    && request.resource.data.raison is string && request.resource.data.raison.size() <= 200
+                    && request.resource.data.message is string && request.resource.data.message.size() <= 5000
+                    && request.resource.data.date is timestamp;
+      allow read, delete: if estAdmin();
+      allow update: if false;
+    }
+
+    // Tout le reste est fermé
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
