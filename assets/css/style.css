@@ -679,6 +679,8 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--ink); line-height: 
   .steps::before { display: none; }
   .quiz-wrap, .faq-wrap, .zone, .contact-grid, .compare-card { grid-template-columns: 1fr; }
   .contact-aside, .detail-gallery-column { position: static; }
+  .contact-card-box { order: 1; }
+  .contact-aside { order: 2; }
   .testi-grid { grid-template-columns: 1fr 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .cta-band { grid-template-columns: 1fr; }
