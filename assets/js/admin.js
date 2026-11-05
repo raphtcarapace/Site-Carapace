@@ -6,6 +6,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendP
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 import { initDevis } from "./devis.js";
+import { initCatalogueMaj } from "./catalogue-maj.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -75,6 +76,12 @@ document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () 
 
 // ---------- Devis ----------
 const devis = initDevis({ db, toast, ouvrirOnglet, getProduits: () => window.produitsData || {} });
+const catalogueMaj = initCatalogueMaj({
+    db,
+    toast,
+    getProduits: () => window.produitsData || {},
+    apres: () => chargerProduitsAdmin()
+});
 
 // ---------- Catégories ----------
 const categoriesParMarque = {
@@ -82,7 +89,10 @@ const categoriesParMarque = {
         "Boîtiers", "Boutons & télécommandes", "Centrales", "Claviers",
         "Détecteurs de bris de glace", "Détecteurs de mouvements",
         "Détecteurs d'ouverture", "Kits de démarrage", "Modules d'intégration",
-        "Modules d'interphonie", "Prolongateurs de portée", "Relais", "Sirènes", "Unités d'alimentation"
+        "Modules d'interphonie", "Prolongateurs de portée", "Relais", "Sirènes", "Unités d'alimentation",
+        "Détecteurs d'incendie", "Déclencheurs manuels d'alarme", "Caméras Wi-Fi",
+        "Prises portables intelligentes", "Détecteurs de fuites", "Vannes d'arrêt",
+        "Détecteurs de qualité de l'air"
     ],
     yale: [
         "Maison connectée", "Serrures connectées", "Coffres-forts",
@@ -389,6 +399,7 @@ async function chargerProduitsAdmin() {
         console.error(e);
         $('tbody-produits').innerHTML = "<tr><td colspan='5' class='empty' style='color:var(--red);'>Erreur de chargement.</td></tr>";
     }
+    if (catalogueMaj) await catalogueMaj.rafraichir();
 }
 
 window.filtrerProduitsAdmin = function () {
@@ -430,7 +441,7 @@ window.filtrerProduitsAdmin = function () {
                     ${data.categorie ? `<div style="font-size:11.5px; color:var(--muted); margin-top:2px;">${esc(data.categorie)}</div>` : ''}
                 </td>
                 <td><span class="badge dark">${esc(nomsMarques[data.marque] || data.marque || '—')}</span></td>
-                <td style="font-weight:800; white-space:nowrap;">${esc(fmtPrix(data.prix))}</td>
+                <td style="font-weight:800; white-space:nowrap;">${esc(isFinite(parseFloat(data.prix)) && parseFloat(data.prix) > 0 ? fmtPrix(data.prix) : 'Sur devis')}</td>
                 <td style="white-space:nowrap;">
                     <button class="btn-sm-edit" data-act="edit" data-id="${esc(id)}"><svg class="i"><use href="#i-edit"/></svg>Modifier</button>
                     <button class="btn-sm" data-act="dup" data-id="${esc(id)}" title="Dupliquer"><svg class="i"><use href="#i-copy"/></svg></button>

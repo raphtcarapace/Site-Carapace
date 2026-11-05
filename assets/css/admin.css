@@ -241,6 +241,21 @@ td .sub { font-size: 12px; color: var(--muted); margin-top: 2px; max-width: 320p
 .cmd-actions label { display: grid; gap: 6px; font-size: 12px; font-weight: 700; color: var(--muted); }
 .cmd-actions select { padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); min-width: 160px; }
 .cmd-warn { margin: 12px 0; padding: 12px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px dashed var(--amber); font-size: 13px; }
+.maj-checklist { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; margin: 12px 0; background: var(--surface); }
+.maj-checklist[hidden] { display: none; }
+.maj-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 13px; cursor: pointer; }
+.maj-row:last-child { border-bottom: 0; }
+.maj-row input { margin-top: 3px; accent-color: var(--red); flex: none; }
+.maj-row b { font-weight: 700; }
+.maj-row small { display: block; color: var(--muted); font-size: 12px; }
+.maj-prix { margin-left: auto; font-weight: 800; white-space: nowrap; font-style: normal; }
+.maj-all { position: sticky; top: 0; background: var(--surface-2); z-index: 1; font-weight: 700; }
+.maj-ok { padding: 12px 14px; border-radius: 12px; background: rgba(22,163,74,.12); color: var(--green); font-weight: 700; }
+.maj-err { color: var(--red); font-weight: 700; }
+.maj-block { margin: 8px 0 12px; }
+.maj-noms { margin: 6px 0 0 18px; }
+.maj-resultat { margin-top: 12px; font-weight: 700; }
+#maj-catalogue { margin-bottom: 22px; }
 @media (max-width: 720px) {
   .cmd-grid { grid-template-columns: 1fr; }
   .cmd-actions .btn { flex: 1 1 100%; justify-content: center; }

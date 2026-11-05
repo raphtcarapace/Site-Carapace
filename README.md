@@ -64,6 +64,10 @@ Copiez **tout** le contenu de `firestore.rules` dans Console Firebase, puis Fire
 - L'onglet **Commandes** du portail suit les statuts. « Créer un devis depuis cette commande » ouvre le module devis déjà rempli.
 - Numéro de commande : `CMD-AAAAMMJJ-XXXX`.
 
+## Mise à jour du catalogue sans fil
+
+Dans le portail, onglet **Catalogue**, panneau **Mise à jour du catalogue**, puis **Appliquer** (une confirmation est demandée). L'outil convertit une seule fois les prix Ajax HT en TTC, retire les deux produits Somfy filaires, et importe `assets/data/produits-sans-fil.json` en ignorant les noms déjà présents. Quand il n'y a plus rien à faire, le panneau affiche **Déjà appliqué**.
+
 ## Une demande n'apparaît pas dans le portail ?
 
 1. Testez avec le site servi par Live Server ou en ligne, **jamais en double-cliquant** sur `index.html`.
