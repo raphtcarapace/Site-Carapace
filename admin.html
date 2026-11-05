@@ -2,6 +2,14 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<script>
+(function () {
+  if (!/github\.io$/i.test(location.hostname)) return;
+  var path = location.pathname.replace(/^\/Site-Carapace(?=\/|$)/, "") || "/";
+  if (path.charAt(0) !== "/") path = "/" + path;
+  location.replace("https://carapace-6ffff.web.app" + path + location.search + location.hash);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carapace Portail · Espace administrateur</title>
 <meta name="robots" content="noindex, nofollow">

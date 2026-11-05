@@ -2,9 +2,24 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<script>
+(function () {
+  if (!/github\.io$/i.test(location.hostname)) return;
+  var path = location.pathname.replace(/^\/Site-Carapace(?=\/|$)/, "") || "/";
+  if (path.charAt(0) !== "/") path = "/" + path;
+  location.replace("https://carapace-6ffff.web.app" + path + location.search + location.hash);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mentions légales & données personnelles — Carapace</title>
-<meta name="description" content="Mentions légales, politique de confidentialité et informations RGPD du site Carapace.">
+<title>Mentions légales | Carapace, Dunkerque, Gravelines, Loon-Plage</title>
+<meta name="description" content="Mentions légales et données personnelles de Carapace. Installation d'alarmes Ajax, Somfy et Yale, devis gratuit, à Dunkerque, Gravelines et Loon-Plage.">
+<link rel="canonical" href="https://carapace-6ffff.web.app/mentions-legales.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Carapace">
+<meta property="og:url" content="https://carapace-6ffff.web.app/mentions-legales.html">
+<meta property="og:title" content="Mentions légales | Carapace, Dunkerque, Gravelines, Loon-Plage">
+<meta property="og:description" content="Mentions légales et données personnelles de Carapace. Installation d'alarmes Ajax, Somfy et Yale, devis gratuit, à Dunkerque, Gravelines et Loon-Plage.">
 <meta name="theme-color" content="#0b1020">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-32.png">

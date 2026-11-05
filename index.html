@@ -2,21 +2,30 @@
 <html lang="fr" class="no-js">
 <head>
     <meta charset="UTF-8">
+    <script>
+    (function () {
+      if (!/github\.io$/i.test(location.hostname)) return;
+      var path = location.pathname.replace(/^\/Site-Carapace(?=\/|$)/, "") || "/";
+      if (path.charAt(0) !== "/") path = "/" + path;
+      location.replace("https://carapace-6ffff.web.app" + path + location.search + location.hash);
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Carapace — Alarme, vidéosurveillance & domotique | Ajax, Somfy, Yale Home</title>
-    <meta name="description" content="Carapace, la protection de vos espaces : alarmes sans fil Ajax, maison connectée Somfy, serrures connectées Yale Home. Étude personnalisée et devis gratuit pour particuliers et professionnels.">
+    <title>Carapace | Alarme sans fil et sécurité à Dunkerque, Gravelines, Loon-Plage</title>
+    <meta name="description" content="Alarmes sans fil Ajax, Somfy et Yale à Dunkerque, Gravelines et Loon-Plage. Installation sur site et devis gratuit pour particuliers et professionnels.">
     <meta name="theme-color" content="#0b1020">
-    <!-- [À COMPLÉTER] : remplacez par l'adresse finale de votre site (ex. https://www.carapace.fr/) -->
-    <!-- <link rel="canonical" href="https://VOTRE-DOMAINE/"> -->
+    <!-- URL publique : https://carapace-6ffff.web.app (remplacer cette adresse partout pour le domaine final, voir README). -->
+    <link rel="canonical" href="https://carapace-6ffff.web.app/">
+    <!-- Google Search Console : coller ici la balise google-site-verification -->
 
     <!-- Partage réseaux sociaux (Open Graph / Facebook / WhatsApp) -->
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:site_name" content="Carapace">
-    <meta property="og:title" content="Carapace — La protection de vos espaces">
-    <meta property="og:description" content="Alarmes, vidéosurveillance et domotique haut de gamme : Ajax, Somfy, Yale Home. Devis gratuit.">
-    <!-- [À COMPLÉTER] : mettez l'adresse complète de l'image une fois le site en ligne (ex. https://www.carapace.fr/assets/img/og-image.jpg) -->
-    <meta property="og:image" content="assets/img/og-image.jpg">
+    <meta property="og:url" content="https://carapace-6ffff.web.app/">
+    <meta property="og:title" content="Carapace | Alarme sans fil et sécurité à Dunkerque, Gravelines, Loon-Plage">
+    <meta property="og:description" content="Alarmes sans fil Ajax, Somfy et Yale à Dunkerque, Gravelines et Loon-Plage. Installation sur site et devis gratuit pour particuliers et professionnels.">
+    <meta property="og:image" content="https://carapace-6ffff.web.app/assets/img/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" href="favicon.ico" sizes="any">
@@ -41,7 +50,7 @@
       "slogan": "La protection de vos espaces",
       "image": "assets/img/og-image.jpg",
       "logo": "assets/img/logo.png",
-      "url": "[À COMPLÉTER : adresse du site]",
+      "url": "https://carapace-6ffff.web.app/",
       "telephone": "[À COMPLÉTER : téléphone]",
       "email": "[À COMPLÉTER : e-mail]",
       "address": {

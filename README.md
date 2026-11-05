@@ -1,6 +1,8 @@
 # Carapace : site vitrine v2
 
-Site statique (HTML, CSS, JavaScript), sans étape de compilation. Il se publie tel quel sur GitHub Pages, Netlify, OVH, etc.
+Site statique (HTML, CSS, JavaScript), sans étape de compilation. Il est hébergé sur Firebase Hosting (projet `carapace-6ffff`), à la racine du domaine : https://carapace-6ffff.web.app
+
+Pour passer plus tard à https://carapace-technologies.fr, remplacer **partout** la chaîne `https://carapace-6ffff.web.app` (canonical, Open Graph, JSON-LD, `sitemap.xml`, `robots.txt`, script de redirection GitHub Pages). Puis ajouter ce domaine dans Firebase Authentication, domaines autorisés.
 
 ## Structure
 
@@ -21,6 +23,7 @@ Site statique (HTML, CSS, JavaScript), sans étape de compilation. Il se publie 
 | `assets/js/paiement-config.js` | Client ID PayPal public (`PAYPAL_CLIENT_ID`, devise EUR) |
 | `assets/js/entreprise-config.js` | **Vos infos d'entreprise** affichées sur les devis PDF (SIRET, adresse...) : **à compléter** |
 | `assets/img/` | Images optimisées (WebP avec repli JPG/PNG), favicon, image de partage |
+| `firebase.json`, `.firebaserc` | Hébergement Firebase (site public à la racine). Les règles Firestore ne sont pas dans `firebase.json`. |
 | `firestore.rules` | Règles de sécurité **prêtes à publier** (avec votre UID administrateur) |
 | `firestore.rules.exemple` | Même chose avec `ADMIN_UID` à remplacer (modèle) |
 | `robots.txt`, `sitemap.xml`, `site.webmanifest` | Référencement et icône d'application |
