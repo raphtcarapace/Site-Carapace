@@ -531,7 +531,6 @@
     }
   });
   document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); sModal.classList.contains('active') ? closeSearch() : openSearch(); }
     if (e.key === 'Escape') { fermerPleinEcran(); closeSearch(); closeMenu(); if (window.CarapacePanier) window.CarapacePanier.fermer(); }
   });
 
@@ -542,11 +541,13 @@
   let etapeCourante = 1;
   const LABELS = {
     appartement: 'Appartement', maison: 'Maison avec extérieur', pro: 'Locaux professionnels',
-    intrusion: 'Sécurité & Alarmes', domotique: 'Confort & Domotique', complet: 'Protection Totale',
-    cameras: 'Voir à distance', exterieur: "Protéger l'extérieur", acces: 'Accès sans clé', animaux: 'Animaux à la maison'
+    intrusion: 'Sécurité et alarme', video: 'Alarme et caméras', acces: 'Accès sans clé',
+    cameras: 'Voir à distance', exterieur: "Protéger l'extérieur", animaux: 'Animaux à la maison',
+    incendie: 'Fumée et incendie', fuite: "Fuite d'eau"
   };
+  const LIEU = { appartement: 'un appartement', maison: 'une maison avec extérieur', pro: 'des locaux professionnels' };
 
-  function totalEtapes() { return choixBesoin === 'domotique' ? 3 : 4; }
+  function totalEtapes() { return choixBesoin === 'acces' ? 3 : 4; }
   function afficherEtape(n) {
     etapeCourante = n;
     $$('#quiz .question').forEach(q => q.classList.remove('active'));
@@ -569,7 +570,7 @@
 
   function repondre(etape, choix) {
     if (etape === 1) { choixLogement = choix; aller(2); }
-    else if (etape === 2) { choixBesoin = choix; aller(choix === 'domotique' ? 4 : 3); }
+    else if (etape === 2) { choixBesoin = choix; aller(choix === 'acces' ? 4 : 3); }
     else if (etape === 3) { choixMarque = choix; aller(4); }
   }
 
@@ -588,43 +589,15 @@
   $('#quiz-restart').addEventListener('click', () => recommencerQuizz());
 
   let dernierResultat = null;
+  function choixCourant() {
+    return { logement: choixLogement, objectif: choixBesoin, marque: choixMarque, options: [...choixOptions] };
+  }
+  function nomsMarquesReco(reco) {
+    const noms = { ajax: 'Ajax', somfy: 'Somfy', yale: 'Yale Home' };
+    return [...new Set((reco.lignes || []).map(l => l.marque))].map(m => noms[m] || m).join(' et ');
+  }
   function calculerResultat() {
-    let titre = '', description = '', marqueText = '', niveau = '', marque = '';
-    if (choixBesoin === 'domotique') {
-      titre = 'SOLUTIONS YALE HOME';
-      description = 'Sécurisez vos portes avec nos serrures intelligentes et surveillez vos accès à distance.';
-      marqueText = 'Gamme Yale Home recommandée';
-      marque = 'yale';
-    } else {
-      if (choixLogement === 'appartement') {
-        niveau = 'ESSENTIEL';
-        description = "La base parfaite : Panneau de commande, détecteur de mouvement, détecteur d'ouverture et télécommande. L'idéal pour sécuriser vos accès.";
-      } else if (choixBesoin === 'complet') {
-        niveau = 'TOUT CONFORT';
-        description = 'Protection et confort absolus : Caméras, alarme complète, création de scénarios domotiques et contrôle centralisé.';
-      } else {
-        niveau = 'CONFORT';
-        description = "Dissuasion maximale : Détecteurs extérieurs avec caméra, sirènes intérieures et extérieures. Arrêtez l'effraction avant qu'elle n'arrive.";
-      }
-      marque = choixMarque === 'ajax' ? 'ajax' : 'somfy';
-      const nomMarque = marque === 'ajax' ? 'Ajax' : 'Somfy';
-      titre = `PACK ${niveau} ${nomMarque.toUpperCase()}`;
-      marqueText = `Gamme ${nomMarque} privilégiée`;
-    }
-    $('#titre-pack').textContent = titre;
-    $('#description-pack').textContent = description;
-    $('#marque-pack').textContent = marqueText;
-    $('#logement-pack').textContent = LABELS[choixLogement] || '';
-
-    const extras = [];
-    if (choixLogement === 'pro') extras.push(['Locaux professionnels', 'nous adaptons la configuration à vos horaires, vos accès et vos zones sensibles.']);
-    if (choixOptions.has('cameras')) extras.push(['Voir à distance', 'ajout de caméras ou de détecteurs avec photo pour vérifier une alerte depuis votre smartphone.']);
-    if (choixOptions.has('exterieur')) extras.push(["Protection de l'extérieur", "détecteurs extérieurs et sirène extérieure pour dissuader avant l'intrusion."]);
-    if (choixOptions.has('acces')) extras.push(['Accès sans clé', 'une serrure connectée Yale Home pour gérer les entrées à distance.']);
-    if (choixOptions.has('animaux')) extras.push(['Animaux', 'nous choisissons et réglons des détecteurs adaptés à la présence de vos animaux.']);
-    $('#result-extras').innerHTML = extras.map(([t, d]) => `<li><svg width="20" height="20" style="color:var(--red);flex:none;margin-top:2px"><use href="#i-check-circle"/></svg><span><b>${esc(t)} :</b> ${esc(d)}</span></li>`).join('');
-
-    dernierResultat = { titre, marque, niveau };
+    dernierResultat = { choix: choixCourant() };
     afficherRecommandations();
     afficherEtape('resultat');
     const card = $('#quiz'); const r = card.getBoundingClientRect();
@@ -633,43 +606,74 @@
 
   function afficherRecommandations() {
     const wrap = $('#reco-wrap'), grid = $('#reco-products');
-    if (!dernierResultat || !state.loaded) { wrap.style.display = 'none'; return; }
-    const { marque, niveau } = dernierResultat;
-    const items = brandItems(marque);
-    const n = p => normalize(p.nom);
-    const score = (p) => {
-      let s = p.est_pack ? 10 : 0; const name = n(p);
-      if (marque === 'ajax') {
-        if (niveau === 'ESSENTIEL') s += (name.includes('starterkit') && !name.includes('cam') ? 8 : 0) - (name.includes('plus') ? 2 : 0);
-        if (niveau === 'CONFORT') s += name.includes('cam') ? 8 : 0;
-        if (niveau === 'TOUT CONFORT') s += (name.includes('cam') ? 5 : 0) + (name.includes('plus') ? 4 : 0);
-      } else if (marque === 'somfy') {
-        if (niveau === 'TOUT CONFORT') s += (name.includes('domotique') ? 5 : 0) + (name.includes('alarm') ? 5 : 0);
-        else s += name.includes('alarm') ? 8 : 0;
-      }
-      return s;
-    };
-    const picks = items.filter(p => p.est_pack).sort((a, b) => score(b) - score(a)).slice(0, 2);
-    const addFirst = (pool, re) => { const m = pool.find(p => !p.est_pack && re.test(normalize(p.nom + ' ' + (p.categorie || ''))) && !picks.some(x => x.id === p.id)); if (m) picks.push(m); };
-    if (choixOptions.has('cameras')) addFirst(items, /cam/);
-    if (choixOptions.has('exterieur')) addFirst(items, /outdoor|exterieur|street/);
-    if (choixOptions.has('acces')) addFirst(brandItems('yale'), /serrure/);
-    if (picks.length < 2) items.filter(p => !picks.some(x => x.id === p.id)).slice(0, 3 - picks.length).forEach(p => picks.push(p));
-    const final = picks.slice(0, 4);
-    if (!final.length) { wrap.style.display = 'none'; return; }
-    grid.innerHTML = final.map(p => `<button type="button" class="reco-item" data-product="${esc(p.id)}">${safeUrl(p.image) ? `<img src="${esc(safeUrl(p.image))}" alt="" loading="lazy">` : ''}<b>${esc(p.nom)}</b><span>${esc(fmtPrice(p.prix))}</span></button>`).join('');
+    if (!dernierResultat || !window.CarapaceConfigurateur) { if (wrap) wrap.style.display = 'none'; return; }
+    const reco = window.CarapaceConfigurateur.recommander(list(), dernierResultat.choix);
+    dernierResultat.reco = reco;
+    const lieu = LIEU[reco.logement] || 'votre lieu';
+    const bits = [];
+    if (reco.alarm) bits.push(reco.marque === 'somfy' ? 'une alarme Somfy' : 'une alarme Ajax');
+    if (reco.pets) bits.push('des détecteurs qui ignorent les animaux');
+    if (reco.outdoor) bits.push("la protection de l'extérieur");
+    if (reco.cameras) bits.push('des caméras');
+    if (reco.locks) bits.push('une serrure connectée');
+    if (reco.fire) bits.push('un détecteur de fumée');
+    if (reco.leak) bits.push("un détecteur de fuite d'eau");
+    let titre = reco.locks && !reco.alarm ? 'Accès sans clé' : (reco.cameras && reco.alarm ? 'Alarme et caméras' : (reco.alarm ? 'Alarme sans fil' : 'Votre configuration'));
+    if (reco.locks && reco.alarm) titre += ' et serrure';
+    $('#titre-pack').textContent = titre;
+    $('#description-pack').textContent = bits.length
+      ? `Pour ${lieu} : ${bits.join(', ')}. Chaque produit ci-dessous répond à une de vos réponses.`
+      : 'Voici les équipements qui correspondent à vos réponses.';
+    $('#marque-pack').textContent = nomsMarquesReco(reco) || 'Catalogue Carapace';
+    $('#logement-pack').textContent = LABELS[reco.logement] || '';
+    const extras = [];
+    if (reco.pets) extras.push(['Animaux', "Détecteur de mouvement qui ignore les animaux. Ce n'est pas une serrure."]);
+    if (reco.outdoor) extras.push(['Extérieur', 'Détecteur et sirène pour le jardin, la façade ou l\'allée.']);
+    if (reco.locks) extras.push(['Accès sans clé', 'Serrure Yale Home, uniquement parce que vous l\'avez demandé.']);
+    if (reco.cameras) extras.push(['Caméras', 'Pour voir à distance.']);
+    if (reco.fire) extras.push(['Fumée', 'Détecteur de fumée, parce que vous l\'avez demandé.']);
+    if (reco.leak) extras.push(['Fuite d\'eau', 'Détecteur de fuite, parce que vous l\'avez demandé.']);
+    $('#result-extras').innerHTML = extras.map(([t, d]) => `<li><svg width="20" height="20" style="color:var(--red);flex:none;margin-top:2px"><use href="#i-check-circle"/></svg><span><b>${esc(t)} :</b> ${esc(d)}</span></li>`).join('');
+    if (!reco.lignes.length) {
+      wrap.style.display = 'none';
+      const cart = $('#quiz-cart'); if (cart) cart.hidden = true;
+      return;
+    }
+    grid.innerHTML = reco.lignes.map(l => {
+      const action = l.surDevis
+        ? `<button type="button" class="btn btn-outline btn-sm" data-devis-produit="${esc(l.id)}">Demander un devis</button>`
+        : `<button type="button" class="btn btn-primary btn-sm" data-add-cart="${esc(l.id)}">Ajouter au panier</button>`;
+      return `<article class="reco-item">
+        <button type="button" class="reco-open" data-product="${esc(l.id)}">
+          ${safeUrl(l.image) ? `<img src="${esc(safeUrl(l.image))}" alt="" loading="lazy">` : ''}
+          <b>${esc(l.nom)}</b>
+          <span class="reco-price">${esc(fmtPrice(l.prix))}${l.qte > 1 ? ' · Qté ' + l.qte : ''}</span>
+        </button>
+        <p class="reco-why"><b>Pourquoi :</b> ${esc(l.pourquoi)}</p>
+        ${action}
+      </article>`;
+    }).join('');
     wrap.style.display = '';
+    const cart = $('#quiz-cart');
+    if (cart) cart.hidden = !reco.lignes.some(l => !l.surDevis);
   }
 
   $('#quiz-devis').addEventListener('click', () => {
-    if (!dernierResultat) return;
-    const raison = dernierResultat.marque === 'ajax' ? 'Demande de devis alarme Ajax' : dernierResultat.marque === 'somfy' ? 'Demande de devis Somfy' : 'Demande de devis serrure Yale';
+    if (!dernierResultat || !dernierResultat.reco) return;
+    const reco = dernierResultat.reco;
+    const raison = reco.locks && !reco.alarm ? 'Demande de devis serrure Yale' : (reco.marque === 'somfy' ? 'Demande de devis Somfy' : 'Demande de devis alarme Ajax');
     const details = [
       'Logement : ' + (LABELS[choixLogement] || '-'),
       'Objectif : ' + (LABELS[choixBesoin] || '-'),
-      choixOptions.size ? 'Besoins particuliers : ' + [...choixOptions].map(k => LABELS[k]).join(', ') : ''
+      choixOptions.size ? 'Besoins particuliers : ' + [...choixOptions].map(k => LABELS[k]).filter(Boolean).join(', ') : '',
+      'Produits recommandés :',
+      ...reco.lignes.map(l => '- ' + l.nom + (l.qte > 1 ? ' x' + l.qte : '') + ' (' + l.pourquoi + ')')
     ].filter(Boolean).join('\n');
-    ouvrirContactAvecMotif(dernierResultat.titre, { raison, details });
+    ouvrirContactAvecMotif($('#titre-pack').textContent, { raison, details });
+  });
+  $('#quiz-cart').addEventListener('click', () => {
+    if (!dernierResultat || !dernierResultat.reco || !window.CarapacePanier) return;
+    dernierResultat.reco.lignes.filter(l => !l.surDevis).forEach(l => window.CarapacePanier.ajouter(l.id));
   });
 
   function recommencerQuizz() {
@@ -682,7 +686,11 @@
   $$('[data-quiz-start]').forEach(card => card.addEventListener('click', () => {
     recommencerQuizz();
     choixLogement = card.dataset.quizStart; historique.push(1);
-    if (card.dataset.quizNeed) { choixBesoin = card.dataset.quizNeed; historique.push(2); afficherEtape(3); }
+    if (card.dataset.quizNeed) {
+      choixBesoin = card.dataset.quizNeed === 'complet' ? 'video' : card.dataset.quizNeed;
+      historique.push(2);
+      afficherEtape(choixBesoin === 'acces' ? 4 : 3);
+    }
     else afficherEtape(2);
     setHash('configurateur');
     $('#configurateur').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });

@@ -430,8 +430,13 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--ink); line-height: 
 .reco-item { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 16px; border: 1px solid var(--line); background: #fff; text-align: left; transition: border-color .25s, transform .3s var(--ease); }
 .reco-item:hover { border-color: var(--red); transform: translateY(-3px); }
 .reco-item img { height: 84px; width: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.reco-open { display: flex; flex-direction: column; gap: 8px; width: 100%; text-align: left; }
 .reco-item b { font-family: var(--font-head); font-size: 13px; color: var(--ink); line-height: 1.3; }
-.reco-item span { font-size: 13px; font-weight: 800; color: var(--red); }
+.reco-price { font-size: 13px; font-weight: 800; color: var(--red); }
+.reco-why { font-size: 12.5px; font-weight: 500; color: var(--muted); line-height: 1.45; }
+.reco-why b { color: var(--ink); font-size: 12px; }
+.reco-item .btn { width: 100%; white-space: normal; }
+.reco-note { margin: 4px 0 16px; color: var(--muted); font-size: .92rem; }
 .result-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
 /* ---------- Témoignages ---------- */

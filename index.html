@@ -87,6 +87,8 @@
     <symbol id="i-paw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.05Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></symbol>
     <symbol id="i-tree" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-6"/><path d="M12 2 5 12h4l-3 4h12l-3-4h4z"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6 6 10a6 6 0 0 1-12 0c0-2 1.5-4 2.5-5C9 10 10 11 10 13a2 2 0 0 0 4 0c0-2-2-4-2-10z"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s7 7.2 7 12a7 7 0 0 1-14 0c0-4.8 7-12 7-12z"/></symbol>
     <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
     <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></symbol>
     <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
@@ -118,7 +120,7 @@
     </nav>
     <div class="header-actions">
       <button class="icon-btn search-trigger" type="button" data-open-search aria-label="Rechercher un produit">
-        <svg><use href="#i-search"/></svg><span class="lbl">Rechercher</span><kbd>Ctrl K</kbd>
+        <svg><use href="#i-search"/></svg><span class="lbl">Rechercher</span>
       </button>
       <button class="icon-btn cart-trigger" type="button" id="btn-panier" data-open-cart aria-label="Ouvrir le panier" aria-expanded="false" aria-controls="panier-drawer">
         <svg><use href="#i-cart"/></svg>
@@ -227,9 +229,9 @@
       </div>
       <div class="solutions-grid">
         <button type="button" class="card spot solution-card reveal" data-quiz-start="appartement"><span class="num">01</span><div class="icon-tile"><svg><use href="#i-building"/></svg></div><h3>Appartement</h3><p>Protection intelligente, surveillance discrète et confort quotidien pour un logement plus sûr et plus agréable.</p><span class="go">Sécurité moderne <svg><use href="#i-arrow"/></svg></span></button>
-        <button type="button" class="card spot solution-card reveal" style="--d:.08s" data-quiz-start="maison"><span class="num">02</span><div class="icon-tile"><svg><use href="#i-home"/></svg></div><h3>Maison avec extérieur</h3><p>Protection complète des accès, du jardin, des allées et des points d’entrée avec un écosystème cohérent.</p><span class="go">Écosystème complet <svg><use href="#i-arrow"/></svg></span></button>
+        <button type="button" class="card spot solution-card reveal" style="--d:.08s" data-quiz-start="maison"><span class="num">02</span><div class="icon-tile"><svg><use href="#i-home"/></svg></div><h3>Maison avec extérieur</h3><p>Protection du jardin, des allées et des ouvertures, avec des détecteurs extérieurs adaptés.</p><span class="go">Protection extérieure <svg><use href="#i-arrow"/></svg></span></button>
         <button type="button" class="card spot solution-card reveal" style="--d:.16s" data-quiz-start="pro"><span class="num">03</span><div class="icon-tile"><svg><use href="#i-briefcase"/></svg></div><h3>Locaux pro</h3><p>Solutions fiables pour les bureaux, commerces et petites entreprises qui exigent surveillance et contrôle sérieux.</p><span class="go">Gestion sécurisée <svg><use href="#i-arrow"/></svg></span></button>
-        <button type="button" class="card spot solution-card premium reveal" style="--d:.24s" data-quiz-start="maison" data-quiz-need="complet"><span class="num">04</span><div class="icon-tile"><svg><use href="#i-star"/></svg></div><h3>Protection totale</h3><p>Une logique de pack complète avec alarme, caméra, domotique et accès intelligent pour une maison vraiment connectée.</p><span class="go">Pack premium <svg><use href="#i-arrow"/></svg></span></button>
+        <button type="button" class="card spot solution-card premium reveal" style="--d:.24s" data-quiz-start="maison" data-quiz-need="video"><span class="num">04</span><div class="icon-tile"><svg><use href="#i-star"/></svg></div><h3>Alarme et caméras</h3><p>Alarme complète, caméras et détection extérieure. Une serrure n'est ajoutée que si vous la demandez.</p><span class="go">Voir et alerter <svg><use href="#i-arrow"/></svg></span></button>
       </div>
     </div>
   </section>
@@ -294,15 +296,15 @@
           <h3>Quel est votre objectif principal&nbsp;?</h3>
           <p class="hint">Ce qui compte le plus pour vous aujourd’hui.</p>
           <div class="options-grid">
-            <button type="button" class="btn-option" data-step="2" data-value="intrusion"><span class="o-ic"><svg><use href="#i-shield"/></svg></span>Sécurité &amp; Alarmes<small>Dissuader et alerter</small></button>
-            <button type="button" class="btn-option" data-step="2" data-value="domotique"><span class="o-ic"><svg><use href="#i-phone-app"/></svg></span>Confort &amp; Domotique<small>Accès et pilotage à distance</small></button>
-            <button type="button" class="btn-option" data-step="2" data-value="complet"><span class="o-ic"><svg><use href="#i-star"/></svg></span>Protection Totale<small>Alarme + caméras + domotique</small></button>
+            <button type="button" class="btn-option" data-step="2" data-value="intrusion"><span class="o-ic"><svg><use href="#i-shield"/></svg></span>Sécurité et alarme<small>Dissuader et alerter</small></button>
+            <button type="button" class="btn-option" data-step="2" data-value="video"><span class="o-ic"><svg><use href="#i-camera"/></svg></span>Alarme et caméras<small>Voir ce qui se passe</small></button>
+            <button type="button" class="btn-option" data-step="2" data-value="acces"><span class="o-ic"><svg><use href="#i-key"/></svg></span>Accès sans clé<small>Serrure connectée Yale</small></button>
           </div>
         </div>
 
         <div id="etape-3" class="question">
           <h3>Quelle expérience correspond le plus à vos attentes&nbsp;?</h3>
-          <p class="hint">Deux écosystèmes haut de gamme, deux philosophies.</p>
+          <p class="hint">Pour l'alarme. Les serrures Yale s'ajoutent seulement si vous choisissez l'accès sans clé.</p>
           <div class="options-grid">
             <button type="button" class="btn-option" data-step="3" data-value="ajax"><span class="o-ic"><svg><use href="#i-radio"/></svg></span>Design épuré &amp; 100% Sans Fil<small>Gamme Ajax</small></button>
             <button type="button" class="btn-option" data-step="3" data-value="somfy"><span class="o-ic"><svg><use href="#i-home"/></svg></span>Écosystème complet &amp; Excellence Française<small>Gamme Somfy</small></button>
@@ -311,12 +313,14 @@
 
         <div id="etape-4" class="question">
           <h3>Des besoins particuliers&nbsp;?</h3>
-          <p class="hint">Facultatif : sélectionnez tout ce qui vous concerne, puis validez.</p>
+          <p class="hint">Facultatif. Cochez seulement ce qui vous concerne, puis validez. Une serrure n'est proposée que pour l'accès sans clé.</p>
           <div class="options-grid">
-            <button type="button" class="btn-option" data-option="cameras" aria-pressed="false"><span class="o-ic"><svg><use href="#i-camera"/></svg></span>Voir à distance<small>Caméras / levée de doute</small></button>
+            <button type="button" class="btn-option" data-option="cameras" aria-pressed="false"><span class="o-ic"><svg><use href="#i-camera"/></svg></span>Voir à distance<small>Caméras</small></button>
             <button type="button" class="btn-option" data-option="exterieur" aria-pressed="false"><span class="o-ic"><svg><use href="#i-tree"/></svg></span>Protéger l’extérieur<small>Jardin, façade, allée</small></button>
             <button type="button" class="btn-option" data-option="acces" aria-pressed="false"><span class="o-ic"><svg><use href="#i-key"/></svg></span>Accès sans clé<small>Serrure connectée</small></button>
-            <button type="button" class="btn-option" data-option="animaux" aria-pressed="false"><span class="o-ic"><svg><use href="#i-paw"/></svg></span>Animaux à la maison<small>Détection adaptée</small></button>
+            <button type="button" class="btn-option" data-option="animaux" aria-pressed="false"><span class="o-ic"><svg><use href="#i-paw"/></svg></span>Animaux à la maison<small>Détecteur qui les ignore</small></button>
+            <button type="button" class="btn-option" data-option="incendie" aria-pressed="false"><span class="o-ic"><svg><use href="#i-flame"/></svg></span>Fumée et incendie<small>Détecteur de fumée</small></button>
+            <button type="button" class="btn-option" data-option="fuite" aria-pressed="false"><span class="o-ic"><svg><use href="#i-drop"/></svg></span>Fuite d'eau<small>Détecteur de fuite</small></button>
           </div>
           <div class="quiz-nav" style="justify-content:flex-end"><button type="button" class="btn btn-primary" id="quiz-finish">Voir ma recommandation <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
         </div>
@@ -333,9 +337,10 @@
             <div class="result-reco-title">Produits qui pourraient vous convenir</div>
             <div class="reco-grid" id="reco-products"></div>
           </div>
-          <p style="margin-bottom: 18px; font-weight: 600; color: var(--ink);">Un expert Carapace va concevoir votre devis sur-mesure.</p>
+          <p class="reco-note">Achat en ligne : matériel seul, sans installation. Pour une pose par nos techniciens, demandez un devis.</p>
           <div class="result-actions">
-            <button type="button" class="btn btn-primary" id="quiz-devis">Demander mon devis <svg class="arrow"><use href="#i-arrow"/></svg></button>
+            <button type="button" class="btn btn-outline" id="quiz-cart" hidden>Ajouter le matériel au panier</button>
+            <button type="button" class="btn btn-primary" id="quiz-devis">Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg></button>
             <button type="button" class="btn-link" id="quiz-restart">Refaire le test</button>
           </div>
         </div>
@@ -775,6 +780,7 @@
   </aside>
 </div>
 
+<script src="assets/js/configurateur.js"></script>
 <script src="assets/js/site.js"></script>
 <script type="module" src="assets/js/firebase-site.js"></script>
 <script type="module" src="assets/js/panier.js"></script>
