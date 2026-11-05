@@ -1,0 +1,60 @@
+// Images Somfy hebergees en local : asset.somfy.com renvoie 403 aux navigateurs.
+// Cle = URL d'origine (et variante decodee) ou nom de fichier. Ne pas modifier Firestore.
+(function (root) {
+  var MAP = {
+  "byUrl": {
+    "https://asset.somfy.com/1200x1200/Image/040efb11-90cc-40e7-a586-bbe29225eaa8_visuel-pack-produits-securite-alarme-home-alarm-advanced-1875259-detail-app.jpg": "assets/img/produits/somfy/040efb11-90cc-40e7-a586-bbe29225eaa8_visuel-pack-produits-securite-alarme-home-alarm-advanced-1875259-detail-app.jpg",
+    "https://asset.somfy.com/1200x1200/Image/7ab69e8a-d200-4992-bf55-adb3b3a9ae7e_visuel-produit-securite-indoor-camera-somfy-protect-app01.jpg": "assets/img/produits/somfy/7ab69e8a-d200-4992-bf55-adb3b3a9ae7e_visuel-produit-securite-indoor-camera-somfy-protect-app01.jpg",
+    "https://asset.somfy.com/1200x1200/Image/ff405063-872b-4af8-a709-42f165a1eda2_visuel-produit-securite-indoor-camera-detail01.jpg": "assets/img/produits/somfy/ff405063-872b-4af8-a709-42f165a1eda2_visuel-produit-securite-indoor-camera-detail01.jpg",
+    "https://asset.somfy.com/Image/01b81bad-e9af-485c-ac0c-1f7ae25c39c6_181115_Valve&radiator_Face_HD.jpg": "assets/img/produits/somfy/01b81bad-e9af-485c-ac0c-1f7ae25c39c6_181115_Valve-and-radiator_Face_HD.jpg",
+    "https://asset.somfy.com/Image/05a53d30-7031-4ac0-b811-2ddbd1ea7fbd_pack-3D-SHA-ADVANCED_(1).png": "assets/img/produits/somfy/05a53d30-7031-4ac0-b811-2ddbd1ea7fbd_pack-3D-SHA-ADVANCED_1.png",
+    "https://asset.somfy.com/Image/0e7010c0-6229-4b4d-802b-8eb7b771525f_2401507_-_Somfy_Indoor_Camera_-_Packaging.png": "assets/img/produits/somfy/0e7010c0-6229-4b4d-802b-8eb7b771525f_2401507_-_Somfy_Indoor_Camera_-_Packaging.png",
+    "https://asset.somfy.com/Image/1a7e7b99-5f52-4719-a2a6-181c8938ac57_Keypad_3.jpg": "assets/img/produits/somfy/1a7e7b99-5f52-4719-a2a6-181c8938ac57_Keypad_3.jpg",
+    "https://asset.somfy.com/Image/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box%20domotique%20TaHoma%20switch%20picto%20applicatifs%201200x1200.jpg": "assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg",
+    "https://asset.somfy.com/Image/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box domotique TaHoma switch picto applicatifs 1200x1200.jpg": "assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg",
+    "https://asset.somfy.com/Image/b372efc6-e1b7-4228-a779-b0f473e4501c_IOValve.jpg": "assets/img/produits/somfy/b372efc6-e1b7-4228-a779-b0f473e4501c_IOValve.jpg",
+    "https://asset.somfy.com/Image/f01bfa23-bd2b-4aa9-a546-d90c126a8d3b_SOMFY_PLUG_IO_E_TYPE_STAR_ON1.jpg": "assets/img/produits/somfy/f01bfa23-bd2b-4aa9-a546-d90c126a8d3b_SOMFY_PLUG_IO_E_TYPE_STAR_ON1.jpg",
+    "https://asset.somfy.com/Image/f7ff3f80-d14a-4247-8df5-8317fb516866_Somfy-Thermostat_03.jpg": "assets/img/produits/somfy/f7ff3f80-d14a-4247-8df5-8317fb516866_Somfy-Thermostat_03.jpg"
+  },
+  "byName": {
+    "040efb11-90cc-40e7-a586-bbe29225eaa8_visuel-pack-produits-securite-alarme-home-alarm-advanced-1875259-detail-app.jpg": "assets/img/produits/somfy/040efb11-90cc-40e7-a586-bbe29225eaa8_visuel-pack-produits-securite-alarme-home-alarm-advanced-1875259-detail-app.jpg",
+    "7ab69e8a-d200-4992-bf55-adb3b3a9ae7e_visuel-produit-securite-indoor-camera-somfy-protect-app01.jpg": "assets/img/produits/somfy/7ab69e8a-d200-4992-bf55-adb3b3a9ae7e_visuel-produit-securite-indoor-camera-somfy-protect-app01.jpg",
+    "ff405063-872b-4af8-a709-42f165a1eda2_visuel-produit-securite-indoor-camera-detail01.jpg": "assets/img/produits/somfy/ff405063-872b-4af8-a709-42f165a1eda2_visuel-produit-securite-indoor-camera-detail01.jpg",
+    "01b81bad-e9af-485c-ac0c-1f7ae25c39c6_181115_Valve&radiator_Face_HD.jpg": "assets/img/produits/somfy/01b81bad-e9af-485c-ac0c-1f7ae25c39c6_181115_Valve-and-radiator_Face_HD.jpg",
+    "05a53d30-7031-4ac0-b811-2ddbd1ea7fbd_pack-3D-SHA-ADVANCED_(1).png": "assets/img/produits/somfy/05a53d30-7031-4ac0-b811-2ddbd1ea7fbd_pack-3D-SHA-ADVANCED_1.png",
+    "0e7010c0-6229-4b4d-802b-8eb7b771525f_2401507_-_Somfy_Indoor_Camera_-_Packaging.png": "assets/img/produits/somfy/0e7010c0-6229-4b4d-802b-8eb7b771525f_2401507_-_Somfy_Indoor_Camera_-_Packaging.png",
+    "1a7e7b99-5f52-4719-a2a6-181c8938ac57_Keypad_3.jpg": "assets/img/produits/somfy/1a7e7b99-5f52-4719-a2a6-181c8938ac57_Keypad_3.jpg",
+    "7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box domotique TaHoma switch picto applicatifs 1200x1200.jpg": "assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg",
+    "7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box%20domotique%20TaHoma%20switch%20picto%20applicatifs%201200x1200.jpg": "assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg",
+    "b372efc6-e1b7-4228-a779-b0f473e4501c_IOValve.jpg": "assets/img/produits/somfy/b372efc6-e1b7-4228-a779-b0f473e4501c_IOValve.jpg",
+    "f01bfa23-bd2b-4aa9-a546-d90c126a8d3b_SOMFY_PLUG_IO_E_TYPE_STAR_ON1.jpg": "assets/img/produits/somfy/f01bfa23-bd2b-4aa9-a546-d90c126a8d3b_SOMFY_PLUG_IO_E_TYPE_STAR_ON1.jpg",
+    "f7ff3f80-d14a-4247-8df5-8317fb516866_Somfy-Thermostat_03.jpg": "assets/img/produits/somfy/f7ff3f80-d14a-4247-8df5-8317fb516866_Somfy-Thermostat_03.jpg"
+  }
+};
+  var PLACEHOLDER = "assets/img/logo-mark.png";
+
+  function decodeUrl(u) {
+    try { return decodeURIComponent(u); } catch (e) { return u; }
+  }
+  function fileName(u) {
+    var path = String(u || "").split("?")[0];
+    var base = path.split("/").pop() || "";
+    return decodeUrl(base);
+  }
+  function imageProduit(url) {
+    var s = String(url == null ? "" : url).trim();
+    if (!s) return "";
+    var d = decodeUrl(s);
+    if (MAP.byUrl[s]) return MAP.byUrl[s];
+    if (MAP.byUrl[d]) return MAP.byUrl[d];
+    if (/asset\.somfy\.com/i.test(s) || /asset\.somfy\.com/i.test(d)) {
+      var name = fileName(s);
+      if (MAP.byName[name]) return MAP.byName[name];
+      if (MAP.byName[s.split("/").pop()]) return MAP.byName[s.split("/").pop()];
+      return PLACEHOLDER;
+    }
+    return s;
+  }
+  root.imageProduit = imageProduit;
+  root.IMAGE_PRODUIT_PLACEHOLDER = PLACEHOLDER;
+})(typeof window !== "undefined" ? window : globalThis);

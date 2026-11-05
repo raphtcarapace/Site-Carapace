@@ -761,7 +761,8 @@ h1, h2, h3, h4 { font-family: var(--font-head); color: var(--ink); line-height: 
 .panier-vide[hidden] { display: none; }
 .panier-lignes { list-style: none; overflow: auto; padding: 8px 16px 16px; flex: 1; }
 .panier-ligne { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: center; }
-.panier-nom { min-width: 0; }
+.panier-thumb { width: 48px; height: 48px; object-fit: contain; border-radius: 10px; background: #f3f5f9; flex: none; }
+.panier-nom { min-width: 0; flex: 1; }
 .panier-nom b { display: block; font-family: var(--font-head); font-size: .95rem; line-height: 1.3; }
 .panier-nom small { color: var(--muted); font-size: 12.5px; }
 .panier-qte { display: flex; align-items: center; gap: 6px; flex: none; }

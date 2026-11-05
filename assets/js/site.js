@@ -20,6 +20,15 @@
     if (!s || /^\s*(javascript|data:text)/i.test(s)) return '';
     return s;
   }
+  const IMG_PH = 'assets/img/logo-mark.png';
+  function produitSrc(u) {
+    const safe = safeUrl(u);
+    if (!safe) return '';
+    return window.imageProduit ? window.imageProduit(safe) : safe;
+  }
+  function imgOnError() {
+    return ` onerror="this.onerror=null;this.src='${IMG_PH}'"`;
+  }
   const priceFmt = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
   function fmtPrice(p) {
     const n = parseFloat(p);
@@ -194,7 +203,7 @@
     return p.marque === 'ajax' ? 'Demande de devis alarme Ajax' : p.marque === 'somfy' ? 'Demande de devis Somfy' : p.marque === 'yale' ? 'Demande de devis serrure Yale' : 'Renseignement sur un produit';
   }
   function productCard(p, opts = {}) {
-    const img = safeUrl(p.image);
+    const img = produitSrc(p.image);
     const featured = p.a_la_une || p.est_a_la_une || p.featured;
     const badges = [];
     if (p.est_pack) badges.push('<span class="badge red">Pack</span>');
@@ -206,7 +215,7 @@
         <button type="button" class="p-open" data-product="${esc(p.id)}" aria-label="${esc(p.nom)} — ${esc(fmtPrice(p.prix))}">
           <div class="p-media">
             <div class="p-badges">${badges.join('')}</div>
-            ${img ? `<img src="${esc(img)}" alt="${esc(p.nom)}" loading="lazy" decoding="async">` : ''}
+            ${img ? `<img src="${esc(img)}" alt="${esc(p.nom)}" loading="lazy" decoding="async"${imgOnError()}>` : ''}
           </div>
           <div class="p-body">
             <div class="p-brand">${esc(BRAND_SHORT[p.marque] || p.marque || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}</div>
@@ -404,7 +413,8 @@
     const p = state.products[id]; if (!p) return;
     currentDetailId = id;
     const mainImg = $('#detail-image');
-    mainImg.src = safeUrl(p.image) || mainImg.src; mainImg.alt = p.nom || '';
+    mainImg.onerror = function () { this.onerror = null; this.src = IMG_PH; };
+    mainImg.src = produitSrc(p.image) || IMG_PH; mainImg.alt = p.nom || '';
     $('#detail-titre').textContent = p.nom || '';
     $('#detail-crumb-name').textContent = p.nom || '';
     const brandLink = $('#detail-crumb-brand');
@@ -422,12 +432,12 @@
     $('#detail-marque').textContent = (BRAND_LABEL[p.marque] || p.marque || '') + (p.categorie ? ' · ' + p.categorie : '');
 
     const thumbs = $('#detail-thumbnails'); thumbs.innerHTML = '';
-    const imgs = [p.image, ...(Array.isArray(p.images_secondaires) ? p.images_secondaires : [])].map(safeUrl).filter(Boolean);
+    const imgs = [p.image, ...(Array.isArray(p.images_secondaires) ? p.images_secondaires : [])].map(produitSrc).filter(Boolean);
     if (imgs.length > 1) {
       imgs.forEach((src, i) => {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'thumb-item' + (i === 0 ? ' active' : ''); b.setAttribute('aria-label', 'Vue ' + (i + 1));
-        b.innerHTML = `<img src="${esc(src)}" alt="" loading="lazy">`;
+        b.innerHTML = `<img src="${esc(src)}" alt="" loading="lazy"${imgOnError()}>`;
         b.addEventListener('click', () => { mainImg.src = src; $$('.thumb-item', thumbs).forEach(x => x.classList.remove('active')); b.classList.add('active'); });
         thumbs.appendChild(b);
       });
@@ -512,7 +522,7 @@
     items = items.slice(0, 12); sFocus = -1;
     sResults.innerHTML = items.length ? (q ? '' : '<div class="result-reco-title" style="padding:8px 12px 4px">Suggestions</div>') + items.map(p => `
       <button type="button" class="search-result" data-product="${esc(p.id)}">
-        ${safeUrl(p.image) ? `<img src="${esc(safeUrl(p.image))}" alt="" loading="lazy">` : ''}
+        ${produitSrc(p.image) ? `<img src="${esc(produitSrc(p.image))}" alt="" loading="lazy"${imgOnError()}>` : ''}
         <span><b>${esc(p.nom)}</b><small>${esc(BRAND_SHORT[p.marque] || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}${p.est_pack ? ' · Pack' : ''}</small></span>
         <span class="sr-price">${esc(fmtPrice(p.prix))}</span>
       </button>`).join('') : `<div class="search-empty">Aucun résultat pour « ${esc(sInput.value)} ».<br><a href="#contact" data-page="contact" style="color:var(--red);font-weight:700">Demandez-nous conseil →</a></div>`;
@@ -645,7 +655,7 @@
         : `<button type="button" class="btn btn-primary btn-sm" data-add-cart="${esc(l.id)}">Ajouter au panier</button>`;
       return `<article class="reco-item">
         <button type="button" class="reco-open" data-product="${esc(l.id)}">
-          ${safeUrl(l.image) ? `<img src="${esc(safeUrl(l.image))}" alt="" loading="lazy">` : ''}
+          ${produitSrc(l.image) ? `<img src="${esc(produitSrc(l.image))}" alt="" loading="lazy"${imgOnError()}>` : ''}
           <b>${esc(l.nom)}</b>
           <span class="reco-price">${esc(fmtPrice(l.prix))}${l.qte > 1 ? ' · Qté ' + l.qte : ''}</span>
         </button>

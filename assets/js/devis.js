@@ -331,9 +331,10 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
         }).sort((a, b) => String(prods[a].nom).localeCompare(String(prods[b].nom), 'fr'));
         $('picker-list').innerHTML = ids.length ? ids.map((id) => {
             const p = prods[id];
-            const src = /^(javascript|data|vbscript):/i.test(String(p.image || '')) ? '' : (p.image || '');
+            const brut = /^(javascript|data|vbscript):/i.test(String(p.image || '')) ? '' : (p.image || '');
+            const src = window.imageProduit ? window.imageProduit(brut) : brut;
             return `<button type="button" class="picker-item" data-pid="${esc(id)}">
-                <img src="${esc(src)}" alt="" loading="lazy">
+                <img src="${esc(src || 'assets/img/logo-mark.png')}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/logo-mark.png'">
                 <span><b>${esc(p.nom)}</b><small>${esc(NOMS_MARQUES[p.marque] || p.marque || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}${p.est_pack ? ' · Pack' : ''}</small></span>
                 <em>${isFinite(parseFloat(p.prix)) ? esc(eur(parseFloat(p.prix))) + ' TTC' : 'Sur devis'}</em>
                 <i class="add"><svg class="i"><use href="#i-plus"/></svg></i></button>`;

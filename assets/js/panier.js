@@ -77,7 +77,8 @@ function apercuLigne(l) {
     const p = produitLocal(l.id);
     const prix = p ? prixNombre(p.prix) : NaN;
     const nom = p && p.nom ? String(p.nom) : "Article";
-    return { nom, prix, connu: isFinite(prix) && prix > 0 };
+    const image = window.imageProduit ? window.imageProduit(p && p.image) : ((p && p.image) || "");
+    return { nom, prix, image, connu: isFinite(prix) && prix > 0 };
 }
 
 function rendreTiroir() {
@@ -101,6 +102,7 @@ function rendreTiroir() {
         if (!a.connu) prixIncomplet = true;
         else cents += Math.round(a.prix * 100) * l.quantite;
         return `<li class="panier-ligne">
+            <img class="panier-thumb" src="${esc(a.image || "assets/img/logo-mark.png")}" alt="" onerror="this.onerror=null;this.src='assets/img/logo-mark.png'">
             <div class="panier-nom"><b>${esc(a.nom)}</b><small>${a.connu ? esc(eur(a.prix)) + " TTC" : "Prix confirmé à la validation"}</small></div>
             <div class="panier-qte">
                 <button type="button" data-qte="-1" data-id="${esc(l.id)}" aria-label="Diminuer la quantité">−</button>

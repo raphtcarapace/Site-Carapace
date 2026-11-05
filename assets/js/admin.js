@@ -29,6 +29,15 @@ function safeUrl(u) {
     if (/^(javascript|data|vbscript):/i.test(s)) return '';
     return s;
 }
+const IMG_PH = 'assets/img/logo-mark.png';
+function produitSrc(u) {
+    const safe = safeUrl(u);
+    if (!safe) return '';
+    return window.imageProduit ? window.imageProduit(safe) : safe;
+}
+function imgOnError() {
+    return ` onerror="this.onerror=null;this.src='${IMG_PH}'"`;
+}
 function fmtPrix(p) {
     const n = parseFloat(p);
     return isFinite(n) ? n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €' : '—';
@@ -128,11 +137,11 @@ selectMarque.addEventListener('change', mettreAJourCategories);
 
 // ---------- Aperçu en direct ----------
 function majApercu() {
-    const img = safeUrl($('image').value);
+    const img = produitSrc($('image').value);
     const pvImg = $('pv-img');
+    pvImg.onerror = function () { this.onerror = null; this.src = IMG_PH; };
     if (img) { pvImg.src = img; pvImg.hidden = false; $('pv-ph').hidden = true; }
     else { pvImg.removeAttribute('src'); pvImg.hidden = true; $('pv-ph').hidden = false; }
-    pvImg.onerror = () => { pvImg.hidden = true; $('pv-ph').hidden = false; $('pv-ph').textContent = 'Image introuvable : vérifiez le lien ou le nom du fichier'; };
     pvImg.onload = () => { $('pv-ph').textContent = 'Le visuel principal apparaîtra ici'; };
     const cat = selectCategorie.value;
     $('pv-brand').textContent = (nomsMarques[selectMarque.value] || '') + (cat ? ' · ' + cat : '');
@@ -143,8 +152,8 @@ function majApercu() {
     const pack = $('pack').checked, une = $('a_la_une').checked;
     $('pv-card').classList.toggle('is-pack', pack);
     $('pv-tags').innerHTML = (pack ? '<span class="badge">PACK</span>' : '') + (une ? '<span class="badge blue">À LA UNE</span>' : '');
-    const sec = $('images_secondaires').value.split(/[,\n]/).map((s) => safeUrl(s.trim())).filter(Boolean).slice(0, 8);
-    $('pv-thumbs').innerHTML = sec.map((s) => `<img src="${esc(s)}" alt="" loading="lazy">`).join('');
+    const sec = $('images_secondaires').value.split(/[,\n]/).map((s) => produitSrc(s.trim())).filter(Boolean).slice(0, 8);
+    $('pv-thumbs').innerHTML = sec.map((s) => `<img src="${esc(s)}" alt="" loading="lazy"${imgOnError()}>`).join('');
 }
 ['image', 'nom', 'desc', 'prix', 'images_secondaires', 'pack', 'a_la_une', 'categorie'].forEach((id) => {
     $(id).addEventListener('input', majApercu);
@@ -433,7 +442,7 @@ window.filtrerProduitsAdmin = function () {
             const une = data.a_la_une || data.est_a_la_une || data.featured;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><img src="${esc(safeUrl(data.image))}" class="miniature-img" alt="" loading="lazy"></td>
+                <td><img src="${esc(produitSrc(data.image) || IMG_PH)}" class="miniature-img" alt="" loading="lazy"${imgOnError()}></td>
                 <td>
                     <strong>${esc(data.nom)}</strong>
                     ${data.est_pack ? ' <span class="badge">PACK</span>' : ''}
