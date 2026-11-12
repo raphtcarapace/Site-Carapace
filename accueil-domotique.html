@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/accueil-domotique.css?v=6">
+<link rel="stylesheet" href="assets/css/accueil-domotique.css?v=5">
 <style>.reveal-failsafe .reveal{opacity:1;transform:none}</style>
 <script>document.documentElement.classList.remove("no-js");</script>
 </head>
@@ -89,7 +89,7 @@
           <span class="line"><span>au service de</span></span>
           <span class="line"><span class="text-grad">vos espaces</span></span>
         </h1>
-        <p class="hero-sub">Alarme Ajax, caméra Yale, serrure Linus et box Somfy TaHoma. Quatre équipements du catalogue, sans fil, choisis avec vous. Le devis est gratuit.</p>
+        <p class="hero-sub">Sur la façade, MotionCam Outdoor et StreetSiren Ajax. À l’intérieur, l’alarme, la serrure Yale Linus et la box Somfy. Le devis est gratuit.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="index.html#contact">Demander un devis gratuit <svg class="arrow"><use href="#i-arrow"/></svg></a>
           <a class="btn btn-ghost" href="#vitrine">Voir les produits</a>
@@ -101,27 +101,15 @@
         </div>
       </div>
       <div class="hero-visual">
-        <div class="hero-frame domo-stage">
-          <div class="domo-vitrine">
-            <figure>
-              <img src="assets/img/domotique/produits/ajax-hub2.png" alt="Centrale Ajax Hub 2, boîtier noir carré" width="250" height="250">
-              <figcaption>Hub 2 · Ajax</figcaption>
-            </figure>
-            <figure>
-              <img src="assets/img/domotique/produits/yale-linus.png" alt="Serrure Yale Linus L2, finitions argent et noir" width="800" height="800">
-              <figcaption>Linus L2 · Yale</figcaption>
-            </figure>
-            <figure>
-              <img src="assets/img/domotique/produits/yale-camera-ext.png" alt="Caméra extérieure Yale, boîtier blanc et face noire" width="800" height="800">
-              <figcaption>Caméra extérieure · Yale</figcaption>
-            </figure>
-            <figure>
-              <img src="assets/img/domotique/produits/somfy-tahoma.jpg" alt="Box Somfy TaHoma switch, base jaune, pictogrammes volets et éclairage" width="952" height="850">
-              <figcaption>TaHoma switch · Somfy</figcaption>
-            </figure>
-          </div>
+        <!-- SLOT: hero -->
+        <div class="hero-frame" data-slot="hero">
+          <picture>
+            <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/hero-800.webp">
+            <img src="assets/img/domotique/hero.webp" alt="Façade au crépuscule : détecteur MotionCam Outdoor Ajax et sirène StreetSiren Ajax" width="1280" height="720" fetchpriority="high">
+          </picture>
           <div class="scan-line"></div>
         </div>
+        <p class="domo-hero-cap">MotionCam Outdoor et StreetSiren Ajax, sur la façade au crépuscule.</p>
       </div>
     </div>
     <a class="scroll-hint" href="#vitrine"><span></span>Découvrir</a>
@@ -149,27 +137,31 @@
       <div class="section-head reveal">
         <div>
           <div class="eyebrow">Vitrine</div>
-          <h2>Quatre produits du catalogue</h2>
+          <h2>Là où se posent les équipements</h2>
         </div>
         <a class="btn btn-dark" href="index.html#contact">Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg></a>
       </div>
-      <div class="products-grid">
-        <article class="card spot product-card reveal" id="alarme">
-          <div class="p-media">
-            <img src="assets/img/domotique/produits/ajax-hub2.png" alt="Centrale Ajax Hub 2" width="250" height="250">
+      <div class="domo-board">
+        <article class="card spot product-card scene-card w3 reveal" id="securite">
+          <!-- SLOT: univers-securite -->
+          <div class="p-media" data-slot="univers-securite">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/univers-securite-800.webp">
+              <img src="assets/img/domotique/univers-securite.webp" alt="Hub 2 Ajax blanc, MotionProtect au mur et DoorProtect sur la porte" width="1152" height="864">
+            </picture>
           </div>
           <div class="p-body">
-            <div class="p-brand">Ajax · Alarme</div>
-            <div class="p-title">Hub 2</div>
-            <p class="p-desc">La centrale de l’alarme Ajax. Les détecteurs s’y rattachent, et le système se pilote depuis le smartphone.</p>
+            <div class="p-brand">Ajax · Sécurité</div>
+            <div class="p-title">Hub 2, MotionProtect, DoorProtect</div>
+            <p class="p-desc">Le Hub 2 est posé sur le banc. Le MotionProtect est au mur, voyant vert. Le DoorProtect est sur le montant de la porte.</p>
           </div>
           <div class="p-foot">
             <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
           </div>
         </article>
-        <article class="card spot product-card reveal" id="video" style="--d:.08s">
+        <article class="card spot product-card w3 reveal" id="video" style="--d:.08s">
           <div class="p-media">
-            <img src="assets/img/domotique/produits/yale-camera-ext.png" alt="Caméra extérieure intelligente Yale" width="800" height="800">
+            <img src="assets/img/domotique/produits/yale-camera-ext.png" alt="Caméra extérieure intelligente Yale, boîtier blanc et face noire" width="800" height="800">
           </div>
           <div class="p-body">
             <div class="p-brand">Yale · Vidéo</div>
@@ -180,7 +172,7 @@
             <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
           </div>
         </article>
-        <article class="card spot product-card reveal" id="acces" style="--d:.16s">
+        <article class="card spot product-card w2 reveal" id="acces">
           <div class="p-media">
             <img src="assets/img/domotique/produits/yale-linus.png" alt="Serrure connectée Yale Linus L2 en argent et en noir" width="800" height="800">
           </div>
@@ -193,14 +185,35 @@
             <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
           </div>
         </article>
-        <article class="card spot product-card reveal" id="confort" style="--d:.24s">
-          <div class="p-media">
-            <img src="assets/img/domotique/produits/somfy-tahoma.jpg" alt="Box Somfy TaHoma switch" width="952" height="850">
+        <article class="card spot product-card scene-card w2 reveal" id="confort" style="--d:.08s">
+          <!-- SLOT: univers-confort -->
+          <div class="p-media" data-slot="univers-confort">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/univers-confort-800.webp">
+              <img src="assets/img/domotique/univers-confort.webp" alt="Box Somfy TaHoma switch, blanche à base jaune, dans un séjour avec des volets" width="1152" height="864">
+            </picture>
           </div>
           <div class="p-body">
             <div class="p-brand">Somfy · Confort</div>
             <div class="p-title">TaHoma switch</div>
-            <p class="p-desc">Box blanche à base jaune. Volets et éclairage, si ces équipements sont au devis.</p>
+            <p class="p-desc">La box blanche à base jaune, posée dans le séjour. Des volets sont visibles derrière, si ce confort est au devis.</p>
+          </div>
+          <div class="p-foot">
+            <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
+          </div>
+        </article>
+        <article class="card spot product-card scene-card w2 reveal" id="energie" style="--d:.16s">
+          <!-- SLOT: univers-energie -->
+          <div class="p-media" data-slot="univers-energie">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/univers-energie-800.webp">
+              <img src="assets/img/domotique/univers-energie.webp" alt="Tête thermostatique io Somfy montée sur le robinet d’un radiateur, téléphone avec une température à côté" width="1152" height="864">
+            </picture>
+          </div>
+          <div class="p-body">
+            <div class="p-brand">Somfy · Énergie</div>
+            <div class="p-title">Tête thermostatique io</div>
+            <p class="p-desc">La tête Somfy est montée sur le robinet du radiateur. Le téléphone à côté affiche la température.</p>
           </div>
           <div class="p-foot">
             <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
@@ -215,38 +228,60 @@
       <div class="section-head reveal">
         <div>
           <div class="eyebrow">Scénarios</div>
-          <h2>Ce que ces quatre produits couvrent</h2>
+          <h2>Je pars, j’arrive, une alerte</h2>
         </div>
       </div>
       <div class="domo-scenarios">
-        <article class="card spot solution-card reveal">
-          <span class="num">01</span>
-          <div class="icon-tile"><svg><use href="#i-shield"/></svg></div>
-          <h3>Départ</h3>
-          <p>Le Hub 2 met l’alarme en service quand vous partez. Le clavier exact est choisi sur le devis, pas affiché ici.</p>
+        <article class="card spot domo-scene reveal">
+          <!-- SLOT: scenario-depart -->
+          <div class="domo-shot" data-slot="scenario-depart">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/scenario-depart-800.webp">
+              <img src="assets/img/domotique/scenario-depart.webp" alt="KeyPad Ajax blanc à côté de la porte, un doigt sur le clavier" width="1152" height="864">
+            </picture>
+          </div>
+          <h3>Je pars</h3>
+          <p>Le KeyPad Ajax est à côté de la porte. C’est avec lui que l’alarme se met en service au départ.</p>
         </article>
-        <article class="card spot solution-card reveal" style="--d:.08s">
-          <span class="num">02</span>
-          <div class="icon-tile"><svg><use href="#i-lock"/></svg></div>
-          <h3>Arrivée</h3>
-          <p>Linus L2 ouvre depuis le smartphone, sans changer la porte : la serrure se pose sur le cylindre existant.</p>
+        <article class="card spot domo-scene reveal" style="--d:.08s">
+          <!-- SLOT: scenario-arrivee -->
+          <div class="domo-shot" data-slot="scenario-arrivee">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/scenario-arrivee-800.webp">
+              <img src="assets/img/domotique/scenario-arrivee.webp" alt="Clavier à code Yale sur le mur extérieur et serrure Linus L2 noire à l’intérieur de la porte" width="1152" height="864">
+            </picture>
+          </div>
+          <h3>J’arrive</h3>
+          <p>Le clavier à code Yale est sur le mur, dehors. La serrure Linus L2, noire, est fixée à l’intérieur de la porte.</p>
         </article>
-        <article class="card spot solution-card reveal" style="--d:.16s">
-          <span class="num">03</span>
-          <div class="icon-tile"><svg><use href="#i-camera"/></svg></div>
+        <article class="card spot domo-scene reveal" style="--d:.16s">
+          <!-- SLOT: scenario-alerte -->
+          <div class="domo-shot" data-slot="scenario-alerte">
+            <picture>
+              <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/scenario-alerte-800.webp">
+              <img src="assets/img/domotique/scenario-alerte.webp" alt="Smartphone montrant un séjour, avec la Somfy Indoor Camera posée à côté" width="1152" height="864">
+            </picture>
+          </div>
           <h3>Alerte</h3>
-          <p>La caméra extérieure Yale montre l’extérieur. Les autres caméras du catalogue ne sont ajoutées que si vous les demandez.</p>
+          <p>La Somfy Indoor Camera est dans la pièce. Le smartphone affiche le séjour filmé.</p>
         </article>
       </div>
     </div>
   </section>
 
   <section class="section" id="sans-fil" style="padding-top:0">
-    <div class="container">
-      <div class="section-head center reveal" style="flex-direction:column;align-items:center;text-align:center">
+    <div class="container domo-split">
+      <!-- SLOT: sans-fil -->
+      <div class="domo-shot reveal" data-slot="sans-fil">
+        <picture>
+          <source type="image/webp" media="(max-width: 700px)" srcset="assets/img/domotique/sans-fil-800.webp">
+          <img src="assets/img/domotique/sans-fil.webp" alt="Pose à la main d’un DoorProtect Ajax sur le cadre de la porte, sans perçage" width="1152" height="864">
+        </picture>
+      </div>
+      <div class="reveal" style="--d:.1s">
         <div class="eyebrow">Sans fil</div>
-        <h2>100 % sans fil, sans travaux</h2>
-        <p class="lead" style="max-width:640px">Hub 2, caméra Yale, Linus L2 et TaHoma switch se posent sans saignée. La pose, si vous la souhaitez, est chiffrée à part sur le devis.</p>
+        <h2 class="h2" style="margin-bottom:14px">100 % sans fil, sans travaux</h2>
+        <p class="lead">Le DoorProtect se fixe à la main sur le cadre. L’aimant est déjà sur la porte. Pas de perçage, pas de saignée. La pose par nos soins, si vous la souhaitez, est chiffrée à part sur le devis.</p>
       </div>
     </div>
   </section>
@@ -315,10 +350,11 @@
       <div>
         <h4>Sur cette page</h4>
         <ul>
-          <li><a href="#alarme">Hub 2</a></li>
+          <li><a href="#securite">Sécurité</a></li>
           <li><a href="#video">Caméra Yale</a></li>
           <li><a href="#acces">Linus L2</a></li>
           <li><a href="#confort">TaHoma switch</a></li>
+          <li><a href="#energie">Tête thermostatique</a></li>
         </ul>
       </div>
       <div>
@@ -351,6 +387,6 @@
 </div>
 
 <script>setTimeout(function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(e){var r=e.getBoundingClientRect();if(r.top<innerHeight)e.classList.add("in");});document.documentElement.classList.add("reveal-failsafe");},2500);</script>
-<script type="module" src="assets/js/accueil-domotique.js?v=6"></script>
+<script type="module" src="assets/js/accueil-domotique.js?v=5"></script>
 </body>
 </html>

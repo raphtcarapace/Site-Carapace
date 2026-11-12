@@ -1,19 +1,22 @@
-Photos officielles des produits du catalogue, hébergées pour la proposition.
-Aucune image générée n'est utilisée.
+Visuels générés pour Carapace à partir des photos officielles des produits.
 
-produits/ajax-hub2.png
-  Hub 2 (2G) Jeweller
-  Même fichier que le champ image du catalogue, rendu @2 :
-  https://ajax.systems/api/cdn-img/?img=%2Fupload%2Fhub_256999a1dd%402.png&1688287078
+hero.webp, hero-800.webp
+  Façade au crépuscule : MotionCam Outdoor et StreetSiren Ajax.
+scenario-depart.webp, scenario-depart-800.webp
+  Je pars : KeyPad Ajax à côté de la porte.
+scenario-arrivee.webp, scenario-arrivee-800.webp
+  J'arrive : clavier à code Yale et serrure Linus L2 à l'intérieur de la porte.
+scenario-alerte.webp, scenario-alerte-800.webp
+  Alerte : smartphone et Somfy Indoor Camera.
+univers-securite.webp, univers-securite-800.webp
+  Hub 2, MotionProtect et DoorProtect Ajax.
+univers-confort.webp, univers-confort-800.webp
+  Box Somfy TaHoma switch dans un séjour.
+univers-energie.webp, univers-energie-800.webp
+  Tête thermostatique io Somfy sur un radiateur.
+sans-fil.webp, sans-fil-800.webp
+  DoorProtect Ajax fixé à la main, sans perçage.
 
-produits/yale-linus.png
-  Serrure connectée Linus L2 Wi-Fi
-  https://yalehome.fr/media/catalog/product/6/0/60a98dce7f56caccceb3989dc7e5ff0d7f9d004f348e4e79caa988b2aa09fa92.png
-
-produits/yale-camera-ext.png
-  Caméra extérieure intelligente Yale
-  https://yalehome.fr/media/catalog/product/p/r/product_image_d2c_2__1_1.png
-
-produits/somfy-tahoma.jpg
-  Box TaHoma switch (visuel officiel déjà dans le dépôt, recadré sans changer le produit)
-  assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg
+Photos produit du catalogue, non générées :
+produits/yale-camera-ext.png   Caméra extérieure intelligente Yale
+produits/yale-linus.png        Serrure connectée Linus L2 Wi-Fi
