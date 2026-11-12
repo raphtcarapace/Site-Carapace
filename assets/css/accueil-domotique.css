@@ -1,0 +1,187 @@
+/* Proposition d'accueil domotique. N'altère pas la page d'accueil actuelle. */
+.domo-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-h) + 36px) 0 88px;
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+}
+.domo-hero-photo { position: absolute; inset: 0; z-index: -2; }
+.domo-hero-photo img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 62%;
+  transform: scale(1.04);
+  animation: domoKen 26s var(--ease) infinite alternate;
+}
+@keyframes domoKen { to { transform: scale(1.12); } }
+.domo-hero-shade {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(6,10,20,.9) 0%, rgba(6,10,20,.62) 38%, rgba(6,10,20,.18) 68%, rgba(6,10,20,.42) 100%),
+    linear-gradient(180deg, rgba(6,10,20,.42) 0%, transparent 22%, rgba(6,10,20,.25) 62%, rgba(6,10,20,.78) 100%);
+}
+.domo-hero-shade::after {
+  content: ""; position: absolute; inset: 0; opacity: .35;
+  background-image: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 55%);
+  mask-image: linear-gradient(90deg, #000 0%, transparent 55%);
+}
+.domo-hero-copy { max-width: 680px; position: relative; z-index: 2; }
+.domo-hero h1 {
+  color: #fff;
+  font-size: clamp(2.7rem, 5.5vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: .96;
+  margin-bottom: 22px;
+}
+.domo-hero h1 .line { display: block; overflow: hidden; }
+.domo-hero h1 .line > span { display: inline-block; animation: lineUp 1s var(--ease) both; }
+.domo-hero h1 .line:nth-child(2) > span { animation-delay: .1s; }
+.domo-hero h1 .line:nth-child(3) > span { animation-delay: .2s; }
+.domo-hero .hero-sub { font-size: clamp(1.05rem, 1.45vw, 1.22rem); color: rgba(255,255,255,.84); max-width: 560px; margin-bottom: 32px; }
+.domo-hero .scroll-hint { z-index: 2; }
+
+.domo-chip { z-index: 3; }
+.domo-chip.chip-1 { top: 22%; right: max(24px, calc((100% - 1200px) / 2)); left: auto; }
+.domo-chip.chip-2 { top: 46%; right: max(64px, calc((100% - 1080px) / 2)); left: auto; }
+.domo-chip.chip-3 { top: auto; bottom: 16%; right: max(36px, calc((100% - 1160px) / 2)); left: auto; }
+
+.domo-bento {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-template-rows: minmax(280px, 34vw) minmax(280px, 34vw);
+  gap: 16px;
+}
+.domo-bento .tile-sec { grid-row: 1 / span 2; }
+.domo-tile {
+  position: relative; display: flex; align-items: flex-end; overflow: hidden;
+  border-radius: 28px; min-height: 260px; color: #fff; isolation: isolate;
+  box-shadow: var(--shadow);
+}
+.domo-tile img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform .9s var(--ease);
+}
+.domo-tile:hover img { transform: scale(1.07); }
+.domo-tile .veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(6,10,20,.05) 20%, rgba(6,10,20,.82) 100%);
+  z-index: 1;
+}
+.domo-tile .cap { position: relative; z-index: 2; padding: 26px 24px 22px; }
+.domo-tile h3 { color: #fff; font-size: clamp(1.35rem, 2vw, 1.85rem); font-weight: 900; margin-bottom: 6px; }
+.domo-tile p { color: rgba(255,255,255,.82); font-size: .95rem; max-width: 36ch; }
+.domo-tile .k { display: block; font-family: var(--font-head); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #ffb4bc; margin-bottom: 8px; }
+
+.domo-scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.domo-scene {
+  position: relative; min-height: 520px; border-radius: 28px; overflow: hidden;
+  display: flex; align-items: flex-end; color: #fff; isolation: isolate; box-shadow: var(--shadow);
+}
+.domo-scene img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform .9s var(--ease);
+}
+.domo-scene:hover img { transform: scale(1.06); }
+.domo-scene .veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(6,10,20,.08) 30%, rgba(6,10,20,.86) 100%);
+}
+.domo-scene .cap { position: relative; z-index: 2; padding: 28px 24px; }
+.domo-scene h3 { color: #fff; font-size: 1.55rem; font-weight: 900; margin-bottom: 8px; }
+.domo-scene p { color: rgba(255,255,255,.84); font-size: .98rem; }
+.domo-alert {
+  position: absolute; z-index: 3; top: 22px; left: 22px; right: 22px;
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 18px;
+  background: rgba(15,23,42,.72); border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 18px 40px -16px rgba(0,0,0,.6);
+  animation: floatY 6s ease-in-out infinite;
+}
+.domo-alert b { display: block; font-family: var(--font-head); font-size: .95rem; }
+.domo-alert span { display: block; color: rgba(255,255,255,.72); font-size: 13px; line-height: 1.4; }
+.domo-alert .dot {
+  width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; flex: none;
+  background: var(--red); box-shadow: 0 0 0 6px rgba(215,38,56,.25);
+}
+
+.domo-rail-wrap { position: relative; }
+.domo-rail {
+  display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 6px 2px 18px; scrollbar-width: thin;
+}
+.domo-rail .product-card { flex: 0 0 min(300px, 82vw); scroll-snap-align: start; }
+.domo-rail .product-card:hover { transform: translateY(-6px); }
+.domo-rail-nav { display: flex; gap: 10px; }
+.domo-rail-nav button {
+  width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--line);
+  background: #fff; color: var(--ink); display: grid; place-items: center;
+  box-shadow: var(--shadow-sm); transition: transform .3s var(--ease), color .2s, border-color .2s;
+}
+.domo-rail-nav button:hover { color: var(--red); border-color: rgba(215,38,56,.35); transform: translateY(-2px); }
+.domo-rail-nav svg { width: 18px; height: 18px; }
+
+.domo-brands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.domo-brand {
+  position: relative; overflow: hidden; border-radius: 28px; min-height: 280px;
+  display: flex; align-items: flex-end; color: #fff; isolation: isolate;
+}
+.domo-brand img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
+.domo-brand:hover img { transform: scale(1.06); }
+.domo-brand .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,16,32,.15), rgba(11,16,32,.88)); }
+.domo-brand .cap { position: relative; z-index: 1; padding: 26px 24px; }
+.domo-brand h3 { color: #fff; font-size: 1.6rem; font-weight: 900; letter-spacing: .04em; margin-bottom: 8px; }
+.domo-brand p { color: rgba(255,255,255,.8); }
+.domo-brand .go { display: inline-flex; margin-top: 14px; font-family: var(--font-head); font-weight: 800; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: #ffb4bc; }
+
+.domo-split { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
+.domo-frame {
+  border-radius: 32px; overflow: hidden; min-height: 460px; position: relative;
+  box-shadow: 0 40px 90px -36px rgba(15,23,42,.55);
+}
+.domo-frame img { width: 100%; height: 100%; min-height: 460px; object-fit: cover; transition: transform .9s var(--ease); }
+.domo-frame:hover img { transform: scale(1.05); }
+.domo-points { list-style: none; display: grid; gap: 12px; margin-top: 22px; }
+.domo-points li {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 16px; background: #fff; border: 1px solid var(--line);
+}
+.domo-points svg { width: 22px; height: 22px; color: var(--red); flex: none; margin-top: 2px; }
+.domo-steps { grid-template-columns: repeat(3, 1fr); }
+.domo-towns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.domo-towns span {
+  padding: 10px 16px; border-radius: 999px; background: #fff; border: 1px solid var(--line);
+  font-family: var(--font-head); font-weight: 800; font-size: .92rem;
+}
+.domo-contact-card { padding: clamp(22px, 3vw, 32px); border-radius: 24px; }
+.domo-contact-card a { color: var(--red); font-weight: 800; }
+.domo-contact-card .todo { margin-left: 6px; }
+
+@media (max-width: 1024px) {
+  .domo-bento { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+  .domo-bento .tile-sec { grid-row: auto; min-height: 420px; }
+  .domo-scenes, .domo-brands { grid-template-columns: 1fr; }
+  .domo-scene { min-height: 420px; }
+  .domo-split { grid-template-columns: 1fr; }
+  .domo-chip.chip-2 { display: none; }
+  .domo-chip.chip-1 { top: auto; bottom: 108px; right: 16px; }
+  .domo-chip.chip-3 { bottom: 28px; right: 16px; }
+}
+@media (max-width: 680px) {
+  .domo-hero { align-items: flex-end; min-height: 92svh; padding-bottom: 36px; }
+  .domo-hero .scroll-hint { display: none; }
+  .domo-hero-actions .btn { flex: 1 1 100%; }
+  .domo-chip { display: none; }
+  .domo-bento { grid-template-columns: 1fr; }
+  .domo-tile, .domo-bento .tile-sec { min-height: 360px; }
+  .domo-frame, .domo-frame img { min-height: 280px; }
+  .domo-alert { left: 14px; right: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .domo-hero-photo img, .domo-alert { animation: none; }
+}
