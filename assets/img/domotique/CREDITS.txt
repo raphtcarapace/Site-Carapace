@@ -1,63 +1,19 @@
-Photos de la proposition d'accueil domotique.
-Licence : usage commercial libre, attribution non obligatoire.
-Aucune photo n'est présentée comme un cliché des villes desservies.
+Photos officielles des produits du catalogue, hébergées pour la proposition.
+Aucune image générée n'est utilisée.
 
-hero.webp, hero-900.webp
-  Maison contemporaine au crépuscule, intérieurs éclairés.
-  Source : https://images.unsplash.com/photo-1600585154340-be6161a56a0c
-  Page : https://unsplash.com/photos/1600585154340-be6161a56a0c
-  Licence : Unsplash License — https://unsplash.com/license
+produits/ajax-hub2.png
+  Hub 2 (2G) Jeweller
+  Même fichier que le champ image du catalogue, rendu @2 :
+  https://ajax.systems/api/cdn-img/?img=%2Fupload%2Fhub_256999a1dd%402.png&1688287078
 
-univers-securite.webp
-  Maison contemporaine, grandes baies vitrées.
-  Source : https://images.unsplash.com/photo-1512917774080-9991f1c4c750
-  Page : https://unsplash.com/photos/1512917774080-9991f1c4c750
-  Licence : Unsplash License — https://unsplash.com/license
+produits/yale-linus.png
+  Serrure connectée Linus L2 Wi-Fi
+  https://yalehome.fr/media/catalog/product/6/0/60a98dce7f56caccceb3989dc7e5ff0d7f9d004f348e4e79caa988b2aa09fa92.png
 
-univers-video.webp
-  Séjour ouvert sur l'extérieur, baies coulissantes.
-  Source : https://images.unsplash.com/photo-1600607687939-ce8a6c25118c
-  Page : https://unsplash.com/photos/1600607687939-ce8a6c25118c
-  Licence : Unsplash License — https://unsplash.com/license
+produits/yale-camera-ext.png
+  Caméra extérieure intelligente Yale
+  https://yalehome.fr/media/catalog/product/p/r/product_image_d2c_2__1_1.png
 
-univers-acces.webp
-  Entrée d'une maison blanche, porte et allée.
-  Source : https://images.pexels.com/photos/1115804/pexels-photo-1115804.jpeg
-  Page : https://www.pexels.com/photo/1115804/
-  Licence : Pexels License — https://www.pexels.com/license/
-
-univers-confort.webp
-  Séjour avec lampadaire et grandes fenêtres.
-  Source : https://images.unsplash.com/photo-1618221195710-dd6b41faaea6
-  Page : https://unsplash.com/photos/1618221195710-dd6b41faaea6
-  Licence : Unsplash License — https://unsplash.com/license
-
-univers-energie.webp
-  Cuisine contemporaine, éclairage sous meubles.
-  Source : https://images.unsplash.com/photo-1600585152220-90363fe7e115
-  Page : https://unsplash.com/photos/1600585152220-90363fe7e115
-  Licence : Unsplash License — https://unsplash.com/license
-
-scenario-depart.webp
-  Façade contemporaine, allée et porte d'entrée.
-  Source : https://images.unsplash.com/photo-1600047509358-9dc75507daeb
-  Page : https://unsplash.com/photos/1600047509358-9dc75507daeb
-  Licence : Unsplash License — https://unsplash.com/license
-
-scenario-arrivee.webp
-  Porte d'entrée ouverte, lumière chaude au crépuscule.
-  Source : https://images.unsplash.com/photo-1600585154526-990dced4db0d
-  Page : https://unsplash.com/photos/1600585154526-990dced4db0d
-  Licence : Unsplash License — https://unsplash.com/license
-
-scenario-alerte.webp
-  Chambre le soir, lampes allumées, rideaux.
-  Source : https://images.unsplash.com/photo-1616594039964-ae9021a400a0
-  Page : https://unsplash.com/photos/1616594039964-ae9021a400a0
-  Licence : Unsplash License — https://unsplash.com/license
-
-sans-fil.webp
-  Grand séjour lumineux, fenêtres et éclairage.
-  Source : https://images.unsplash.com/photo-1600210491892-03d54c0aaf87
-  Page : https://unsplash.com/photos/1600210491892-03d54c0aaf87
-  Licence : Unsplash License — https://unsplash.com/license
+produits/somfy-tahoma.jpg
+  Box TaHoma switch (visuel officiel déjà dans le dépôt, recadré sans changer le produit)
+  assets/img/produits/somfy/7110fcb3-3bd8-4856-ac05-4d2c19936bb7_box-domotique-TaHoma-switch-picto-applicatifs-1200x1200.jpg

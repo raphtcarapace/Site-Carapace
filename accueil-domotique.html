@@ -13,23 +13,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Carapace | La technologie au service de vos espaces</title>
-<meta name="description" content="Proposition : maison connectée sans fil, alarme, caméras et serrures, à Dunkerque, Gravelines et Loon-Plage. Page non indexée.">
+<meta name="description" content="Proposition : alarme Ajax, caméra Yale, serrure Linus et box Somfy TaHoma, sans fil. Devis gratuit. Page non indexée.">
 <meta name="theme-color" content="#0b1020">
-<!-- Photos libres de droits : assets/img/domotique/CREDITS.txt -->
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-32.png">
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://firestore.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/img/domotique/hero.webp" type="image/webp" media="(min-width: 700px)">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/accueil-domotique.css?v=3">
+<link rel="stylesheet" href="assets/css/accueil-domotique.css?v=6">
 <style>.reveal-failsafe .reveal{opacity:1;transform:none}</style>
 <script>document.documentElement.classList.remove("no-js");</script>
 </head>
-<body>
+<body class="domo-home">
 <a class="skip-link" href="#main">Aller au contenu</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -37,16 +34,11 @@
     <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
-    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 19l-7-7 7-7"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h12"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
-    <symbol id="i-radio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></symbol>
     <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
-    <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-radio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></symbol>
     <symbol id="i-fb" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></symbol>
   </defs>
 </svg>
@@ -60,14 +52,13 @@
     <nav class="main-nav" aria-label="Navigation de la proposition">
       <ul>
         <li><a href="#accueil" class="active">Accueil</a></li>
-        <li><a href="#univers">Univers</a></li>
+        <li><a href="#vitrine">Vitrine</a></li>
         <li><a href="#scenarios">Scénarios</a></li>
-        <li><a href="#equipements">Équipements</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
     <div class="header-actions">
-      <a class="btn btn-primary btn-sm header-cta" href="#contact">Devis gratuit</a>
+      <a class="btn btn-primary btn-sm header-cta" href="index.html#contact">Devis gratuit</a>
       <button class="icon-btn burger" type="button" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><svg><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -80,97 +71,141 @@
       <button class="icon-btn" type="button" data-close-menu aria-label="Fermer le menu"><svg><use href="#i-x"/></svg></button>
     </div>
     <a class="m-link" href="#accueil">Accueil <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
-    <a class="m-link" href="#univers">Univers <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
+    <a class="m-link" href="#vitrine">Vitrine <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
     <a class="m-link" href="#scenarios">Scénarios <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
-    <a class="m-link" href="#equipements">Équipements <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
-    <a class="m-link" href="#marques">Marques <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
     <a class="m-link" href="#contact">Contact <svg width="20" height="20"><use href="#i-arrow"/></svg></a>
     <a class="btn btn-primary" href="index.html#contact">Demander un devis gratuit</a>
   </div>
 </div>
 
 <main id="main">
-  <section class="domo-hero" id="accueil">
-    <div class="domo-hero-photo">
-      <picture>
-        <source type="image/webp" srcset="assets/img/domotique/hero-900.webp 900w, assets/img/domotique/hero.webp 1800w" sizes="100vw">
-        <img src="assets/img/domotique/hero.webp" alt="Maison contemporaine au crépuscule, grandes baies vitrées et pièces éclairées" width="1800" height="1200" fetchpriority="high">
-      </picture>
-    </div>
-    <div class="domo-hero-shade"></div>
-    <div class="container">
-      <div class="domo-hero-copy">
+  <section class="hero" id="accueil">
+    <div class="hero-orb o1"></div><div class="hero-orb o2"></div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
         <div class="hero-badge"><span class="pulse-dot"></span> Maison connectée</div>
         <h1>
           <span class="line"><span>La technologie</span></span>
           <span class="line"><span>au service de</span></span>
           <span class="line"><span class="text-grad">vos espaces</span></span>
         </h1>
-        <p class="hero-sub">Alarme, caméras, serrures connectées, et le confort que vous choisissez : volets, éclairage, chauffage. Une maison sans fil, pilotée depuis le smartphone.</p>
-        <div class="hero-actions domo-hero-actions">
+        <p class="hero-sub">Alarme Ajax, caméra Yale, serrure Linus et box Somfy TaHoma. Quatre équipements du catalogue, sans fil, choisis avec vous. Le devis est gratuit.</p>
+        <div class="hero-actions">
           <a class="btn btn-primary" href="index.html#contact">Demander un devis gratuit <svg class="arrow"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn-ghost" href="#equipements">Voir le catalogue</a>
+          <a class="btn btn-ghost" href="#vitrine">Voir les produits</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>Ajax</strong><span>Alarme</span></div>
+          <div class="stat"><strong>Yale</strong><span>Accès et vidéo</span></div>
+          <div class="stat"><strong>Somfy</strong><span>Confort</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-frame domo-stage">
+          <div class="domo-vitrine">
+            <figure>
+              <img src="assets/img/domotique/produits/ajax-hub2.png" alt="Centrale Ajax Hub 2, boîtier noir carré" width="250" height="250">
+              <figcaption>Hub 2 · Ajax</figcaption>
+            </figure>
+            <figure>
+              <img src="assets/img/domotique/produits/yale-linus.png" alt="Serrure Yale Linus L2, finitions argent et noir" width="800" height="800">
+              <figcaption>Linus L2 · Yale</figcaption>
+            </figure>
+            <figure>
+              <img src="assets/img/domotique/produits/yale-camera-ext.png" alt="Caméra extérieure Yale, boîtier blanc et face noire" width="800" height="800">
+              <figcaption>Caméra extérieure · Yale</figcaption>
+            </figure>
+            <figure>
+              <img src="assets/img/domotique/produits/somfy-tahoma.jpg" alt="Box Somfy TaHoma switch, base jaune, pictogrammes volets et éclairage" width="952" height="850">
+              <figcaption>TaHoma switch · Somfy</figcaption>
+            </figure>
+          </div>
+          <div class="scan-line"></div>
         </div>
       </div>
     </div>
-    <div class="float-chip domo-chip chip-1"><span class="ic ic-red"><svg><use href="#i-shield"/></svg></span><span><b>Alarme</b><small><i></i> Depuis le smartphone</small></span></div>
-    <div class="float-chip domo-chip chip-2"><span class="ic ic-blue"><svg><use href="#i-home"/></svg></span><span><b>Confort</b><small><i></i> Si vous le choisissez</small></span></div>
-    <div class="float-chip domo-chip chip-3"><span class="ic ic-green"><svg><use href="#i-lock"/></svg></span><span><b>Accès</b><small><i></i> Serrure connectée</small></span></div>
-    <a class="scroll-hint" href="#univers"><span></span>Découvrir</a>
+    <a class="scroll-hint" href="#vitrine"><span></span>Découvrir</a>
   </section>
 
-  <div class="brand-strip" aria-label="Marques et univers">
+  <div class="brand-strip" aria-label="Marques">
     <div class="marquee">
       <div class="marquee-group">
         <span class="marquee-item brand-name">AJAX</span><span class="marquee-item"><i class="sep"></i>Alarme sans fil</span>
-        <span class="marquee-item brand-name">SOMFY TAHOMA</span><span class="marquee-item"><i class="sep"></i>Confort connecté</span>
-        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures connectées</span>
-        <span class="marquee-item"><i class="sep"></i>Vidéo</span><span class="marquee-item"><i class="sep"></i>Éclairage</span>
+        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures et caméras</span>
+        <span class="marquee-item brand-name">SOMFY</span><span class="marquee-item"><i class="sep"></i>TaHoma</span>
+        <span class="marquee-item"><i class="sep"></i>Sans travaux</span>
       </div>
       <div class="marquee-group" aria-hidden="true">
         <span class="marquee-item brand-name">AJAX</span><span class="marquee-item"><i class="sep"></i>Alarme sans fil</span>
-        <span class="marquee-item brand-name">SOMFY TAHOMA</span><span class="marquee-item"><i class="sep"></i>Confort connecté</span>
-        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures connectées</span>
-        <span class="marquee-item"><i class="sep"></i>Vidéo</span><span class="marquee-item"><i class="sep"></i>Éclairage</span>
+        <span class="marquee-item brand-name">YALE HOME</span><span class="marquee-item"><i class="sep"></i>Serrures et caméras</span>
+        <span class="marquee-item brand-name">SOMFY</span><span class="marquee-item"><i class="sep"></i>TaHoma</span>
+        <span class="marquee-item"><i class="sep"></i>Sans travaux</span>
       </div>
     </div>
   </div>
 
-  <section class="section" id="univers">
+  <section class="section" id="vitrine">
     <div class="container">
       <div class="section-head reveal">
         <div>
-          <div class="eyebrow">Les univers</div>
-          <h2>La sécurité d'abord, le confort ensuite</h2>
+          <div class="eyebrow">Vitrine</div>
+          <h2>Quatre produits du catalogue</h2>
         </div>
-        <p class="lead">Chaque univers s'ajoute seulement s'il sert votre logement. Rien n'est imposé dans un pack.</p>
+        <a class="btn btn-dark" href="index.html#contact">Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg></a>
       </div>
-      <div class="domo-bento">
-        <a class="domo-tile tile-sec reveal" href="index.html#ajax">
-          <img src="assets/img/domotique/univers-securite.webp" alt="Maison contemporaine aux grandes baies vitrées, protégée sur ses ouvertures" width="1400" height="934" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><span class="k">01</span><h3>Sécurité et alarme</h3><p>Centrale, détecteurs et sirènes, pour être prévenu et dissuader.</p></span>
-        </a>
-        <a class="domo-tile reveal" style="--d:.06s" href="index.html#ajax">
-          <img src="assets/img/domotique/univers-video.webp" alt="Séjour ouvert sur le jardin par une baie vitrée, pour voir l'extérieur" width="1400" height="952" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><span class="k">02</span><h3>Vidéo</h3><p>Caméras et levée de doute, pour regarder à distance.</p></span>
-        </a>
-        <a class="domo-tile reveal" style="--d:.12s" href="index.html#yale">
-          <img src="assets/img/domotique/univers-acces.webp" alt="Entrée d'une maison blanche, porte et allée menant à l'accès" width="1400" height="1400" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><span class="k">03</span><h3>Accès et serrures</h3><p>Serrure connectée pour entrer sans clé, si vous le demandez.</p></span>
-        </a>
-        <a class="domo-tile reveal" style="--d:.08s" href="index.html#somfy">
-          <img src="assets/img/domotique/univers-confort.webp" alt="Séjour avec lampadaire et grandes fenêtres, lumière du jour" width="1400" height="738" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><span class="k">04</span><h3>Confort</h3><p>Volets, éclairage et chauffage, quand ces postes sont dans le projet.</p></span>
-        </a>
-        <a class="domo-tile reveal" style="--d:.14s" href="index.html#somfy">
-          <img src="assets/img/domotique/univers-energie.webp" alt="Cuisine contemporaine avec éclairage sous les meubles hauts" width="1400" height="933" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><span class="k">05</span><h3>Énergie</h3><p>Suivi de consommation et prises, seulement si vous les souhaitez.</p></span>
-        </a>
+      <div class="products-grid">
+        <article class="card spot product-card reveal" id="alarme">
+          <div class="p-media">
+            <img src="assets/img/domotique/produits/ajax-hub2.png" alt="Centrale Ajax Hub 2" width="250" height="250">
+          </div>
+          <div class="p-body">
+            <div class="p-brand">Ajax · Alarme</div>
+            <div class="p-title">Hub 2</div>
+            <p class="p-desc">La centrale de l’alarme Ajax. Les détecteurs s’y rattachent, et le système se pilote depuis le smartphone.</p>
+          </div>
+          <div class="p-foot">
+            <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
+          </div>
+        </article>
+        <article class="card spot product-card reveal" id="video" style="--d:.08s">
+          <div class="p-media">
+            <img src="assets/img/domotique/produits/yale-camera-ext.png" alt="Caméra extérieure intelligente Yale" width="800" height="800">
+          </div>
+          <div class="p-body">
+            <div class="p-brand">Yale · Vidéo</div>
+            <div class="p-title">Caméra extérieure</div>
+            <p class="p-desc">Caméra Yale à poser dehors. Boîtier blanc, objectif en façade, sans tirer de câble.</p>
+          </div>
+          <div class="p-foot">
+            <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
+          </div>
+        </article>
+        <article class="card spot product-card reveal" id="acces" style="--d:.16s">
+          <div class="p-media">
+            <img src="assets/img/domotique/produits/yale-linus.png" alt="Serrure connectée Yale Linus L2 en argent et en noir" width="800" height="800">
+          </div>
+          <div class="p-body">
+            <div class="p-brand">Yale · Accès</div>
+            <div class="p-title">Linus L2 Wi-Fi</div>
+            <p class="p-desc">Serrure à fixer à l’intérieur, sur le cylindre déjà en place. Argent ou noir.</p>
+          </div>
+          <div class="p-foot">
+            <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
+          </div>
+        </article>
+        <article class="card spot product-card reveal" id="confort" style="--d:.24s">
+          <div class="p-media">
+            <img src="assets/img/domotique/produits/somfy-tahoma.jpg" alt="Box Somfy TaHoma switch" width="952" height="850">
+          </div>
+          <div class="p-body">
+            <div class="p-brand">Somfy · Confort</div>
+            <div class="p-title">TaHoma switch</div>
+            <p class="p-desc">Box blanche à base jaune. Volets et éclairage, si ces équipements sont au devis.</p>
+          </div>
+          <div class="p-foot">
+            <a class="btn btn-outline btn-sm p-action" href="index.html#contact">Demander un devis</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -179,108 +214,39 @@
     <div class="container">
       <div class="section-head reveal">
         <div>
-          <div class="eyebrow">Au quotidien</div>
-          <h2>Trois moments, si les équipements sont prévus</h2>
+          <div class="eyebrow">Scénarios</div>
+          <h2>Ce que ces quatre produits couvrent</h2>
         </div>
-        <p class="lead">Des scénarios possibles selon ce qui est retenu au devis. Rien ne se déclenche tout seul tant que ce n'est pas installé.</p>
       </div>
-      <div class="domo-scenes">
-        <article class="domo-scene reveal">
-          <img src="assets/img/domotique/scenario-depart.webp" alt="Façade contemporaine et allée, maison laissée derrière soi" width="1400" height="933" loading="lazy">
-          <span class="veil"></span>
-          <div class="cap">
-            <h3>Je pars de chez moi</h3>
-            <p>L'alarme peut s'activer, les volets se fermer et le chauffage passer en mode réduit, si ces équipements font partie du projet.</p>
-          </div>
+      <div class="domo-scenarios">
+        <article class="card spot solution-card reveal">
+          <span class="num">01</span>
+          <div class="icon-tile"><svg><use href="#i-shield"/></svg></div>
+          <h3>Départ</h3>
+          <p>Le Hub 2 met l’alarme en service quand vous partez. Le clavier exact est choisi sur le devis, pas affiché ici.</p>
         </article>
-        <article class="domo-scene reveal" style="--d:.08s">
-          <img src="assets/img/domotique/scenario-arrivee.webp" alt="Porte d'entrée ouverte sur un intérieur chaud, au crépuscule" width="1400" height="2100" loading="lazy">
-          <span class="veil"></span>
-          <div class="cap">
-            <h3>J'arrive</h3>
-            <p>La serrure peut s'ouvrir sans clé et les lumières s'allumer, lorsque ces fonctions ont été choisies avec vous.</p>
-          </div>
+        <article class="card spot solution-card reveal" style="--d:.08s">
+          <span class="num">02</span>
+          <div class="icon-tile"><svg><use href="#i-lock"/></svg></div>
+          <h3>Arrivée</h3>
+          <p>Linus L2 ouvre depuis le smartphone, sans changer la porte : la serrure se pose sur le cylindre existant.</p>
         </article>
-        <article class="domo-scene reveal" style="--d:.16s">
-          <img src="assets/img/domotique/scenario-alerte.webp" alt="Chambre le soir, lampes de chevet allumées et rideaux tirés" width="1400" height="1400" loading="lazy">
-          <span class="veil"></span>
-          <div class="domo-alert" role="note">
-            <i class="dot" aria-hidden="true"></i>
-            <span><b style="color:#fff">Alerte</b><span>Notification, et une image si une caméra est prévue.</span></span>
-          </div>
-          <div class="cap">
-            <h3>Une alerte</h3>
-            <p>Une notification peut arriver sur le smartphone, avec une image ou une vidéo si un détecteur photo ou une caméra est dans l'installation.</p>
-          </div>
+        <article class="card spot solution-card reveal" style="--d:.16s">
+          <span class="num">03</span>
+          <div class="icon-tile"><svg><use href="#i-camera"/></svg></div>
+          <h3>Alerte</h3>
+          <p>La caméra extérieure Yale montre l’extérieur. Les autres caméras du catalogue ne sont ajoutées que si vous les demandez.</p>
         </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="equipements" style="padding-top:0">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <div class="eyebrow">Catalogue</div>
-          <h2>Des équipements déjà au catalogue</h2>
-        </div>
-        <div class="domo-rail-nav" aria-label="Faire défiler les équipements">
-          <button type="button" id="rail-prev" aria-label="Équipements précédents"><svg><use href="#i-back"/></svg></button>
-          <button type="button" id="rail-next" aria-label="Équipements suivants"><svg><use href="#i-arrow"/></svg></button>
-        </div>
-      </div>
-      <p class="lead reveal" style="margin-top:-24px;margin-bottom:22px">Noms et prix affichés tels qu'ils sont enregistrés. Sans prix, la fiche indique « Sur devis ».</p>
-      <div class="domo-rail" id="domo-products" tabindex="0">
-        <article class="card product-card skeleton" aria-hidden="true"><div class="p-media"></div><div class="sk"></div><div class="sk w60"></div><div class="sk w40"></div></article>
-        <article class="card product-card skeleton" aria-hidden="true"><div class="p-media"></div><div class="sk"></div><div class="sk w60"></div><div class="sk w40"></div></article>
-        <article class="card product-card skeleton" aria-hidden="true"><div class="p-media"></div><div class="sk"></div><div class="sk w60"></div><div class="sk w40"></div></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="marques" style="padding-top:0">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <div class="eyebrow">Les marques</div>
-          <h2>Ajax, Somfy TaHoma, Yale Home</h2>
-        </div>
-        <p class="lead">Trois gammes déjà proposées. Le choix se fait selon le logement, pas selon un pack imposé.</p>
-      </div>
-      <div class="domo-brands">
-        <a class="domo-brand reveal" href="index.html#ajax">
-          <img src="assets/img/domotique/hero.webp" alt="" width="1800" height="1200" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><h3>Ajax</h3><p>Alarme professionnelle sans fil : centrale, détecteurs, sirènes et caméras, depuis l'application.</p><span class="go">Voir la gamme</span></span>
-        </a>
-        <a class="domo-brand reveal" style="--d:.08s" href="index.html#somfy">
-          <img src="assets/img/domotique/sans-fil.webp" alt="" width="1600" height="2133" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><h3>Somfy TaHoma</h3><p>Sécurité et confort : alarme, et selon le projet volets, éclairage ou chauffage.</p><span class="go">Voir la gamme</span></span>
-        </a>
-        <a class="domo-brand reveal" style="--d:.16s" href="index.html#yale">
-          <img src="assets/img/domotique/scenario-arrivee.webp" alt="" width="1400" height="2100" loading="lazy">
-          <span class="veil"></span>
-          <span class="cap"><h3>Yale Home</h3><p>Serrures et accès connectés, pour ouvrir sans clé lorsque c'est le besoin exprimé.</p><span class="go">Voir la gamme</span></span>
-        </a>
       </div>
     </div>
   </section>
 
   <section class="section" id="sans-fil" style="padding-top:0">
-    <div class="container domo-split">
-      <div class="domo-frame reveal">
-        <img src="assets/img/domotique/sans-fil.webp" alt="Grand séjour lumineux, sans câble apparent au mur" width="1600" height="2133" loading="lazy">
-      </div>
-      <div class="reveal" style="--d:.1s">
-        <div class="eyebrow">Installation</div>
-        <h2 class="h2" style="margin-bottom:14px">100 % sans fil, sans travaux</h2>
-        <p class="lead">Les équipements du catalogue communiquent par radio. Pas de saignée à prévoir pour l'alarme, les détecteurs ou les serrures connectées.</p>
-        <ul class="domo-points">
-          <li><svg><use href="#i-radio"/></svg><span>Alarme, détecteurs et sirènes sans tirer de câble dans les pièces.</span></li>
-          <li><svg><use href="#i-bolt"/></svg><span>Volets, éclairage ou chauffage seulement si vous les ajoutez au projet.</span></li>
-          <li><svg><use href="#i-check"/></svg><span>L'achat en ligne porte sur le matériel seul. La pose se demande dans le devis.</span></li>
-        </ul>
+    <div class="container">
+      <div class="section-head center reveal" style="flex-direction:column;align-items:center;text-align:center">
+        <div class="eyebrow">Sans fil</div>
+        <h2>100 % sans fil, sans travaux</h2>
+        <p class="lead" style="max-width:640px">Hub 2, caméra Yale, Linus L2 et TaHoma switch se posent sans saignée. La pose, si vous la souhaitez, est chiffrée à part sur le devis.</p>
       </div>
     </div>
   </section>
@@ -288,13 +254,13 @@
   <section class="section dark-section" id="methode">
     <div class="container">
       <div class="section-head center reveal" style="flex-direction:column;align-items:center">
-        <div class="eyebrow">Comment ça se passe</div>
-        <h2>Trois étapes, du premier échange au matériel</h2>
+        <div class="eyebrow">Étapes</div>
+        <h2>Du premier message au devis</h2>
       </div>
       <div class="steps domo-steps">
-        <div class="step reveal"><div class="step-num">1</div><h3>On en parle</h3><p>Vous décrivez le logement et ce que vous voulez piloter : alarme, vidéo, accès, confort.</p></div>
-        <div class="step reveal" style="--d:.08s"><div class="step-num">2</div><h3>Un devis</h3><p>Nous chiffrons le matériel. Si vous voulez une pose, elle est indiquée à part.</p></div>
-        <div class="step reveal" style="--d:.16s"><div class="step-num">3</div><h3>Puis la pose, si vous la demandez</h3><p>Vous commandez les équipements. L'installation, seulement si elle est retenue, est planifiée avec vous.</p></div>
+        <div class="step reveal"><div class="step-num">1</div><h3>Vous décrivez</h3><p>Le logement, et ce que vous voulez parmi l’alarme, la caméra, la serrure et le confort.</p></div>
+        <div class="step reveal" style="--d:.08s"><div class="step-num">2</div><h3>Devis gratuit</h3><p>Une proposition sur les équipements retenus, sans engagement.</p></div>
+        <div class="step reveal" style="--d:.16s"><div class="step-num">3</div><h3>Mise en service</h3><p>Réglages, application, et la pose si vous l’avez demandée.</p></div>
       </div>
     </div>
   </section>
@@ -309,15 +275,12 @@
         <div class="core"><img src="assets/img/logo-mark.png" alt="" width="160" height="200" loading="lazy"></div>
       </div>
       <div class="reveal" style="--d:.1s">
-        <div class="eyebrow">Zone d'intervention</div>
-        <h2 class="h2" style="margin-bottom:14px">Autour de chez vous</h2>
-        <p class="lead">Loon-Plage, Gravelines, Bourbourg, Dunkerque et alentours.</p>
-        <div class="domo-towns">
-          <span>Loon-Plage</span>
-          <span>Gravelines</span>
-          <span>Bourbourg</span>
-          <span>Dunkerque</span>
-          <span>Alentours</span>
+        <div class="eyebrow">Zone d’intervention</div>
+        <h2 class="h2" style="margin-bottom:16px">Loon-Plage, Gravelines, Bourbourg, Dunkerque</h2>
+        <p class="lead">Et les alentours, dans le Nord (59), pour les particuliers et les professionnels.</p>
+        <div class="zone-list">
+          <div><b>Particuliers</b><span>Appartements, maisons</span></div>
+          <div><b>Professionnels</b><span>Bureaux, commerces, petites entreprises</span></div>
         </div>
       </div>
     </div>
@@ -327,17 +290,13 @@
     <div class="container">
       <div class="cta-band reveal">
         <div>
-          <h2>Parler de votre maison</h2>
-          <p>Écrivez-nous pour un devis gratuit. Le matériel et la pose, si vous la souhaitez, sont chiffrés à part.</p>
+          <h2>Demander un devis gratuit</h2>
+          <p>Dites-nous ce que vous voulez équiper. Cette page ne vend rien en ligne.</p>
+          <p class="domo-contact"><a href="mailto:contact@carapace.fr">contact@carapace.fr</a><span>[À COMPLÉTER : téléphone]</span></p>
         </div>
         <div class="actions">
-          <a class="btn btn-light" href="mailto:contact@carapace.fr">contact@carapace.fr</a>
-          <a class="btn btn-ghost" href="index.html#contact">Ouvrir le formulaire</a>
+          <a class="btn btn-light" href="index.html#contact">Ouvrir le formulaire <svg class="arrow"><use href="#i-arrow"/></svg></a>
         </div>
-      </div>
-      <div class="card domo-contact-card reveal" style="margin-top:18px">
-        <p><svg width="18" height="18" style="vertical-align:-3px;color:var(--red)"><use href="#i-mail"/></svg> <a href="mailto:contact@carapace.fr">contact@carapace.fr</a></p>
-        <p style="margin-top:10px"><svg width="18" height="18" style="vertical-align:-3px;color:var(--red)"><use href="#i-phone"/></svg> <span class="todo">[À COMPLÉTER : téléphone]</span></p>
       </div>
     </div>
   </section>
@@ -347,38 +306,41 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="assets/img/logo-light.png" alt="Carapace" width="360" height="377" loading="lazy">
-        <p>Alarmes, vidéosurveillance, domotique et serrures connectées pour les particuliers et les professionnels.</p>
+        <img src="assets/img/logo-light.png" alt="Carapace" width="360" height="377">
+        <p>Alarme, caméra, serrure connectée et confort, pour les particuliers et les professionnels.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/profile.php?id=61595551621209&locale=fr_FR" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+        </div>
       </div>
       <div>
-        <h4>Nos gammes</h4>
+        <h4>Sur cette page</h4>
         <ul>
-          <li><a href="index.html#ajax">Alarmes Ajax</a></li>
-          <li><a href="index.html#somfy">Maison connectée Somfy</a></li>
-          <li><a href="index.html#yale">Serrures Yale Home</a></li>
+          <li><a href="#alarme">Hub 2</a></li>
+          <li><a href="#video">Caméra Yale</a></li>
+          <li><a href="#acces">Linus L2</a></li>
+          <li><a href="#confort">TaHoma switch</a></li>
         </ul>
       </div>
       <div>
-        <h4>Explorer</h4>
+        <h4>Le site</h4>
         <ul>
-          <li><a href="#univers">Univers</a></li>
-          <li><a href="#scenarios">Scénarios</a></li>
-          <li><a href="#equipements">Équipements</a></li>
-          <li><a href="index.html">Site actuel</a></li>
+          <li><a href="index.html">Accueil Carapace</a></li>
+          <li><a href="index.html#contact">Formulaire de devis</a></li>
+          <li><a href="mentions-legales.html">Mentions légales</a></li>
         </ul>
       </div>
       <div>
         <h4>Contact</h4>
         <ul>
-          <li><span class="todo">[À COMPLÉTER : téléphone]</span></li>
+          <li><span>[À COMPLÉTER : téléphone]</span></li>
           <li><a href="mailto:contact@carapace.fr">contact@carapace.fr</a></li>
-          <li>Loon-Plage, Gravelines, Bourbourg, Dunkerque et alentours</li>
+          <li>Loon-Plage, Gravelines, Bourbourg, Dunkerque et alentours, Nord (59)</li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span id="year">2026</span> Carapace</span>
-      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mailto:contact@carapace.fr">contact@carapace.fr</a></span>
+      <span>© <span id="year">2026</span> Carapace. Tous droits réservés.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mentions-legales.html#donnees">Données personnelles</a></span>
     </div>
   </div>
 </footer>
@@ -388,8 +350,7 @@
   <button type="button" class="to-top" id="to-top" aria-label="Revenir en haut"><svg><use href="#i-up"/></svg></button>
 </div>
 
-<script src="assets/js/images-produits.js"></script>
 <script>setTimeout(function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(e){var r=e.getBoundingClientRect();if(r.top<innerHeight)e.classList.add("in");});document.documentElement.classList.add("reveal-failsafe");},2500);</script>
-<script type="module" src="assets/js/accueil-domotique.js?v=3"></script>
+<script type="module" src="assets/js/accueil-domotique.js?v=6"></script>
 </body>
 </html>
