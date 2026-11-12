@@ -11,7 +11,7 @@ export const ENTREPRISE = {
     adresse: "[À COMPLÉTER : adresse]",
     code_postal_ville: "[À COMPLÉTER : code postal et ville]",
     telephone: "[À COMPLÉTER : téléphone]",
-    email: "[À COMPLÉTER : e-mail]",
+    email: "contact@carapace.fr",
     siret: "[À COMPLÉTER : SIRET]",
     rcs_rm: "[À COMPLÉTER : RCS / RM, le cas échéant]",
     tva_intra: "[À COMPLÉTER : n° TVA intracommunautaire, ou laisser vide si TVA non applicable]",

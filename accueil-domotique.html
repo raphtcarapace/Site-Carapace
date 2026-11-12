@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>
+(function () {
+  if (!/github\.io$/i.test(location.hostname)) return;
+  var path = location.pathname.replace(/^\/Site-Carapace(?=\/|$)/, "") || "/";
+  if (path.charAt(0) !== "/") path = "/" + path;
+  location.replace("https://carapace-6ffff.web.app" + path + location.search + location.hash);
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Proposition | La technologie au service de vos espaces | Carapace</title>
+<meta name="description" content="Proposition de page d'accueil : maison connectée sans fil, alarme, caméras et serrures, à Dunkerque, Gravelines et Loon-Plage. Page non indexée.">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-32.png">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .domo-page .site-header { height: auto; min-height: var(--header-h); }
+  .domo-page .site-header .container { flex-wrap: wrap; row-gap: 8px; }
+  .domo-page .main-nav { display: flex; }
+  .domo-page .main-nav ul { flex-wrap: wrap; justify-content: flex-end; }
+  .domo-kicker { display: inline-block; margin-bottom: 14px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #ffb4bc; }
+  .domo-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .domo-section { padding: clamp(48px, 7vw, 88px) 0; }
+  .domo-section h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 900; margin-bottom: 12px; }
+  .domo-lead { color: var(--muted); max-width: 680px; margin-bottom: 28px; }
+  .domo-scenarios, .domo-univers, .domo-brands, .domo-steps { display: grid; gap: 16px; }
+  .domo-scenarios { grid-template-columns: repeat(3, 1fr); }
+  .domo-univers { grid-template-columns: repeat(5, 1fr); }
+  .domo-brands, .domo-steps { grid-template-columns: repeat(3, 1fr); }
+  .domo-card { padding: 22px; border-radius: var(--radius); height: 100%; }
+  .domo-card:hover { transform: translateY(-4px); }
+  .domo-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+  .domo-card p, .domo-card li { color: var(--muted); font-size: .95rem; }
+  .domo-card ol, .domo-card ul { padding-left: 18px; display: grid; gap: 6px; }
+  .domo-step-num { font-family: var(--font-head); font-weight: 900; color: var(--red); font-size: .8rem; letter-spacing: .08em; }
+  .domo-note { margin-top: 18px; color: var(--muted); font-size: .92rem; }
+  .domo-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .domo-prod { display: flex; flex-direction: column; gap: 8px; padding: 14px; text-decoration: none; color: inherit; }
+  .domo-prod img { height: 140px; width: 100%; object-fit: contain; }
+  .domo-prod b { font-family: var(--font-head); font-size: .95rem; line-height: 1.3; }
+  .domo-prod span { color: var(--red); font-weight: 800; }
+  .domo-zone { display: flex; flex-wrap: wrap; gap: 10px; }
+  .domo-zone span { padding: 10px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-weight: 700; }
+  .domo-contact a { color: var(--red); font-weight: 800; }
+  @media (max-width: 1100px) {
+    .domo-univers { grid-template-columns: repeat(2, 1fr); }
+    .domo-scenarios, .domo-brands, .domo-steps { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 680px) {
+    .domo-univers { grid-template-columns: 1fr; }
+    .domo-hero-actions .btn { flex: 1 1 100%; }
+    .domo-page .site-header .container { flex-direction: column; align-items: flex-start; }
+    .domo-page .main-nav ul { justify-content: flex-start; gap: 6px 16px; }
+  }
+</style>
+</head>
+<body class="domo-page" id="top">
+<header class="site-header is-solid" id="site-header">
+  <div class="container">
+    <a class="brand" href="index.html" aria-label="Carapace, accueil du site actuel">
+      <img src="assets/img/logo-mark.png" alt="" width="160" height="200">
+      <span class="brand-text"><strong>CARAPACE</strong><small>Sécurité &amp; domotique</small></span>
+    </a>
+    <nav class="main-nav" aria-label="Navigation">
+      <ul>
+        <li><a href="#top">Accueil</a></li>
+        <li><a href="index.html#ajax">Ajax</a></li>
+        <li><a href="index.html#somfy">Somfy</a></li>
+        <li><a href="index.html#yale">Yale Home</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="brand-hero">
+  <div class="container">
+    <p class="domo-kicker">Maison connectée</p>
+    <h1>La technologie au service de vos espaces</h1>
+    <p>Une maison reliée, 100 % sans fil : alarme, caméras, serrures connectées, et le confort que vous choisissez (volets, éclairage, chauffage) piloté depuis votre smartphone.</p>
+    <div class="domo-hero-actions">
+      <a class="btn btn-primary" href="index.html#contact">Demander un devis gratuit</a>
+      <a class="btn btn-ghost" href="index.html#ajax">Voir le catalogue</a>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section">
+  <div class="container">
+    <h2>Trois moments du quotidien</h2>
+    <p class="domo-lead">Des scénarios possibles selon les équipements retenus. Rien n'est automatique tant que ce n'est pas prévu dans votre devis.</p>
+    <div class="domo-scenarios">
+      <article class="card domo-card">
+        <h3>Je pars de chez moi</h3>
+        <p>L'alarme peut s'activer, les volets se fermer et le chauffage passer en mode réduit, si ces équipements font partie de l'installation retenue.</p>
+      </article>
+      <article class="card domo-card">
+        <h3>J'arrive</h3>
+        <p>La serrure connectée peut s'ouvrir sans clé et les lumières s'allumer, lorsque ces fonctions ont été choisies avec vous.</p>
+      </article>
+      <article class="card domo-card">
+        <h3>Une alerte</h3>
+        <p>Une notification peut arriver sur le smartphone, avec une image ou une vidéo si une caméra ou un détecteur avec photo est prévu.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section" style="padding-top:0">
+  <div class="container">
+    <h2>Les univers</h2>
+    <p class="domo-lead">La sécurité reste le cœur du métier. La domotique s'ajoute seulement là où elle vous sert.</p>
+    <div class="domo-univers">
+      <a class="card domo-card" href="index.html#ajax"><h3>Sécurité et alarme</h3><p>Centrale, détecteurs et sirènes, pour être prévenu et dissuader.</p></a>
+      <a class="card domo-card" href="index.html#ajax"><h3>Vidéo</h3><p>Caméras et levée de doute, pour voir ce qui se passe à distance.</p></a>
+      <a class="card domo-card" href="index.html#yale"><h3>Accès et serrures</h3><p>Serrures connectées pour entrer sans clé, si vous le demandez.</p></a>
+      <a class="card domo-card" href="index.html#somfy"><h3>Confort</h3><p>Volets, éclairage et chauffage pilotés, quand ces postes sont dans le projet.</p></a>
+      <a class="card domo-card" href="index.html#somfy"><h3>Énergie</h3><p>Suivi de consommation et prises connectées, si vous souhaitez les inclure.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section" style="background:#fff;padding-top:0">
+  <div class="container">
+    <h2>Les marques</h2>
+    <p class="domo-lead">Trois gammes déjà au catalogue. Le choix se fait selon le logement, pas selon un pack imposé.</p>
+    <div class="domo-brands">
+      <article class="card domo-card">
+        <h3>Ajax</h3>
+        <p>Alarme professionnelle sans fil : centrale, détecteurs, sirènes et caméras, pilotés depuis l'application.</p>
+      </article>
+      <article class="card domo-card">
+        <h3>Somfy TaHoma</h3>
+        <p>Sécurité et confort de la maison : alarme, et selon le projet volets, éclairage ou chauffage depuis une même application.</p>
+      </article>
+      <article class="card domo-card">
+        <h3>Yale Home</h3>
+        <p>Serrures et accès connectés, pour ouvrir sans clé lorsque c'est le besoin exprimé.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section">
+  <div class="container">
+    <h2>100 % sans fil, sans travaux</h2>
+    <p class="domo-lead">Les équipements proposés communiquent par radio. Pas de saignée, pas de câble à tirer pour l'alarme, les détecteurs ou les serrures connectées du catalogue.</p>
+    <p class="domo-note">L'achat en ligne porte sur le matériel seul. L'installation par un technicien Carapace se demande dans le devis.</p>
+  </div>
+</section>
+
+<section class="domo-section" style="padding-top:0">
+  <div class="container">
+    <h2>Comment ça se passe</h2>
+    <div class="domo-steps">
+      <article class="card domo-card"><p class="domo-step-num">Étape 1</p><h3>On en parle</h3><p>Vous décrivez le logement et ce que vous voulez piloter : alarme, vidéo, accès, confort.</p></article>
+      <article class="card domo-card"><p class="domo-step-num">Étape 2</p><h3>Un devis</h3><p>Nous chiffrons le matériel. Si vous voulez une pose, elle est indiquée à part sur le devis.</p></article>
+      <article class="card domo-card"><p class="domo-step-num">Étape 3</p><h3>Matériel, puis pose si vous la demandez</h3><p>Vous commandez les équipements. L'installation, seulement si elle est retenue, est planifiée avec vous.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section" style="padding-top:0">
+  <div class="container">
+    <h2>Quelques équipements du catalogue</h2>
+    <p class="domo-lead">Noms et prix affichés tels qu'ils sont enregistrés. Sans prix, la fiche indique « Sur devis ».</p>
+    <div class="domo-products" id="domo-products"><p class="domo-lead">Chargement du catalogue…</p></div>
+  </div>
+</section>
+
+<section class="domo-section" style="padding-top:0" id="zone">
+  <div class="container">
+    <h2>Zone d'intervention</h2>
+    <p class="domo-lead">Loon-Plage, Gravelines, Bourbourg, Dunkerque et alentours.</p>
+    <div class="domo-zone">
+      <span>Loon-Plage</span>
+      <span>Gravelines</span>
+      <span>Bourbourg</span>
+      <span>Dunkerque</span>
+      <span>Alentours</span>
+    </div>
+  </div>
+</section>
+
+<section class="domo-section" style="padding-top:0" id="contact">
+  <div class="container">
+    <div class="cta-band">
+      <div class="domo-contact">
+        <h2>Parler de votre maison</h2>
+        <p>Écrivez-nous pour un devis gratuit, matériel et installation si vous la souhaitez.</p>
+        <p style="margin-top:14px"><a href="mailto:contact@carapace.fr">contact@carapace.fr</a></p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-light" href="mailto:contact@carapace.fr">Écrire à contact@carapace.fr</a>
+        <a class="btn btn-ghost" href="index.html#contact">Ouvrir le formulaire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border:0;padding-top:0">
+      <span>© <span id="year">2026</span> Carapace</span>
+      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mailto:contact@carapace.fr">contact@carapace.fr</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/images-produits.js"></script>
+<script type="module" src="assets/js/accueil-domotique.js"></script>
+</body>
+</html>
