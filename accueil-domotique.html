@@ -25,7 +25,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/img/domotique/hero.webp" type="image/webp" media="(min-width: 700px)">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/accueil-domotique.css">
+<link rel="stylesheet" href="assets/css/accueil-domotique.css?v=3">
+<style>.reveal-failsafe .reveal{opacity:1;transform:none}</style>
 <script>document.documentElement.classList.remove("no-js");</script>
 </head>
 <body>
@@ -388,6 +389,7 @@
 </div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/accueil-domotique.js"></script>
+<script>setTimeout(function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(e){var r=e.getBoundingClientRect();if(r.top<innerHeight)e.classList.add("in");});document.documentElement.classList.add("reveal-failsafe");},2500);</script>
+<script type="module" src="assets/js/accueil-domotique.js?v=3"></script>
 </body>
 </html>
