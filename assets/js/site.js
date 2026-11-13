@@ -59,7 +59,7 @@
   const list = () => Object.entries(state.products).map(([id, p]) => ({ id, ...p }));
 
   /* ---------- Navigation (pages) ---------- */
-  const PAGES = ['home', 'ajax', 'somfy', 'yale', 'contact', 'detail', 'commande', 'confirmation'];
+  const PAGES = ['home', 'ajax', 'somfy', 'yale', 'contact', 'detail'];
   const HOME_ANCHORS = ['accueil', 'configurateur', 'faq', 'methode', 'avis', 'zone'];
   const header = $('#site-header');
 
@@ -93,7 +93,7 @@
 
   function updateTitle() {
     const base = 'Carapace — La protection de vos espaces';
-    const titles = { ajax: 'Alarmes Ajax', somfy: 'Somfy — maison connectée', yale: 'Yale Home — serrures connectées', contact: 'Contact & devis gratuit', commande: 'Votre commande', confirmation: 'Commande confirmée' };
+    const titles = { ajax: 'Alarmes Ajax', somfy: 'Somfy — maison connectée', yale: 'Yale Home — serrures connectées', contact: 'Contact & devis gratuit' };
     if (state.currentPage === 'detail') {
       const n = $('#detail-titre').textContent; document.title = n + ' | Carapace';
     } else document.title = titles[state.currentPage] ? titles[state.currentPage] + ' | Carapace' : base;
@@ -143,7 +143,7 @@
   function onScroll() {
     const y = window.scrollY;
     header.classList.toggle('is-solid', y > 30);
-    sticky.classList.toggle('show', y > 640 && state.currentPage !== 'contact' && state.currentPage !== 'commande' && state.currentPage !== 'confirmation');
+    sticky.classList.toggle('show', y > 640 && state.currentPage !== 'contact');
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   $('#to-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }));
@@ -196,7 +196,6 @@
     return isFinite(n) && n > 0;
   }
   function actionProduit(p) {
-    if (prixPositif(p)) return `<button type="button" class="btn btn-primary btn-sm p-action" data-add-cart="${esc(p.id)}">Ajouter au panier</button>`;
     return `<button type="button" class="btn btn-outline btn-sm p-action" data-devis-produit="${esc(p.id)}">Demander un devis</button>`;
   }
   function motifProduit(p) {
@@ -237,12 +236,6 @@
   }
 
   document.addEventListener('click', (e) => {
-    const add = e.target.closest('[data-add-cart]');
-    if (add) {
-      e.preventDefault();
-      if (window.CarapacePanier) window.CarapacePanier.ajouter(add.getAttribute('data-add-cart'));
-      return;
-    }
     const devisBtn = e.target.closest('[data-devis-produit]');
     if (devisBtn) {
       e.preventDefault();
@@ -422,11 +415,7 @@
     const n = parseFloat(p.prix);
     const vendable = isFinite(n) && n > 0;
     $('#detail-prix').innerHTML = esc(fmtPrice(p.prix)) + (vendable ? ' <span class="product-tva">TTC</span>' : '');
-    const btnDetail = $('#detail-devis');
-    btnDetail.dataset.vendable = vendable ? '1' : '0';
-    btnDetail.innerHTML = vendable
-      ? 'Ajouter au panier <svg class="arrow"><use href="#i-cart"/></svg>'
-      : 'Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg>';
+    $('#detail-devis').innerHTML = 'Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg>';
     $('#detail-desc-courte').textContent = stripTags(p.description || '');
     $('#detail-desc-longue').innerHTML = formaterDescriptionAutomatique(p.description_longue);
     $('#detail-marque').textContent = (BRAND_LABEL[p.marque] || p.marque || '') + (p.categorie ? ' · ' + p.categorie : '');
@@ -461,10 +450,6 @@
 
   $('#detail-devis').addEventListener('click', () => {
     const p = state.products[currentDetailId] || {};
-    if (prixPositif(p)) {
-      if (window.CarapacePanier) window.CarapacePanier.ajouter(currentDetailId);
-      return;
-    }
     ouvrirContactAvecMotif($('#detail-titre').textContent, { raison: motifProduit(p) });
   });
   $('#detail-share').addEventListener('click', async () => {
@@ -541,7 +526,7 @@
     }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { fermerPleinEcran(); closeSearch(); closeMenu(); if (window.CarapacePanier) window.CarapacePanier.fermer(); }
+    if (e.key === 'Escape') { fermerPleinEcran(); closeSearch(); closeMenu(); }
   });
 
   /* ---------- Configurateur (quiz) ---------- */
@@ -646,13 +631,10 @@
     $('#result-extras').innerHTML = extras.map(([t, d]) => `<li><svg width="20" height="20" style="color:var(--red);flex:none;margin-top:2px"><use href="#i-check-circle"/></svg><span><b>${esc(t)} :</b> ${esc(d)}</span></li>`).join('');
     if (!reco.lignes.length) {
       wrap.style.display = 'none';
-      const cart = $('#quiz-cart'); if (cart) cart.hidden = true;
       return;
     }
     grid.innerHTML = reco.lignes.map(l => {
-      const action = l.surDevis
-        ? `<button type="button" class="btn btn-outline btn-sm" data-devis-produit="${esc(l.id)}">Demander un devis</button>`
-        : `<button type="button" class="btn btn-primary btn-sm" data-add-cart="${esc(l.id)}">Ajouter au panier</button>`;
+      const action = `<button type="button" class="btn btn-outline btn-sm" data-devis-produit="${esc(l.id)}">Demander un devis</button>`;
       return `<article class="reco-item">
         <button type="button" class="reco-open" data-product="${esc(l.id)}">
           ${produitSrc(l.image) ? `<img src="${esc(produitSrc(l.image))}" alt="" loading="lazy"${imgOnError()}>` : ''}
@@ -664,8 +646,6 @@
       </article>`;
     }).join('');
     wrap.style.display = '';
-    const cart = $('#quiz-cart');
-    if (cart) cart.hidden = !reco.lignes.some(l => !l.surDevis);
   }
 
   $('#quiz-devis').addEventListener('click', () => {
@@ -680,10 +660,6 @@
       ...reco.lignes.map(l => '- ' + l.nom + (l.qte > 1 ? ' x' + l.qte : '') + ' (' + l.pourquoi + ')')
     ].filter(Boolean).join('\n');
     ouvrirContactAvecMotif($('#titre-pack').textContent, { raison, details });
-  });
-  $('#quiz-cart').addEventListener('click', () => {
-    if (!dernierResultat || !dernierResultat.reco || !window.CarapacePanier) return;
-    dernierResultat.reco.lignes.filter(l => !l.surDevis).forEach(l => window.CarapacePanier.ajouter(l.id));
   });
 
   function recommencerQuizz() {
