@@ -265,7 +265,6 @@ function lireFormulaire() {
         prenom: champ("cmd-prenom").value.trim(),
         telephone: champ("cmd-telephone").value.trim(),
         email: champ("cmd-email").value.trim(),
-        adresse: champ("cmd-adresse").value.trim(),
         code_postal: champ("cmd-cp").value.trim(),
         ville: champ("cmd-ville").value.trim(),
         message: champ("cmd-message").value.trim(),
@@ -279,7 +278,6 @@ function validerFormulaire() {
     ok = marquer("cmd-prenom", !(f.prenom.length > 0 && f.prenom.length <= 80)) && ok;
     ok = marquer("cmd-telephone", !telOk(f.telephone)) && ok;
     ok = marquer("cmd-email", !emailOk(f.email)) && ok;
-    ok = marquer("cmd-adresse", !(f.adresse.length > 0 && f.adresse.length <= 200)) && ok;
     ok = marquer("cmd-cp", !/^[0-9]{5}$/.test(f.code_postal)) && ok;
     ok = marquer("cmd-ville", !(f.ville.length > 0 && f.ville.length <= 80)) && ok;
     ok = marquer("cmd-message", f.message.length > 2000) && ok;
@@ -301,7 +299,6 @@ function clientDe(f) {
         prenom: f.prenom,
         telephone: f.telephone,
         email: f.email,
-        adresse: f.adresse,
         code_postal: f.code_postal,
         ville: f.ville
     };
@@ -413,7 +410,7 @@ async function afficherBoutonsPayPal(snapshot) {
             }]
         }),
         onApprove: async (data, actions) => {
-            // Capture navigateur : l'admin doit quand même contrôler le compte PayPal avant d'expédier.
+            // Capture navigateur : l'admin doit quand même contrôler le compte PayPal avant de donner suite.
             const details = await actions.order.capture();
             if (!details || details.status !== "COMPLETED") {
                 montrerErreur("Le paiement n'a pas été finalisé. Aucune commande n'a été enregistrée.");
@@ -558,7 +555,7 @@ function init() {
         } finally { envoi = false; }
     });
 
-    ["cmd-nom", "cmd-prenom", "cmd-telephone", "cmd-email", "cmd-adresse", "cmd-cp", "cmd-ville", "cmd-message"].forEach((id) => {
+    ["cmd-nom", "cmd-prenom", "cmd-telephone", "cmd-email", "cmd-cp", "cmd-ville", "cmd-message"].forEach((id) => {
         champ(id)?.addEventListener("input", () => {
             const g = champ(id)?.closest(".form-group-contact");
             if (g && g.classList.contains("invalid")) validerFormulaire();

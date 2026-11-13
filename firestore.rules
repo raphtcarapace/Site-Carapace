@@ -123,7 +123,7 @@ service cloud.firestore {
              && c.telephone.matches('^[0-9+(). -]{8,20}$')
              && c.email is string && c.email.size() >= 6 && c.email.size() <= 150
              && c.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
-             && c.adresse is string && c.adresse.size() > 0 && c.adresse.size() <= 200
+             && (!('adresse' in c) || (c.adresse is string && c.adresse.size() <= 200))
              && c.code_postal is string && c.code_postal.matches('^[0-9]{5}$')
              && c.ville is string && c.ville.size() > 0 && c.ville.size() <= 80;
     }

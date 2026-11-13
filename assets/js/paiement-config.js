@@ -6,7 +6,7 @@
 //  le site n'affiche alors que « Être rappelé ».
 //
 //  IMPORTANT — aucun serveur ne confirme le montant :
-//  avant d'expédier ou d'installer, l'admin doit vérifier dans son compte
+//  avant de donner suite ou d'installer, l'admin doit vérifier dans son compte
 //  PayPal que le paiement est bien reçu. Un « onApprove » dans le navigateur
 //  du client ne garantit pas, à lui seul, que l'argent est encaissé.
 // =====================================================================

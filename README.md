@@ -63,7 +63,7 @@ Copiez **tout** le contenu de `firestore.rules` dans Console Firebase, puis Fire
 - À la validation, le site relit le nom et le prix dans Firestore, puis le client choisit **Être rappelé** (`paiement: a_encaisser`) ou **Payer en ligne**.
 - Le paiement utilise le SDK PayPal (boutons PayPal et carte), sans serveur. Renseignez `PAYPAL_CLIENT_ID` dans `assets/js/paiement-config.js`. Tant qu'il est vide, « Payer en ligne » reste désactivé (« Bientôt disponible »).
 - L'achat en ligne concerne le matériel seul, sans installation. Pour une pose, le visiteur passe par le formulaire de devis.
-- Avant d'expédier, vérifiez dans votre compte PayPal que le paiement est bien reçu : un paiement confirmé seulement dans le navigateur du client n'est pas garanti par un serveur.
+- Avant de donner suite, vérifiez dans votre compte PayPal que le paiement est bien reçu : un paiement confirmé seulement dans le navigateur du client n'est pas garanti par un serveur.
 - L'onglet **Commandes** du portail suit les statuts. « Créer un devis depuis cette commande » ouvre le module devis déjà rempli.
 - Numéro de commande : `CMD-AAAAMMJJ-XXXX`.
 

@@ -177,11 +177,6 @@
           <a href="#contact" data-page="contact" class="btn btn-primary">Demander un devis <svg class="arrow"><use href="#i-arrow"/></svg></a>
           <a href="#configurateur" data-page="home" data-scroll="configurateur" class="btn btn-ghost"><svg><use href="#i-sliders"/></svg> Trouver ma configuration</a>
         </div>
-        <div class="hero-stats">
-          <div class="stat"><strong data-count="1200" data-suffix="+">1200+</strong><span>installations</span></div>
-          <div class="stat"><strong data-count="24" data-suffix="h">24h</strong><span>réponse moyenne</span></div>
-          <div class="stat"><strong data-count="4.9" data-decimals="1" data-suffix="/5">4.9/5</strong><span>satisfaction</span></div>
-        </div>
       </div>
 
       <div class="hero-visual" aria-hidden="true">
@@ -390,7 +385,6 @@
           <div><b>Particuliers</b><span>Appartements, maisons, résidences secondaires</span></div>
           <div><b>Professionnels</b><span>Bureaux, commerces, petites entreprises</span></div>
           <div><b>Horaires</b><span class="todo">[À COMPLÉTER : jours et horaires]</span></div>
-          <div><b>Réponse</b><span>Sous 24h en moyenne</span></div>
         </div>
       </div>
     </div>
@@ -402,7 +396,7 @@
       <div class="reveal">
         <div class="eyebrow">Questions fréquentes</div>
         <h2 class="h2" style="margin-bottom:16px">Tout ce que vous voulez savoir</h2>
-        <p class="lead" style="margin-bottom:24px">Une autre question&nbsp;? Écrivez-nous, nous vous répondons sous 24h.</p>
+        <p class="lead" style="margin-bottom:24px">Une autre question&nbsp;? Écrivez-nous, nous vous répondons.</p>
         <a href="#contact" data-page="contact" class="btn btn-dark">Poser ma question <svg class="arrow"><use href="#i-arrow"/></svg></a>
       </div>
       <div class="faq-list reveal" style="--d:.1s">
@@ -534,14 +528,14 @@
     <div class="container">
       <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Contact</span></nav>
       <h1>Contactez nos experts</h1>
-      <p>Remplissez le formulaire ci-dessous pour une étude personnalisée ou un devis gratuit. Nous vous répondons sous 24h.</p>
+      <p>Remplissez le formulaire ci-dessous pour une étude personnalisée ou un devis gratuit. Nous vous répondons.</p>
     </div>
   </div>
   <div class="container contact-grid">
     <aside class="card contact-aside">
       <h3>Parlons de votre projet</h3>
       <ul>
-        <li><span class="ic"><svg><use href="#i-clock"/></svg></span><span><b>Réponse sous 24h</b>Nous revenons vers vous rapidement.</span></li>
+        <li><span class="ic"><svg><use href="#i-clock"/></svg></span><span><b>Réponse</b>Nous revenons vers vous.</span></li>
         <li><span class="ic"><svg><use href="#i-file"/></svg></span><span><b>Devis gratuit</b>Étude personnalisée de votre besoin.</span></li>
         <li><span class="ic"><svg><use href="#i-phone"/></svg></span><span><b>Téléphone</b><span class="todo">[À COMPLÉTER : téléphone]</span></span></li>
         <li><span class="ic"><svg><use href="#i-mail"/></svg></span><span><b>E-mail</b><a href="mailto:contact@carapace.fr">contact@carapace.fr</a></span></li>
@@ -610,7 +604,7 @@
     <div class="container">
       <nav class="crumbs" aria-label="Fil d'Ariane"><a href="#accueil" data-page="home">Accueil</a> / <span>Commande</span></nav>
       <h1>Votre commande</h1>
-      <p>Vérifiez le récapitulatif, indiquez l’adresse de livraison, puis choisissez d’être rappelé ou de payer en ligne.</p>
+      <p>Vérifiez le récapitulatif, puis choisissez d’être rappelé ou de payer en ligne.</p>
     </div>
   </div>
   <div class="container order-layout">
@@ -623,7 +617,7 @@
     <div class="card contact-card-box">
       <form id="form-commande" novalidate>
         <h2>Vos coordonnées</h2>
-        <p>Les champs marqués d’un * sont obligatoires. Ils servent à vous rappeler et à livrer le matériel.</p>
+        <p>Les champs marqués d’un * sont obligatoires. Ils servent à vous rappeler.</p>
         <div class="form-row">
           <div class="form-group-contact">
             <label for="cmd-nom">Nom *</label>
@@ -648,11 +642,6 @@
             <div class="field-error">Indiquez un e-mail valide.</div>
           </div>
         </div>
-        <div class="form-group-contact">
-          <label for="cmd-adresse">Adresse de livraison *</label>
-          <input type="text" id="cmd-adresse" required autocomplete="street-address" maxlength="200">
-          <div class="field-error">Indiquez l’adresse de livraison.</div>
-        </div>
         <div class="form-row">
           <div class="form-group-contact">
             <label for="cmd-cp">Code postal *</label>
@@ -667,7 +656,7 @@
         </div>
         <div class="form-group-contact">
           <label for="cmd-message">Message (facultatif)</label>
-          <textarea id="cmd-message" maxlength="2000" placeholder="Précisions pour la livraison (digicode, étage, horaires…)"></textarea>
+          <textarea id="cmd-message" maxlength="2000" placeholder="Précisions sur votre demande"></textarea>
           <div class="field-error">Le message est trop long.</div>
         </div>
         <fieldset class="pay-choice">
@@ -793,6 +782,6 @@
 <script src="assets/js/configurateur.js"></script>
 <script src="assets/js/site.js"></script>
 <script type="module" src="assets/js/firebase-site.js"></script>
-<script type="module" src="assets/js/panier.js"></script>
+<script type="module" src="assets/js/panier.js?v=8"></script>
 </body>
 </html>
