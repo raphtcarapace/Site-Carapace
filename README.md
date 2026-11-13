@@ -8,7 +8,7 @@ Pour passer plus tard à https://carapace-technologies.fr, remplacer **partout**
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | Le site public : accueil, configurateur, pages Ajax / Somfy / Yale, fiche produit, contact |
+| `index.html` | Le site public, servi à la racine : accueil (domotique et sécurité), configurateur, pages Ajax / Somfy / Yale, fiche produit, contact. `/accueil-domotique.html` redirige en 301 vers `/`. |
 | `admin.html` | **Carapace Portail** : demandes clients, gestion du catalogue et **devis** (connexion Firebase) |
 | `mentions-legales.html` | Mentions légales et RGPD (**à compléter**) |
 | `404.html` | Page « introuvable » |

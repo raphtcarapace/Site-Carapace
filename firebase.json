@@ -13,6 +13,13 @@
     ],
     "cleanUrls": false,
     "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/accueil-domotique.html",
+        "destination": "/",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**/*.@(js|css)",

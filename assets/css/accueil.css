@@ -1,4 +1,9 @@
-/* Sections ajoutées à la copie de l'accueil. Le reste vient de style.css. */
+/* Compléments de l'accueil. Le reste vient de style.css. */
+.domo-copy .hero h1 { font-size: clamp(2.15rem, 4.5vw, 4.15rem); line-height: 1.08; }
+.domo-copy .hero h1 .line { overflow: visible; }
+.domo-copy .hero h1 .line:nth-child(3) > span { animation-delay: .24s; }
+.reveal-failsafe .reveal { opacity: 1; transform: none; }
+
 .domo-sansfil-line {
   display: inline-flex; align-items: center; gap: 10px;
   margin: 0 0 18px; padding: 7px 12px;
