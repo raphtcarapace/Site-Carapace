@@ -6,7 +6,7 @@
 export const ENTREPRISE = {
     nom: "Carapace",
     slogan: "La protection de vos espaces",
-    raison_sociale: "[À COMPLÉTER : raison sociale ou nom et prénom]",
+    raison_sociale: "Carapace",
     forme_juridique: "[À COMPLÉTER : ex. EI, micro-entreprise, SAS]",
     adresse: "[À COMPLÉTER : adresse]",
     code_postal_ville: "[À COMPLÉTER : code postal et ville]",
