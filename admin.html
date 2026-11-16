@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/admin.css?v=9">
+<link rel="stylesheet" href="assets/css/admin.css?v=10">
 <script>document.documentElement.style.background=(localStorage.getItem('carapace-admin-theme')==='dark')?'#070b14':'';</script>
 </head>
 <body data-theme="light">
@@ -93,7 +93,7 @@
         <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block">Se connecter</button>
         <div class="auth-links">
           <a href="/">← Retour au site</a>
-          <button type="button" class="linklike" id="btn-reset-password">Mot de passe oublié ?</button>
+          <span>Mot de passe oublié : contactez le responsable.</span>
         </div>
       </form>
       <div class="auth-note"><svg class="i"><use href="#i-shield"/></svg><span>Espace privé. Les identifiants sont gérés dans la console Firebase (Authentication).</span></div>
@@ -136,6 +136,7 @@
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
       <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
+      <button class="tab" data-tab="panel-employes" id="tab-employes" role="tab" hidden><svg class="i"><use href="#i-users"/></svg>Comptes employés</button>
     </nav>
 
     <!-- 1. DEMANDES CLIENTS -->
@@ -395,6 +396,40 @@
       </div>
     </section>
 
+    <section class="panel" id="panel-employes" hidden>
+      <div class="card-box">
+        <h3><svg class="i"><use href="#i-users"/></svg>Créer un compte employé</h3>
+        <p class="hint">Le mot de passe est choisi une seule fois, à la création. Il ne peut pas être modifié depuis ce portail.</p>
+        <p id="emp-erreur" class="auth-error" role="alert"></p>
+        <form id="form-employe" novalidate>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="emp-email">E-mail</label>
+              <input type="email" id="emp-email" required autocomplete="off" maxlength="150">
+            </div>
+            <div class="form-group">
+              <label for="emp-password">Mot de passe</label>
+              <input type="password" id="emp-password" required minlength="8" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label for="emp-password-2">Confirmer le mot de passe</label>
+              <input type="password" id="emp-password-2" required minlength="8" autocomplete="new-password">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-creer-employe">Créer le compte</button>
+        </form>
+      </div>
+      <div class="card-box">
+        <h3><svg class="i"><use href="#i-users"/></svg>Employés</h3>
+        <div class="desktop-table-view table-scroll">
+          <table>
+            <thead><tr><th>E-mail</th><th>Accès</th><th></th></tr></thead>
+            <tbody id="tbody-employes"><tr><td colspan="3" class="empty">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- Sélecteur de produits du catalogue -->
     <div class="picker" id="picker" hidden>
       <div class="picker-box" role="dialog" aria-modal="true" aria-label="Ajouter un produit du catalogue">
@@ -412,6 +447,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/admin.js?v=9"></script>
+<script type="module" src="assets/js/admin.js?v=10"></script>
 </body>
 </html>

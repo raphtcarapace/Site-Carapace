@@ -58,7 +58,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--red); box-shadow
 textarea { resize: vertical; min-height: 90px; } textarea.large { min-height: 170px; }
 .auth-error { display: none; background: var(--red-soft); color: var(--red); border: 1px solid rgba(215,38,56,.3); padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
 .auth-links { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; font-size: 13px; }
-.auth-links a, .linklike { color: var(--muted); text-decoration: none; background: none; border: 0; cursor: pointer; font-size: 13px; }
+.auth-links a, .auth-links span, .linklike { color: var(--muted); text-decoration: none; background: none; border: 0; font-size: 13px; }
+.linklike { cursor: pointer; }
 .auth-links a:hover, .linklike:hover { color: var(--red); }
 .auth-note { margin-top: 26px; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px dashed var(--line); color: var(--muted); font-size: 12px; display: flex; gap: 10px; }
 
@@ -109,6 +110,7 @@ body[data-theme="dark"] .btn-dark { background: #fff; color: var(--navy); }
 .stat small { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--line); padding: 6px; border-radius: 14px; width: max-content; max-width: 100%; overflow-x: auto; margin-bottom: 18px; box-shadow: var(--shadow); }
 .tab { border: 0; background: transparent; padding: 10px 16px; border-radius: 10px; font-weight: 700; color: var(--muted); cursor: pointer; display: inline-flex; gap: 8px; align-items: center; white-space: nowrap; }
+.tab[hidden], #panel-employes[hidden] { display: none !important; }
 .tab.active { background: var(--navy-900); color: #fff; }
 body[data-theme="dark"] .tab.active { background: #fff; color: var(--navy); }
 .tab .count { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--red); color: #fff; }

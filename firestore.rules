@@ -3,16 +3,35 @@
 //  À copier-coller EN ENTIER dans :
 //  Console Firebase > Firestore Database > onglet « Règles » > Publier
 //
-//  - L'UID qQDrA5N6atXjrRCuKGJR3NdFIyf2 est celui de votre compte administrateur :
-//    connectez-vous au portail admin avec CE compte (Authentication > Utilisateurs).
-//  - Collections : produits, demandes_contact, devis, commandes.
+//  - estProprietaire : test@gmail.com, admin du catalogue, des demandes, des devis
+//    et des commandes. Pas de gestion des comptes employés.
+//  - estSuperAdmin : seul compte autorisé à lire et écrire la collection employes.
+//  - Collections : produits, demandes_contact, devis, commandes, employes.
+//  Un compte Auth sans document employes actif n'a aucun droit d'administration.
 // =====================================================================
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function estAdmin() {
+    function estSuperAdmin() {
+      // raphtech.ia@gmail.com
+      return request.auth != null && request.auth.uid in ['2leWLfhkJOYvLD55icJff5FraC63'];
+    }
+
+    function estProprietaire() {
+      // test@gmail.com
       return request.auth != null && request.auth.uid in ['qQDrA5N6atXjrRCuKGJR3NdFIyf2'];
+    }
+
+    function estEmploye() {
+      return request.auth != null
+             && exists(/databases/$(database)/documents/employes/$(request.auth.uid))
+             && get(/databases/$(database)/documents/employes/$(request.auth.uid)).data.actif == true
+             && get(/databases/$(database)/documents/employes/$(request.auth.uid)).data.role == 'employe';
+    }
+
+    function estAdmin() {
+      return estSuperAdmin() || estProprietaire() || estEmploye();
     }
 
     // Catalogue : lecture publique (le site doit l'afficher), écriture admin seulement
@@ -160,6 +179,25 @@ service cloud.firestore {
       allow update: if estAdmin()
                     && request.resource.data.statut in ['nouvelle', 'confirmee', 'en_preparation', 'installee', 'livree', 'annulee']
                     && request.resource.data.paiement in ['a_encaisser', 'paye_en_ligne', 'paye'];
+    }
+
+    // Comptes employés : lecture par le super-admin, ou de sa propre fiche.
+    // Écriture réservée au super-admin. Un simple compte Auth ne suffit pas.
+    match /employes/{uid} {
+      allow read: if estSuperAdmin() || (request.auth != null && request.auth.uid == uid);
+      allow create: if estSuperAdmin()
+                    && request.resource.data.keys().hasOnly(['email', 'role', 'actif', 'cree_le', 'cree_par'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() > 3
+                    && request.resource.data.email.size() <= 150
+                    && request.resource.data.role == 'employe'
+                    && request.resource.data.actif == true
+                    && request.resource.data.cree_le == request.time
+                    && request.resource.data.cree_par == request.auth.uid;
+      allow update: if estSuperAdmin()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['actif'])
+                    && request.resource.data.actif is bool;
+      allow delete: if estSuperAdmin();
     }
 
     // Tout le reste est fermé

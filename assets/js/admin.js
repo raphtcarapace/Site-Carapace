@@ -2,15 +2,22 @@
 // Mêmes appels Firebase que la version d'origine (Auth + Firestore),
 // mêmes collections ("produits", "demandes_contact") et mêmes champs.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 import { initDevis } from "./devis.js?v=9";
 import { initCatalogueMaj } from "./catalogue-maj.js";
 
+// raphtech.ia@gmail.com — seul UID autorisé à ouvrir « Comptes employés » et à écrire employes.
+const SUPER_ADMIN_UIDS = ['2leWLfhkJOYvLD55icJff5FraC63'];
+// test@gmail.com — admin du catalogue, des demandes, des devis et des commandes. Pas de gestion des comptes.
+const PROPRIETAIRE_UIDS = ['qQDrA5N6atXjrRCuKGJR3NdFIyf2'];
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const appSecondaire = initializeApp(firebaseConfig, 'secondary');
+const authSecondaire = getAuth(appSecondaire);
 
 let modeEdition = false;
 let idEditionCourant = null;
@@ -175,20 +182,71 @@ function afficherStatsDashboard(contactCount = 0, produits = []) {
 }
 
 // ---------- Authentification ----------
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        $('auth-screen').style.display = 'none';
-        $('portal-content').style.display = 'block';
-        $('user-display').innerText = `Connecté : ${user.email}`;
-        const h = new Date().getHours();
-        $('hello').innerText = (h >= 18 || h < 5 ? 'Bonsoir' : 'Bonjour') + ' 👋';
-        chargerContactsAdmin();
-        chargerProduitsAdmin();
-        devis.chargerDevis();
-    } else {
+let messageRefus = '';
+let controleAcces = 0;
+
+function estSuperAdminUid(uid) {
+    return SUPER_ADMIN_UIDS.includes(uid);
+}
+
+async function verifierAcces(user) {
+    if (estSuperAdminUid(user.uid)) return { ok: true, superAdmin: true };
+    if (PROPRIETAIRE_UIDS.includes(user.uid)) return { ok: true, superAdmin: false };
+    const fiche = await getDoc(doc(db, 'employes', user.uid));
+    const data = fiche.exists() ? fiche.data() : null;
+    if (data && data.role === 'employe' && data.actif === true) return { ok: true, superAdmin: false };
+    return { ok: false, superAdmin: false };
+}
+
+function afficherSectionEmployes(visible) {
+    const tab = $('tab-employes');
+    const panel = $('panel-employes');
+    if (tab) tab.hidden = !visible;
+    if (panel) panel.hidden = !visible;
+    if (!visible && panel && panel.classList.contains('active')) ouvrirOnglet('panel-demandes');
+}
+
+function ouvrirPortail(user) {
+    $('auth-screen').style.display = 'none';
+    $('portal-content').style.display = 'block';
+    $('user-display').innerText = `Connecté : ${user.email}`;
+    const h = new Date().getHours();
+    $('hello').innerText = (h >= 18 || h < 5 ? 'Bonsoir' : 'Bonjour') + ' 👋';
+    chargerContactsAdmin();
+    chargerProduitsAdmin();
+    devis.chargerDevis();
+}
+
+onAuthStateChanged(auth, async (user) => {
+    const ticket = ++controleAcces;
+    if (!user) {
         $('auth-screen').style.display = '';
         $('portal-content').style.display = 'none';
+        afficherSectionEmployes(false);
+        if (messageRefus) {
+            const errP = $('auth-error');
+            errP.innerText = messageRefus;
+            errP.style.display = 'block';
+            messageRefus = '';
+        }
+        return;
     }
+    let acces = { ok: false, superAdmin: false };
+    try {
+        acces = await verifierAcces(user);
+    } catch (e) {
+        console.error(e);
+        acces = { ok: false, superAdmin: false };
+    }
+    if (ticket !== controleAcces) return;
+    if (!acces.ok) {
+        messageRefus = 'Accès refusé';
+        await signOut(auth);
+        return;
+    }
+    afficherSectionEmployes(acces.superAdmin);
+    ouvrirPortail(user);
+    if (acces.superAdmin) chargerEmployes();
 });
 
 $('quick-add-product').addEventListener('click', () => {
@@ -201,6 +259,7 @@ $('refresh-dashboard').addEventListener('click', async () => {
     await chargerContactsAdmin();
     await chargerProduitsAdmin();
     await devis.chargerDevis();
+    if (auth.currentUser && estSuperAdminUid(auth.currentUser.uid)) await chargerEmployes();
     toast('Données actualisées');
 });
 
@@ -231,22 +290,6 @@ $('form-login').addEventListener('submit', async (e) => {
         btn.innerText = "Se connecter";
         btn.disabled = false;
     }
-});
-
-$('btn-reset-password').addEventListener('click', async () => {
-    const email = $('login-email').value.trim();
-    const errP = $('auth-error');
-    if (!email) {
-        errP.innerText = "Saisissez d'abord votre adresse e-mail ci-dessus.";
-        errP.style.display = 'block';
-        $('login-email').focus();
-        return;
-    }
-    try {
-        await sendPasswordResetEmail(auth, email);
-    } catch (e) { /* message neutre volontaire */ }
-    errP.style.display = 'none';
-    toast("Si ce compte existe, un e-mail de réinitialisation vient d'être envoyé.");
 });
 
 $('btn-logout').addEventListener('click', () => signOut(auth));
@@ -578,5 +621,116 @@ $('form-produit').addEventListener('submit', async (e) => {
     } finally {
         btn.innerText = modeEdition ? "💾 Enregistrer les modifications" : "➕ Ajouter au catalogue";
         btn.disabled = false;
+    }
+});
+
+// ---------- Comptes employés (super-admin uniquement) ----------
+function messageCreationEmploye(err) {
+    const code = err && err.code;
+    if (code === 'auth/email-already-in-use') return 'Cette adresse e-mail est déjà utilisée.';
+    if (code === 'auth/invalid-email') return 'Adresse e-mail invalide.';
+    if (code === 'auth/weak-password') return 'Mot de passe trop faible.';
+    return "Le compte n'a pas pu être créé.";
+}
+
+function montrerErreurEmploye(texte) {
+    const p = $('emp-erreur');
+    if (!p) return;
+    if (!texte) { p.style.display = 'none'; p.textContent = ''; return; }
+    p.textContent = texte;
+    p.style.display = 'block';
+}
+
+async function chargerEmployes() {
+    const tbody = $('tbody-employes');
+    if (!tbody || !auth.currentUser || !estSuperAdminUid(auth.currentUser.uid)) return;
+    try {
+        const snap = await getDocs(collection(db, 'employes'));
+        const lignes = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        lignes.sort((a, b) => String(a.email || '').localeCompare(String(b.email || ''), 'fr'));
+        if (!lignes.length) {
+            tbody.innerHTML = '<tr><td colspan="3" class="empty">Aucun employé pour le moment.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = lignes.map((e) => {
+            const actif = e.actif === true;
+            const action = actif
+                ? `<button type="button" class="btn-sm-edit" data-retirer-employe="${esc(e.id)}">Retirer l'accès</button>`
+                : '<span class="hint">Accès retiré</span>';
+            return `<tr>
+                <td>${esc(e.email || e.id)}</td>
+                <td>${actif ? 'Actif' : 'Retiré'}</td>
+                <td>${action}</td>
+            </tr>`;
+        }).join('');
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = '<tr><td colspan="3" class="empty">Impossible de charger les comptes.</td></tr>';
+    }
+}
+
+$('form-employe').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    montrerErreurEmploye('');
+    if (!auth.currentUser || !estSuperAdminUid(auth.currentUser.uid)) {
+        montrerErreurEmploye('Accès refusé');
+        return;
+    }
+    const email = $('emp-email').value.trim();
+    const pass = $('emp-password').value;
+    const pass2 = $('emp-password-2').value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        montrerErreurEmploye('Adresse e-mail invalide.');
+        return;
+    }
+    if (pass.length < 8) {
+        montrerErreurEmploye('Le mot de passe doit contenir au moins 8 caractères.');
+        return;
+    }
+    if (pass !== pass2) {
+        montrerErreurEmploye('Les deux mots de passe ne correspondent pas.');
+        return;
+    }
+    const btn = $('btn-creer-employe');
+    btn.disabled = true;
+    let compte = null;
+    try {
+        compte = await createUserWithEmailAndPassword(authSecondaire, email, pass);
+        await setDoc(doc(db, 'employes', compte.user.uid), {
+            email,
+            role: 'employe',
+            actif: true,
+            cree_le: serverTimestamp(),
+            cree_par: auth.currentUser.uid
+        });
+        $('form-employe').reset();
+        toast('Compte employé créé.');
+        await chargerEmployes();
+    } catch (err) {
+        console.error(err);
+        montrerErreurEmploye(compte
+            ? "Le compte d'authentification a été créé, mais la fiche employé n'a pas été enregistrée. Il ne peut pas se connecter tant que cette fiche manque."
+            : messageCreationEmploye(err));
+    } finally {
+        try { await signOut(authSecondaire); } catch (_) { /* session secondaire déjà fermée */ }
+        btn.disabled = false;
+    }
+});
+
+document.addEventListener('click', async (e) => {
+    const bouton = e.target.closest('[data-retirer-employe]');
+    if (!bouton) return;
+    if (!auth.currentUser || !estSuperAdminUid(auth.currentUser.uid)) return;
+    const uid = bouton.getAttribute('data-retirer-employe');
+    if (!confirm("Retirer l'accès de ce compte ?")) return;
+    bouton.disabled = true;
+    try {
+        await updateDoc(doc(db, 'employes', uid), { actif: false });
+        toast('Accès retiré.');
+        await chargerEmployes();
+    } catch (err) {
+        console.error(err);
+        toast("L'accès n'a pas pu être retiré.", 'err');
+        bouton.disabled = false;
     }
 });
