@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/admin.css?v=12">
+<link rel="stylesheet" href="assets/css/admin.css?v=13">
 <script>document.documentElement.style.background=(localStorage.getItem('carapace-admin-theme')==='dark')?'#070b14':'';</script>
 </head>
 <body data-theme="light">
@@ -136,6 +136,7 @@
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
       <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
+      <button class="tab" data-tab="panel-clients" role="tab"><svg class="i"><use href="#i-users"/></svg>Clients <span class="count count-blue" id="tab-count-clients">0</span></button>
       <button class="tab" data-tab="panel-profil" role="tab"><svg class="i"><use href="#i-users"/></svg>Mon profil</button>
       <button class="tab" data-tab="panel-employes" id="tab-employes" role="tab" hidden><svg class="i"><use href="#i-users"/></svg>Comptes employés</button>
     </nav>
@@ -340,7 +341,31 @@
             </div>
 
             <div class="card-box">
-              <h3><svg class="i"><use href="#i-users"/></svg>Client <span class="badge blue" id="dv-demande-lien" hidden>Lié à une demande</span></h3>
+              <div class="section-head">
+                <h3><svg class="i"><use href="#i-users"/></svg>Client <span class="badge blue" id="dv-demande-lien" hidden>Lié à une demande</span></h3>
+                <button class="btn btn-secondary" type="button" id="btn-nouveau-client-devis">+ Nouveau client</button>
+              </div>
+              <div class="client-pick">
+                <label for="dv-client-recherche">Rechercher dans la base clients</label>
+                <input type="search" id="dv-client-recherche" placeholder="Nom, société, e-mail ou téléphone" autocomplete="off">
+                <div class="client-resultats" id="dv-client-resultats" hidden></div>
+                <p class="hint" id="dv-client-lie" hidden></p>
+              </div>
+              <div class="card-box inner" id="dv-nouveau-client" hidden>
+                <h3>Nouveau client</h3>
+                <p id="dv-nouveau-client-msg" class="hint"></p>
+                <div class="form-grid">
+                  <div class="form-group"><label for="dv-nc-nom">Nom</label><input type="text" id="dv-nc-nom" maxlength="80"></div>
+                  <div class="form-group"><label for="dv-nc-prenom">Prénom</label><input type="text" id="dv-nc-prenom" maxlength="80"></div>
+                  <div class="form-group"><label for="dv-nc-societe">Société</label><input type="text" id="dv-nc-societe" maxlength="120"></div>
+                  <div class="form-group"><label for="dv-nc-email">E-mail</label><input type="email" id="dv-nc-email" maxlength="150"></div>
+                  <div class="form-group"><label for="dv-nc-telephone">Téléphone</label><input type="tel" id="dv-nc-telephone" maxlength="30"></div>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-primary" type="button" id="btn-creer-client-devis">Créer et sélectionner</button>
+                  <button class="btn btn-secondary" type="button" id="btn-annuler-client-devis">Annuler</button>
+                </div>
+              </div>
               <div class="form-grid">
                 <div class="form-group"><label for="dv-client-nom">Nom *</label><input type="text" id="dv-client-nom" required></div>
                 <div class="form-group"><label for="dv-client-prenom">Prénom</label><input type="text" id="dv-client-prenom"></div>
@@ -407,6 +432,42 @@
             </div>
           </aside>
         </form>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-clients">
+      <div class="card-box" id="client-form-box">
+        <h3 id="client-form-title">Ajouter un client</h3>
+        <p id="client-form-msg" class="hint"></p>
+        <form id="form-client" novalidate>
+          <div class="form-grid">
+            <div class="form-group"><label for="cl-nom">Nom</label><input type="text" id="cl-nom" maxlength="80"></div>
+            <div class="form-group"><label for="cl-prenom">Prénom</label><input type="text" id="cl-prenom" maxlength="80"></div>
+            <div class="form-group"><label for="cl-societe">Société</label><input type="text" id="cl-societe" maxlength="120"></div>
+            <div class="form-group"><label for="cl-email">E-mail</label><input type="email" id="cl-email" maxlength="150"></div>
+            <div class="form-group"><label for="cl-telephone">Téléphone</label><input type="tel" id="cl-telephone" maxlength="30"></div>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary" id="btn-client-save">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" id="btn-client-annuler" hidden>Annuler</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-box">
+        <div class="section-head">
+          <h3><svg class="i"><use href="#i-users"/></svg>Clients <span class="badge blue" id="clients-count">0</span></h3>
+          <div class="tools">
+            <div class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="clients-search" placeholder="Nom, société, e-mail, téléphone"></div>
+            <button class="btn btn-secondary" type="button" id="btn-importer-clients" hidden>Importer les clients des devis existants</button>
+          </div>
+        </div>
+        <div class="desktop-table-view table-scroll">
+          <table>
+            <thead><tr><th>Nom</th><th>Société</th><th>E-mail</th><th>Téléphone</th><th></th></tr></thead>
+            <tbody id="tbody-clients"><tr><td colspan="5" class="empty">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="mobile-cards-view" id="cards-clients-mobile"><div class="empty">Chargement...</div></div>
       </div>
     </section>
 
@@ -492,6 +553,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/admin.js?v=12"></script>
+<script type="module" src="assets/js/admin.js?v=13"></script>
 </body>
 </html>

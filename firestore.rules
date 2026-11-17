@@ -6,7 +6,7 @@
 //  - estProprietaire : test@gmail.com, admin du catalogue, des demandes, des devis
 //    et des commandes. Pas de gestion des comptes employés.
 //  - estSuperAdmin : seul compte autorisé à lire et écrire la collection employes.
-//  - Collections : produits, demandes_contact, devis, commandes, employes, profils.
+//  - Collections : produits, demandes_contact, devis, commandes, employes, profils, clients.
 //  Un compte Auth sans document employes actif n'a aucun droit d'administration.
 // =====================================================================
 rules_version = '2';
@@ -218,6 +218,36 @@ service cloud.firestore {
                             && request.resource.data.email == request.auth.token.email
                             && request.resource.data.maj_le == request.time;
       allow delete: if estSuperAdmin();
+    }
+
+    // Base clients : personnel authentifié seulement, aucun accès public.
+    match /clients/{id} {
+      allow read, delete: if estAdmin();
+      allow create: if estAdmin()
+                    && clientFicheValide()
+                    && request.resource.data.cree_le == request.time
+                    && request.resource.data.cree_par == request.auth.uid
+                    && request.resource.data.maj_le == request.time;
+      allow update: if estAdmin()
+                    && clientFicheValide()
+                    && request.resource.data.maj_le == request.time
+                    && request.resource.data.cree_le == resource.data.cree_le
+                    && request.resource.data.cree_par == resource.data.cree_par;
+    }
+
+    function clientFicheValide() {
+      return request.resource.data.keys().hasOnly(['nom', 'prenom', 'societe', 'email', 'telephone', 'cree_le', 'cree_par', 'maj_le'])
+             && request.resource.data.nom is string && request.resource.data.nom.size() <= 80
+             && request.resource.data.prenom is string && request.resource.data.prenom.size() <= 80
+             && request.resource.data.societe is string && request.resource.data.societe.size() <= 120
+             && request.resource.data.email is string && request.resource.data.email.size() <= 150
+             && request.resource.data.telephone is string && request.resource.data.telephone.size() <= 30
+             && request.resource.data.cree_par is string && request.resource.data.cree_par.size() > 0 && request.resource.data.cree_par.size() <= 128
+             && (request.resource.data.nom.size() > 0
+                 || request.resource.data.prenom.size() > 0
+                 || request.resource.data.societe.size() > 0
+                 || request.resource.data.email.size() > 0
+                 || request.resource.data.telephone.size() > 0);
     }
 
     // Tout le reste est fermé

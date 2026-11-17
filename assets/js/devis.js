@@ -94,7 +94,7 @@ export function calculerTotaux(dv) {
     return { lignes, totaux: { ht_brut, remise, ht, tva, ttc, acompte, taux } };
 }
 
-export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, profilIncomplet, ouvrirProfil }) {
+export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, profilIncomplet, ouvrirProfil, getClients, creerClient }) {
     let devisData = {};        // id -> devis
     let courant = null;        // devis en cours d'édition
     let idCourant = null;
@@ -250,6 +250,81 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     $('btn-devis-retour').addEventListener('click', () => fermerEditeur());
     $('btn-nouveau-devis').addEventListener('click', () => ouvrirEditeur(nouveauDevis()));
 
+    function libelleClient(c) {
+        const qui = [c.prenom, c.nom].filter(Boolean).join(' ') || c.societe || 'Client';
+        const detail = [c.societe && c.nom ? c.societe : '', c.email, c.telephone].filter(Boolean).join(' · ');
+        return { qui, detail };
+    }
+    function appliquerClient(c) {
+        if (!courant) return;
+        const email = String(c.email || '').trim();
+        const telephone = String(c.telephone || '').trim();
+        courant.client_id = c.id;
+        courant.client = {
+            ...(courant.client || {}),
+            nom: c.nom || '',
+            prenom: c.prenom || '',
+            societe: c.societe || '',
+            email,
+            telephone,
+            contact: [email, telephone].filter(Boolean).join(' · '),
+            adresse: (courant.client && courant.client.adresse) || ''
+        };
+        remplirFormulaire();
+        modifie = true;
+    }
+    function rendreRechercheClients() {
+        const q = $('dv-client-recherche').value.toLowerCase().trim();
+        const box = $('dv-client-resultats');
+        const tous = typeof getClients === 'function' ? getClients() : [];
+        if (!q) { box.hidden = true; box.innerHTML = ''; return; }
+        const liste = tous.filter((c) => [c.nom, c.prenom, c.societe, c.email, c.telephone].join(' ').toLowerCase().includes(q)).slice(0, 8);
+        box.hidden = false;
+        box.innerHTML = liste.length ? liste.map((c) => {
+            const l = libelleClient(c);
+            return `<button type="button" data-choisir-client="${esc(c.id)}"><b>${esc(l.qui)}</b><small>${esc(l.detail)}</small></button>`;
+        }).join('') : '<div class="empty">Aucun client correspondant.</div>';
+    }
+    $('dv-client-recherche').addEventListener('input', rendreRechercheClients);
+    $('dv-client-resultats').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-choisir-client]'); if (!b) return;
+        const c = (getClients() || []).find((x) => x.id === b.dataset.choisirClient);
+        if (!c) return;
+        appliquerClient(c);
+        $('dv-client-recherche').value = '';
+        $('dv-client-resultats').hidden = true;
+        toast(`${libelleClient(c).qui} sélectionné`);
+    });
+    $('btn-nouveau-client-devis').addEventListener('click', () => {
+        $('dv-nouveau-client').hidden = false;
+        $('dv-nouveau-client-msg').textContent = '';
+        $('dv-nc-nom').focus();
+    });
+    $('btn-annuler-client-devis').addEventListener('click', () => { $('dv-nouveau-client').hidden = true; });
+    $('btn-creer-client-devis').addEventListener('click', async () => {
+        const msg = $('dv-nouveau-client-msg');
+        const fiche = {
+            nom: $('dv-nc-nom').value.trim(),
+            prenom: $('dv-nc-prenom').value.trim(),
+            societe: $('dv-nc-societe').value.trim(),
+            email: $('dv-nc-email').value.trim(),
+            telephone: $('dv-nc-telephone').value.trim()
+        };
+        const res = await creerClient(fiche);
+        if (!res) return;
+        if (res.doublon) {
+            appliquerClient(res.doublon);
+            msg.textContent = 'Ce client existe déjà. Il a été sélectionné.';
+            $('dv-nouveau-client').hidden = true;
+            return;
+        }
+        if (res.client) {
+            appliquerClient(res.client);
+            ['dv-nc-nom', 'dv-nc-prenom', 'dv-nc-societe', 'dv-nc-email', 'dv-nc-telephone'].forEach((id) => { $(id).value = ''; });
+            $('dv-nouveau-client').hidden = true;
+        }
+    });
+
     function remplirFormulaire() {
         const d = courant;
         $('dv-titre').textContent = idCourant ? `Devis ${d.numero}` : 'Nouveau devis';
@@ -263,6 +338,14 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
         $('dv-client-societe').value = d.client?.societe || '';
         $('dv-client-contact').value = d.client?.contact || '';
         $('dv-client-adresse').value = d.client?.adresse || '';
+        $('dv-client-recherche').value = '';
+        $('dv-client-resultats').hidden = true;
+        $('dv-nouveau-client').hidden = true;
+        const lie = $('dv-client-lie');
+        if (d.client_id) {
+            lie.hidden = false;
+            lie.textContent = 'Fiche client liée. Les coordonnées ci-dessous restent celles de ce devis.';
+        } else lie.hidden = true;
         $('dv-demande-lien').hidden = !d.demande_id;
         $('dv-tva').value = d.tva_franchise ? 'franchise' : String(d.tva_taux ?? 20);
         $('dv-remise').value = d.remise_valeur ?? 0;
@@ -284,7 +367,9 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
         d.client = {
             nom: $('dv-client-nom').value.trim(), prenom: $('dv-client-prenom').value.trim(),
             societe: $('dv-client-societe').value.trim(), contact: $('dv-client-contact').value.trim(),
-            adresse: $('dv-client-adresse').value.trim()
+            adresse: $('dv-client-adresse').value.trim(),
+            email: d.client?.email || '',
+            telephone: d.client?.telephone || ''
         };
         const tva = $('dv-tva').value;
         d.tva_franchise = tva === 'franchise';
@@ -546,7 +631,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
         return {
             numero: d.numero, date_emission: d.date_emission, date_validite: d.date_validite,
             statut: d.statut, objet: d.objet || '',
-            client: d.client, demande_id: d.demande_id || null,
+            client: d.client, client_id: d.client_id || null, demande_id: d.demande_id || null,
             lignes: lignes.map((l) => ({
                 type: l.type || 'libre', produit_id: l.produit_id || null, marque: l.marque || '',
                 designation: String(l.designation || ''), description: String(l.description || ''),

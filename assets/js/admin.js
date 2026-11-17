@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
-import { initDevis, contenuPack } from "./devis.js?v=11";
+import { initDevis, contenuPack } from "./devis.js?v=12";
 import { initCatalogueMaj } from "./catalogue-maj.js";
 
 // raphtech.ia@gmail.com — seul UID autorisé à ouvrir « Comptes employés » et à écrire employes.
@@ -108,12 +108,15 @@ function profilIncomplet() {
 }
 
 // ---------- Devis ----------
+let clientsData = [];
 const devis = initDevis({
     db, toast, ouvrirOnglet,
     getProduits: () => window.produitsData || {},
     getContact: contactPourDevis,
     profilIncomplet,
-    ouvrirProfil: () => ouvrirOnglet('panel-profil')
+    ouvrirProfil: () => ouvrirOnglet('panel-profil'),
+    getClients: () => clientsData,
+    creerClient: (fiche) => enregistrerClient(fiche)
 });
 const catalogueMaj = initCatalogueMaj({
     db,
@@ -239,6 +242,10 @@ function ouvrirPortail(user) {
     chargerProduitsAdmin();
     devis.chargerDevis();
     chargerProfil();
+    chargerClients();
+    const uid = user && user.uid;
+    const importBtn = $('btn-importer-clients');
+    if (importBtn) importBtn.hidden = !(SUPER_ADMIN_UIDS.includes(uid) || PROPRIETAIRE_UIDS.includes(uid));
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -283,7 +290,8 @@ $('quick-add-product').addEventListener('click', () => {
 $('refresh-dashboard').addEventListener('click', async () => {
     await chargerContactsAdmin();
     await chargerProduitsAdmin();
-    await devis.chargerDevis();
+    await     devis.chargerDevis();
+    await chargerClients();
     if (auth.currentUser && estSuperAdminUid(auth.currentUser.uid)) await chargerEmployes();
     toast('Données actualisées');
 });
@@ -838,5 +846,210 @@ document.addEventListener('click', async (e) => {
         console.error(err);
         toast("L'accès n'a pas pu être retiré.", 'err');
         bouton.disabled = false;
+    }
+});
+
+// ---------- Clients ----------
+let clientEditionId = null;
+function normaliserEmail(v) { return String(v || '').trim().toLowerCase(); }
+function normaliserTel(v) {
+    const s = String(v || '').trim();
+    if (!s) return '';
+    const plus = s.startsWith('+');
+    const digits = s.replace(/\D/g, '');
+    return digits ? (plus ? '+' : '') + digits : '';
+}
+function trouverDoublonClient(email, telephone, saufId) {
+    const em = normaliserEmail(email);
+    const tel = normaliserTel(telephone);
+    return clientsData.find((c) => {
+        if (saufId && c.id === saufId) return false;
+        if (em && normaliserEmail(c.email) === em) return true;
+        if (tel && normaliserTel(c.telephone) === tel) return true;
+        return false;
+    }) || null;
+}
+function nomClient(c) {
+    return [c.prenom, c.nom].filter(Boolean).join(' ') || c.societe || 'Client';
+}
+async function chargerClients() {
+    const tbody = $('tbody-clients');
+    if (!tbody) return;
+    try {
+        const snap = await getDocs(collection(db, 'clients'));
+        clientsData = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        clientsData.sort((a, b) => nomClient(a).localeCompare(nomClient(b), 'fr'));
+        const n = $('tab-count-clients'); if (n) n.textContent = String(clientsData.length);
+        const c = $('clients-count'); if (c) c.textContent = String(clientsData.length);
+        afficherClients();
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = `<tr><td colspan="5" class="empty">Impossible de charger les clients.</td></tr>`;
+    }
+}
+function afficherClients() {
+    const q = ($('clients-search').value || '').toLowerCase().trim();
+    const liste = clientsData.filter((c) => !q || [c.nom, c.prenom, c.societe, c.email, c.telephone].join(' ').toLowerCase().includes(q));
+    const tbody = $('tbody-clients');
+    const mobile = $('cards-clients-mobile');
+    if (!liste.length) {
+        const msg = clientsData.length ? 'Aucun client ne correspond.' : 'Aucun client pour le moment.';
+        tbody.innerHTML = `<tr><td colspan="5" class="empty">${msg}</td></tr>`;
+        mobile.innerHTML = `<div class="empty">${msg}</div>`;
+        return;
+    }
+    tbody.innerHTML = liste.map((c) => `<tr>
+        <td><strong>${esc(nomClient(c))}</strong></td>
+        <td>${esc(c.societe || '')}</td>
+        <td>${esc(c.email || '')}</td>
+        <td>${esc(c.telephone || '')}</td>
+        <td style="white-space:nowrap">
+            <button type="button" class="btn-sm-edit" data-edit-client="${esc(c.id)}">Modifier</button>
+            <button type="button" class="btn-sm-del" data-del-client="${esc(c.id)}">Supprimer</button>
+        </td>
+    </tr>`).join('');
+    mobile.innerHTML = liste.map((c) => `<div class="contact-card-mobile">
+        <div class="contact-card-name">${esc(nomClient(c))}</div>
+        <div class="contact-card-info">${esc([c.societe, c.email, c.telephone].filter(Boolean).join(' · '))}</div>
+        <div class="contact-card-footer">
+            <button type="button" class="btn-sm-edit" data-edit-client="${esc(c.id)}">Modifier</button>
+            <button type="button" class="btn-sm-del" data-del-client="${esc(c.id)}">Supprimer</button>
+        </div>
+    </div>`).join('');
+}
+function viderFormClient() {
+    clientEditionId = null;
+    $('form-client').reset();
+    $('client-form-title').textContent = 'Ajouter un client';
+    $('btn-client-save').textContent = 'Enregistrer';
+    $('btn-client-annuler').hidden = true;
+    $('client-form-msg').textContent = '';
+}
+function lireFicheClient(prefix) {
+    const p = prefix || 'cl-';
+    return {
+        nom: $(p + 'nom').value.trim(),
+        prenom: $(p + 'prenom').value.trim(),
+        societe: $(p + 'societe').value.trim(),
+        email: $(p + 'email').value.trim(),
+        telephone: $(p + 'telephone').value.trim()
+    };
+}
+async function enregistrerClient(fiche, idExistant) {
+    const nom = String(fiche.nom || '').trim();
+    const prenom = String(fiche.prenom || '').trim();
+    const societe = String(fiche.societe || '').trim();
+    const email = String(fiche.email || '').trim();
+    const telephone = String(fiche.telephone || '').trim();
+    if (!nom && !prenom && !societe && !email && !telephone) {
+        toast('Indiquez au moins un nom, une société, un e-mail ou un téléphone.', 'err');
+        return null;
+    }
+    const doublon = trouverDoublonClient(email, telephone, idExistant);
+    if (doublon) return { doublon };
+    const user = auth.currentUser;
+    if (!user) return null;
+    const champs = { nom, prenom, societe, email, telephone, maj_le: serverTimestamp() };
+    if (idExistant) {
+        const actuel = clientsData.find((c) => c.id === idExistant);
+        await updateDoc(doc(db, 'clients', idExistant), {
+            ...champs,
+            cree_le: actuel && actuel.cree_le ? actuel.cree_le : serverTimestamp(),
+            cree_par: (actuel && actuel.cree_par) || user.uid
+        });
+        await chargerClients();
+        return { client: clientsData.find((c) => c.id === idExistant) || { id: idExistant, ...champs } };
+    }
+    const ref = await addDoc(collection(db, 'clients'), { ...champs, cree_le: serverTimestamp(), cree_par: user.uid });
+    await chargerClients();
+    return { client: clientsData.find((c) => c.id === ref.id) || { id: ref.id, nom, prenom, societe, email, telephone } };
+}
+$('clients-search').addEventListener('input', afficherClients);
+$('btn-client-annuler').addEventListener('click', viderFormClient);
+$('form-client').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = $('client-form-msg');
+    msg.textContent = '';
+    try {
+        const res = await enregistrerClient(lireFicheClient('cl-'), clientEditionId);
+        if (!res) return;
+        if (res.doublon) {
+            msg.textContent = `Ce client existe déjà : ${nomClient(res.doublon)}. La fiche existante est ouverte.`;
+            clientEditionId = res.doublon.id;
+            $('cl-nom').value = res.doublon.nom || '';
+            $('cl-prenom').value = res.doublon.prenom || '';
+            $('cl-societe').value = res.doublon.societe || '';
+            $('cl-email').value = res.doublon.email || '';
+            $('cl-telephone').value = res.doublon.telephone || '';
+            $('client-form-title').textContent = 'Modifier le client';
+            $('btn-client-annuler').hidden = false;
+            return;
+        }
+        toast(clientEditionId ? 'Client mis à jour.' : 'Client enregistré.');
+        viderFormClient();
+    } catch (err) {
+        console.error(err);
+        toast("Le client n'a pas pu être enregistré.", 'err');
+    }
+});
+document.addEventListener('click', async (e) => {
+    const edit = e.target.closest('[data-edit-client]');
+    if (edit) {
+        const c = clientsData.find((x) => x.id === edit.getAttribute('data-edit-client'));
+        if (!c) return;
+        clientEditionId = c.id;
+        $('cl-nom').value = c.nom || '';
+        $('cl-prenom').value = c.prenom || '';
+        $('cl-societe').value = c.societe || '';
+        $('cl-email').value = c.email || '';
+        $('cl-telephone').value = c.telephone || '';
+        $('client-form-title').textContent = 'Modifier le client';
+        $('btn-client-save').textContent = 'Enregistrer';
+        $('btn-client-annuler').hidden = false;
+        $('client-form-msg').textContent = '';
+        $('client-form-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+    const del = e.target.closest('[data-del-client]');
+    if (!del) return;
+    const id = del.getAttribute('data-del-client');
+    const c = clientsData.find((x) => x.id === id);
+    if (!confirm(`Supprimer ${c ? nomClient(c) : 'ce client'} ?`)) return;
+    try {
+        await deleteDoc(doc(db, 'clients', id));
+        if (clientEditionId === id) viderFormClient();
+        toast('Client supprimé.');
+        await chargerClients();
+    } catch (err) {
+        console.error(err);
+        toast("Le client n'a pas pu être supprimé.", 'err');
+    }
+});
+$('btn-importer-clients').addEventListener('click', async () => {
+    if (!confirm('Créer les fiches manquantes à partir des devis déjà enregistrés ?')) return;
+    try {
+        const snap = await getDocs(collection(db, 'devis'));
+        let crees = 0, ignores = 0;
+        for (const d of snap.docs) {
+            const cl = (d.data() || {}).client || {};
+            const email = String(cl.email || '').trim();
+            const telephone = String(cl.telephone || '').trim();
+            let mail = email, tel = telephone;
+            if (!mail || !tel) {
+                String(cl.contact || '').split(/[·,;/]/).map((s) => s.trim()).filter(Boolean).forEach((b) => {
+                    if (!mail && b.includes('@')) mail = b;
+                    else if (!tel && /\d/.test(b)) tel = b;
+                });
+            }
+            const fiche = { nom: cl.nom || '', prenom: cl.prenom || '', societe: cl.societe || '', email: mail, telephone: tel };
+            if (!fiche.nom && !fiche.prenom && !fiche.societe && !fiche.email && !fiche.telephone) { ignores++; continue; }
+            if (trouverDoublonClient(fiche.email, fiche.telephone)) { ignores++; continue; }
+            const res = await enregistrerClient(fiche);
+            if (res && res.client) crees++; else ignores++;
+        }
+        toast(`${crees} client${crees > 1 ? 's' : ''} importé${crees > 1 ? 's' : ''}. ${ignores} déjà présents ou vides.`);
+    } catch (err) {
+        console.error(err);
+        toast("L'import n'a pas abouti.", 'err');
     }
 });
