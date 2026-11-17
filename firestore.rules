@@ -6,7 +6,7 @@
 //  - estProprietaire : test@gmail.com, admin du catalogue, des demandes, des devis
 //    et des commandes. Pas de gestion des comptes employés.
 //  - estSuperAdmin : seul compte autorisé à lire et écrire la collection employes.
-//  - Collections : produits, demandes_contact, devis, commandes, employes.
+//  - Collections : produits, demandes_contact, devis, commandes, employes, profils.
 //  Un compte Auth sans document employes actif n'a aucun droit d'administration.
 // =====================================================================
 rules_version = '2';
@@ -197,6 +197,26 @@ service cloud.firestore {
       allow update: if estSuperAdmin()
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['actif'])
                     && request.resource.data.actif is bool;
+      allow delete: if estSuperAdmin();
+    }
+
+    // Profil de l'utilisateur connecté. Chacun n'écrit que sa fiche.
+    match /profils/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || estAdmin());
+      allow create, update: if request.auth != null
+                            && request.auth.uid == uid
+                            && estAdmin()
+                            && request.resource.data.keys().hasOnly(['prenom', 'nom', 'telephone', 'email', 'maj_le'])
+                            && request.resource.data.prenom is string
+                            && request.resource.data.prenom.size() <= 60
+                            && request.resource.data.nom is string
+                            && request.resource.data.nom.size() <= 60
+                            && request.resource.data.telephone is string
+                            && request.resource.data.telephone.size() <= 20
+                            && request.resource.data.telephone.matches('^[0-9+(). -]{0,20}$')
+                            && request.resource.data.email is string
+                            && request.resource.data.email == request.auth.token.email
+                            && request.resource.data.maj_le == request.time;
       allow delete: if estSuperAdmin();
     }
 

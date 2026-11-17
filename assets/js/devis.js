@@ -94,7 +94,7 @@ export function calculerTotaux(dv) {
     return { lignes, totaux: { ht_brut, remise, ht, tva, ttc, acompte, taux } };
 }
 
-export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
+export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, profilIncomplet, ouvrirProfil }) {
     let devisData = {};        // id -> devis
     let courant = null;        // devis en cours d'édition
     let idCourant = null;
@@ -190,7 +190,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
 
     function nouveauDevis(prefill = {}) {
         const auj = isoJour();
-        return {
+        const base = {
             numero: prochainNumero(),
             date_emission: auj,
             date_validite: ajouterJours(auj, Number(ENTREPRISE.validite_jours) || 30),
@@ -203,8 +203,32 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
             tva_taux: Number(ENTREPRISE.tva_defaut ?? 20), tva_franchise: !!ENTREPRISE.tva_franchise_defaut,
             acompte_pct: Number(ENTREPRISE.acompte_defaut ?? 30),
             notes: '', conditions: ENTREPRISE.conditions_defaut || '',
-            ...prefill
+            contact: typeof getContact === 'function' ? getContact() : null
         };
+        const devis = { ...base, ...prefill };
+        if (!devis.contact) devis.contact = typeof getContact === 'function' ? getContact() : null;
+        return devis;
+    }
+    function contactAffiche(d) {
+        const c = d && d.contact;
+        if (c && typeof c === 'object' && (c.nom || c.telephone || c.email)) {
+            return {
+                nom: String(c.nom || '').trim(),
+                telephone: String(c.telephone || '').trim(),
+                email: String(c.email || '').trim(),
+                uid: c.uid || ''
+            };
+        }
+        return typeof getContact === 'function' ? getContact() : { nom: '', telephone: '', email: '', uid: '' };
+    }
+    function majBlocContact() {
+        const bandeau = $('dv-contact-banner');
+        const texte = $('dv-contact-texte');
+        if (bandeau) bandeau.hidden = !(typeof profilIncomplet === 'function' && profilIncomplet());
+        if (!texte) return;
+        const c = contactAffiche(courant || {});
+        const lignes = [c.nom, c.telephone, c.email].filter(Boolean);
+        texte.textContent = lignes.length ? lignes.join(' · ') : 'Aucun contact à afficher.';
     }
 
     // ---------- Éditeur ----------
@@ -214,6 +238,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
         $('devis-liste-box').hidden = true;
         $('devis-editeur').hidden = false;
         remplirFormulaire();
+        majBlocContact();
         window.scrollTo({ top: $('panel-devis').offsetTop - 90, behavior: 'smooth' });
     }
     function fermerEditeur(force = false) {
@@ -269,6 +294,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
         d.acompte_pct = Math.min(100, Math.max(0, parseFloat($('dv-acompte').value) || 0));
         d.notes = $('dv-notes').value.trim();
         d.conditions = $('dv-conditions').value.trim();
+        d.contact = (courant && courant.contact) ? courant.contact : (typeof getContact === 'function' ? getContact() : null);
         return d;
     }
 
@@ -533,6 +559,12 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
             tva_taux: Number(d.tva_taux) || 0, tva_franchise: !!d.tva_franchise,
             acompte_pct: Number(d.acompte_pct) || 0,
             notes: d.notes || '', conditions: d.conditions || '',
+            contact: d.contact && typeof d.contact === 'object' ? {
+                nom: String(d.contact.nom || ''),
+                telephone: String(d.contact.telephone || ''),
+                email: String(d.contact.email || ''),
+                uid: String(d.contact.uid || '')
+            } : null,
             totaux: { ht_brut: totaux.ht_brut, remise: totaux.remise, ht: totaux.ht, tva: totaux.tva, ttc: totaux.ttc, acompte: totaux.acompte },
             date_maj: new Date()
         };
@@ -680,10 +712,19 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
         pdf.text(txt(E.nom || 'Carapace').toUpperCase(), M + 19, y + 5, { charSpace: 1.2 });
         pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.5); pdf.setTextColor(...GRIS);
         pdf.text(txt(E.slogan || ''), M + 19, y + 10);
-        const infos = [E.raison_sociale, E.adresse, E.code_postal_ville, [E.telephone, E.email].filter(Boolean).join('  ·  '), E.siret ? 'SIRET : ' + E.siret : ''].filter(Boolean).map(txt);
+        const infos = [E.raison_sociale, E.adresse, E.code_postal_ville, E.siret ? 'SIRET : ' + E.siret : ''].filter((v) => v && !String(v).includes('[À COMPLÉTER]')).map(txt);
         pdf.setFontSize(8.2); pdf.setTextColor(51, 65, 85);
         let yi = y + 22;
         infos.forEach((l) => { const parts = pdf.splitTextToSize(l, 92); pdf.text(parts, M, yi); yi += parts.length * 3.9; });
+        const vendeur = contactAffiche(d);
+        const lignesVendeur = [vendeur.nom, vendeur.telephone, vendeur.email].filter(Boolean).map(txt);
+        if (lignesVendeur.length) {
+            yi += 2;
+            pdf.setFont('helvetica', 'bold'); pdf.setFontSize(7.5); pdf.setTextColor(...ROUGE);
+            pdf.text('VOTRE CONTACT', M, yi); yi += 4.2;
+            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(9); pdf.setTextColor(...NAVY);
+            lignesVendeur.forEach((l) => { pdf.text(pdf.splitTextToSize(l, 92), M, yi); yi += 4.2; });
+        }
 
         // Titre DEVIS
         pdf.setFont('helvetica', 'bold'); pdf.setFontSize(30); pdf.setTextColor(...ROUGE);
@@ -837,5 +878,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
     // Avertit si on quitte la page avec un devis non enregistré
     window.addEventListener('beforeunload', (e) => { if (courant && modifie) { e.preventDefault(); e.returnValue = ''; } });
 
-    return { chargerDevis, creerDepuisDemande, genererPDF, ouvrirEditeur, nouveauDevis };
+    if ($('dv-aller-profil')) $('dv-aller-profil').addEventListener('click', () => { if (typeof ouvrirProfil === 'function') ouvrirProfil(); });
+
+    return { chargerDevis, creerDepuisDemande, genererPDF, ouvrirEditeur, nouveauDevis, rafraichirContact: majBlocContact };
 }

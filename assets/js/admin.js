@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
-import { initDevis, contenuPack } from "./devis.js?v=10";
+import { initDevis, contenuPack } from "./devis.js?v=11";
 import { initCatalogueMaj } from "./catalogue-maj.js";
 
 // raphtech.ia@gmail.com — seul UID autorisé à ouvrir « Comptes employés » et à écrire employes.
@@ -90,8 +90,31 @@ function ouvrirOnglet(id) {
 }
 document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => ouvrirOnglet(t.dataset.tab)));
 
+// ---------- Profil ----------
+let profilCourant = null;
+function contactPourDevis() {
+    const user = auth.currentUser;
+    const prenom = String(profilCourant && profilCourant.prenom || '').trim();
+    const nom = String(profilCourant && profilCourant.nom || '').trim();
+    return {
+        nom: [prenom, nom].filter(Boolean).join(' '),
+        telephone: String(profilCourant && profilCourant.telephone || '').trim(),
+        email: (user && user.email) || '',
+        uid: user ? user.uid : ''
+    };
+}
+function profilIncomplet() {
+    return !contactPourDevis().nom;
+}
+
 // ---------- Devis ----------
-const devis = initDevis({ db, toast, ouvrirOnglet, getProduits: () => window.produitsData || {} });
+const devis = initDevis({
+    db, toast, ouvrirOnglet,
+    getProduits: () => window.produitsData || {},
+    getContact: contactPourDevis,
+    profilIncomplet,
+    ouvrirProfil: () => ouvrirOnglet('panel-profil')
+});
 const catalogueMaj = initCatalogueMaj({
     db,
     toast,
@@ -215,11 +238,13 @@ function ouvrirPortail(user) {
     chargerContactsAdmin();
     chargerProduitsAdmin();
     devis.chargerDevis();
+    chargerProfil();
 }
 
 onAuthStateChanged(auth, async (user) => {
     const ticket = ++controleAcces;
     if (!user) {
+        profilCourant = null;
         $('auth-screen').style.display = '';
         $('portal-content').style.display = 'none';
         afficherSectionEmployes(false);
@@ -293,6 +318,71 @@ $('form-login').addEventListener('submit', async (e) => {
 });
 
 $('btn-logout').addEventListener('click', () => signOut(auth));
+
+function telProfilOk(v) {
+    return /^[0-9+(). -]{0,20}$/.test(v);
+}
+function remplirFormulaireProfil() {
+    const user = auth.currentUser;
+    $('profil-email').value = (user && user.email) || '';
+    $('profil-prenom').value = (profilCourant && profilCourant.prenom) || '';
+    $('profil-nom').value = (profilCourant && profilCourant.nom) || '';
+    $('profil-telephone').value = (profilCourant && profilCourant.telephone) || '';
+}
+async function chargerProfil() {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+        const snap = await getDoc(doc(db, 'profils', user.uid));
+        profilCourant = snap.exists() ? snap.data() : null;
+    } catch (e) {
+        console.error(e);
+        profilCourant = null;
+    }
+    remplirFormulaireProfil();
+    if (devis.rafraichirContact) devis.rafraichirContact();
+}
+function montrerErreurProfil(texte) {
+    const p = $('profil-erreur');
+    if (!texte) { p.style.display = 'none'; p.textContent = ''; return; }
+    p.textContent = texte;
+    p.style.display = 'block';
+}
+$('form-profil').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+    const prenom = $('profil-prenom').value.trim();
+    const nom = $('profil-nom').value.trim();
+    const telephone = $('profil-telephone').value.trim();
+    if (prenom.length > 60 || nom.length > 60) {
+        montrerErreurProfil('Le prénom et le nom sont limités à 60 caractères.');
+        return;
+    }
+    if (!telProfilOk(telephone)) {
+        montrerErreurProfil('Téléphone invalide : chiffres, espaces et + ( ) . - uniquement, 20 caractères maximum.');
+        return;
+    }
+    const btn = $('btn-profil-save');
+    btn.disabled = true;
+    montrerErreurProfil('');
+    try {
+        const fiche = {
+            prenom, nom, telephone,
+            email: user.email || '',
+            maj_le: serverTimestamp()
+        };
+        await setDoc(doc(db, 'profils', user.uid), fiche);
+        profilCourant = { ...fiche, email: user.email || '' };
+        toast('Profil enregistré.');
+        if (devis.rafraichirContact) devis.rafraichirContact();
+    } catch (err) {
+        console.error(err);
+        montrerErreurProfil("Le profil n'a pas pu être enregistré.");
+    } finally {
+        btn.disabled = false;
+    }
+});
 
 // ---------- Demandes de contact ----------
 async function chargerContactsAdmin() {

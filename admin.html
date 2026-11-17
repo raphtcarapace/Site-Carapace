@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/admin.css?v=11">
+<link rel="stylesheet" href="assets/css/admin.css?v=12">
 <script>document.documentElement.style.background=(localStorage.getItem('carapace-admin-theme')==='dark')?'#070b14':'';</script>
 </head>
 <body data-theme="light">
@@ -136,6 +136,7 @@
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
       <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
+      <button class="tab" data-tab="panel-profil" role="tab"><svg class="i"><use href="#i-users"/></svg>Mon profil</button>
       <button class="tab" data-tab="panel-employes" id="tab-employes" role="tab" hidden><svg class="i"><use href="#i-users"/></svg>Comptes employés</button>
     </nav>
 
@@ -307,6 +308,10 @@
 
       <!-- Éditeur de devis -->
       <div id="devis-editeur" hidden>
+        <div id="dv-contact-banner" class="profil-banner" hidden>
+          <span>Complétez votre profil pour afficher votre nom sur les devis</span>
+          <button type="button" class="btn btn-secondary" id="dv-aller-profil">Mon profil</button>
+        </div>
         <div class="devis-topbar">
           <button class="btn btn-ghost" type="button" id="btn-devis-retour"><svg class="i"><use href="#i-back"/></svg>Retour aux devis</button>
           <div class="devis-topbar-title"><span id="dv-titre">Nouveau devis</span> <span class="statut-pill" id="dv-statut-pill">Brouillon</span></div>
@@ -318,6 +323,10 @@
 
         <form id="form-devis" class="devis-grid" novalidate>
           <div class="devis-main">
+            <div class="card-box" id="dv-votre-contact">
+              <h3><svg class="i"><use href="#i-users"/></svg>Votre contact</h3>
+              <p id="dv-contact-texte" class="hint"></p>
+            </div>
             <div class="card-box">
               <h3><svg class="i"><use href="#i-file"/></svg>Informations</h3>
               <div class="form-grid g4">
@@ -401,6 +410,35 @@
       </div>
     </section>
 
+    <section class="panel" id="panel-profil">
+      <div class="card-box">
+        <h3><svg class="i"><use href="#i-users"/></svg>Mon profil</h3>
+        <p class="hint">Ce nom et ce téléphone apparaissent sur les devis que vous créez.</p>
+        <p id="profil-erreur" class="auth-error" role="alert"></p>
+        <form id="form-profil" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="profil-prenom">Prénom</label>
+              <input type="text" id="profil-prenom" maxlength="60" autocomplete="given-name">
+            </div>
+            <div class="form-group">
+              <label for="profil-nom">Nom</label>
+              <input type="text" id="profil-nom" maxlength="60" autocomplete="family-name">
+            </div>
+            <div class="form-group">
+              <label for="profil-telephone">Téléphone</label>
+              <input type="tel" id="profil-telephone" maxlength="20" autocomplete="tel" placeholder="06 12 34 56 78">
+            </div>
+            <div class="form-group">
+              <label for="profil-email">E-mail</label>
+              <input type="email" id="profil-email" readonly>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-profil-save">Enregistrer</button>
+        </form>
+      </div>
+    </section>
+
     <section class="panel" id="panel-employes" hidden>
       <div class="card-box">
         <h3><svg class="i"><use href="#i-users"/></svg>Créer un compte employé</h3>
@@ -454,6 +492,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/admin.js?v=11"></script>
+<script type="module" src="assets/js/admin.js?v=12"></script>
 </body>
 </html>
