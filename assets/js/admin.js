@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
-import { initDevis } from "./devis.js?v=9";
+import { initDevis, contenuPack } from "./devis.js?v=10";
 import { initCatalogueMaj } from "./catalogue-maj.js";
 
 // raphtech.ia@gmail.com — seul UID autorisé à ouvrir « Comptes employés » et à écrire employes.
@@ -526,8 +526,19 @@ function remplirFormulaire(data) {
     $('desc_longue').value = (data.description_longue || '').replace(/<br\s*\/?>/g, '\n');
     $('pack').checked = data.est_pack || false;
     $('a_la_une').checked = !!(data.a_la_une || data.est_a_la_une || data.featured);
+    $('contenu_pack').value = data.est_pack ? contenuPack(data).join('\n') : '';
+    majChampContenuPack();
     majApercu();
 }
+function majChampContenuPack() {
+    $('group-contenu-pack').hidden = !$('pack').checked;
+}
+$('pack').addEventListener('change', () => {
+    if ($('pack').checked && !$('contenu_pack').value.trim() && idEditionCourant && window.produitsData[idEditionCourant]) {
+        $('contenu_pack').value = contenuPack(window.produitsData[idEditionCourant]).join('\n');
+    }
+    majChampContenuPack();
+});
 
 window.preparerEdition = function (id) {
     const data = window.produitsData[id];
@@ -558,6 +569,7 @@ window.annulerEdition = function () {
     idEditionCourant = null;
     $('form-produit').reset();
     mettreAJourCategories();
+    majChampContenuPack();
     $('form-prod-title').innerText = "➕ Ajouter un équipement";
     $('btn-save-prod').innerText = "➕ Ajouter au catalogue";
     $('btn-cancel-edit').style.display = "none";
@@ -599,6 +611,9 @@ $('form-produit').addEventListener('submit', async (e) => {
             description: $('desc').value.trim(),
             description_longue: $('desc_longue').value.trim().replace(/\n/g, '<br>'),
             est_pack: $('pack').checked,
+            contenu_pack: $('pack').checked
+                ? $('contenu_pack').value.split('\n').map((s) => s.trim()).filter(Boolean)
+                : [],
             a_la_une: aLaUne,
             est_a_la_une: aLaUne,
             featured: aLaUne
@@ -614,6 +629,7 @@ $('form-produit').addEventListener('submit', async (e) => {
             toast("Produit ajouté au catalogue.");
             $('form-produit').reset();
             mettreAJourCategories();
+            majChampContenuPack();
         }
         chargerProduitsAdmin();
     } catch (err) {

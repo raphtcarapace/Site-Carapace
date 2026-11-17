@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/admin.css?v=10">
+<link rel="stylesheet" href="assets/css/admin.css?v=11">
 <script>document.documentElement.style.background=(localStorage.getItem('carapace-admin-theme')==='dark')?'#070b14':'';</script>
 </head>
 <body data-theme="light">
@@ -221,6 +221,11 @@
               <div class="form-group checkbox-group">
                 <input type="checkbox" id="pack">
                 <label for="pack">Afficher comme un PACK complet (bordure rouge distinctive)</label>
+              </div>
+              <div class="form-group full" id="group-contenu-pack" hidden>
+                <label for="contenu_pack">Contenu du pack (un produit par ligne)</label>
+                <textarea id="contenu_pack" rows="6" placeholder="1 Hub 2&#10;1 MotionProtect"></textarea>
+                <p class="hint">Un produit par ligne. Une quantité en début de ligne est conservée, par exemple « 1 Hub 2 ».</p>
               </div>
               <div class="form-group checkbox-group">
                 <input type="checkbox" id="a_la_une">
@@ -432,12 +437,14 @@
 
     <!-- Sélecteur de produits du catalogue -->
     <div class="picker" id="picker" hidden>
-      <div class="picker-box" role="dialog" aria-modal="true" aria-label="Ajouter un produit du catalogue">
+      <div class="picker-box" role="dialog" aria-modal="true" aria-label="Catalogue du devis">
         <div class="picker-head">
+          <h3>Catalogue</h3>
           <div class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="picker-search" placeholder="Rechercher un produit..."></div>
-          <select id="picker-brand"><option value="all">Toutes marques</option><option value="ajax">Ajax</option><option value="somfy">Somfy</option><option value="yale">Yale Home</option></select>
+          <select id="picker-cat" aria-label="Catégorie"><option value="all">Toutes les catégories</option></select>
           <button class="icon-btn" type="button" id="picker-close" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
         </div>
+        <div class="picker-brands" id="picker-brands"></div>
         <div class="picker-list" id="picker-list"></div>
       </div>
     </div>
@@ -447,6 +454,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/admin.js?v=10"></script>
+<script type="module" src="assets/js/admin.js?v=11"></script>
 </body>
 </html>

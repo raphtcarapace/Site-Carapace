@@ -27,6 +27,59 @@ function ajouterJours(iso, j) { const d = new Date(iso + 'T12:00:00'); d.setDate
 function dateFr(iso) { if (!iso) return '—'; const [y, m, d] = String(iso).split('-'); return d && m && y ? `${d}/${m}/${y}` : String(iso); }
 function tsToMs(t) { if (!t) return 0; if (typeof t.toMillis === 'function') return t.toMillis(); if (t.seconds) return t.seconds * 1000; const x = new Date(t).getTime(); return isNaN(x) ? 0 : x; }
 
+function texteSansHtml(s) {
+    return String(s || '')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/(p|div|li|h[1-6])>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;|&apos;/gi, "'");
+}
+function titreApresComposition(ligne) {
+    const low = ligne.toLowerCase().replace(/\s+/g, ' ').trim();
+    return low.includes('points forts')
+        || low.includes('caractéristiques')
+        || low.includes('caracteristiques')
+        || low.startsWith('fiche officielle')
+        || low.startsWith('spécifications')
+        || low.startsWith('specifications');
+}
+function contenuDepuisDescription(html) {
+    const lignes = texteSansHtml(html).split('\n').map((l) => l.trim()).filter(Boolean);
+    let dans = false;
+    const items = [];
+    lignes.forEach((ligne) => {
+        if (!dans) {
+            if (ligne.toLowerCase().includes('composition du kit')) dans = true;
+            return;
+        }
+        if (titreApresComposition(ligne)) { dans = false; return; }
+        if (!dans) return;
+        const coupure = ligne.indexOf(' : ');
+        const nom = (coupure >= 0 ? ligne.slice(0, coupure) : ligne).trim();
+        if (nom) items.push(nom);
+    });
+    return items;
+}
+/** Noms du pack : contenu_pack s'il est rempli, sinon la section « Composition du kit ». */
+export function contenuPack(produit) {
+    if (!produit) return [];
+    if (Array.isArray(produit.contenu_pack)) {
+        const lignes = produit.contenu_pack.map((s) => String(s || '').trim()).filter(Boolean);
+        if (lignes.length) return lignes;
+    }
+    return contenuDepuisDescription(produit.description_longue);
+}
+function urlImageSure(url) {
+    const s = String(url || '').trim();
+    if (!s || /^(javascript|data|vbscript):/i.test(s)) return '';
+    return s;
+}
+
 // ---------- Calculs ----------
 export function calculerTotaux(dv) {
     const lignes = (dv.lignes || []).map((l) => ({ ...l, total_ht: r2((Number(l.quantite) || 0) * (Number(l.pu_ht) || 0)) }));
@@ -229,17 +282,49 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
     function tauxCourant() { const v = $('dv-tva').value; return v === 'franchise' ? 0 : parseFloat(v) || 0; }
     function ttcVersHt(prixTtc) { return r2((Number(prixTtc) || 0) / (1 + tauxCourant() / 100)); }
 
+    function contenuLigne(l) {
+        if (Array.isArray(l.contenu)) return l.contenu.map((s) => String(s || '').trim()).filter(Boolean);
+        if (!l.produit_id) return [];
+        const p = getProduits()[l.produit_id];
+        if (!p || !p.est_pack) return [];
+        return contenuPack(p);
+    }
+    function imageLigne(l) {
+        if (l.image) return urlImageSure(l.image);
+        if (!l.produit_id) return '';
+        const p = getProduits()[l.produit_id];
+        return p ? urlImageSure(p.image) : '';
+    }
+    function srcVignette(url) {
+        const s = urlImageSure(url);
+        if (!s) return '';
+        const local = window.imageProduit ? window.imageProduit(s) : s;
+        if (!local || local === window.IMAGE_PRODUIT_PLACEHOLDER) return '';
+        return local;
+    }
+
     function rendreLignes() {
         const tb = $('dv-lignes');
         if (!courant.lignes.length) {
             tb.innerHTML = `<tr><td colspan="5" class="empty">Ajoutez des équipements du catalogue ou des lignes libres (installation, main d'œuvre...).</td></tr>`;
         } else {
-            tb.innerHTML = courant.lignes.map((l, i) => `
-                <tr data-i="${i}">
+            tb.innerHTML = courant.lignes.map((l, i) => {
+                const contenu = contenuLigne(l);
+                const src = srcVignette(imageLigne(l));
+                const liste = contenu.length
+                    ? `<div class="l-contenu"><span>Contenu du pack :</span><ul>${contenu.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`
+                    : '';
+                return `<tr data-i="${i}">
                     <td>
-                        <input type="text" class="l-des" data-k="designation" value="${esc(l.designation)}" placeholder="Désignation">
-                        <input type="text" class="l-desc" data-k="description" value="${esc(l.description || '')}" placeholder="Détail (facultatif)">
-                        ${l.produit_id ? `<span class="l-tag">Catalogue · ${esc(NOMS_MARQUES[l.marque] || l.marque || '')}${l.prix_catalogue_ttc ? ' · ' + esc(eur(l.prix_catalogue_ttc)) + ' TTC' : ''}</span>` : ''}
+                        <div class="l-row">
+                            ${src ? `<img class="l-thumb" src="${esc(src)}" alt="" onerror="this.remove()">` : ''}
+                            <div class="l-main">
+                                <input type="text" class="l-des" data-k="designation" value="${esc(l.designation)}" placeholder="Désignation">
+                                <input type="text" class="l-desc" data-k="description" value="${esc(l.description || '')}" placeholder="Détail (facultatif)">
+                                ${liste}
+                                ${l.produit_id ? `<span class="l-tag">Catalogue · ${esc(NOMS_MARQUES[l.marque] || l.marque || '')}${l.prix_catalogue_ttc ? ' · ' + esc(eur(l.prix_catalogue_ttc)) + ' TTC' : ''}</span>` : ''}
+                            </div>
+                        </div>
                     </td>
                     <td data-label="Quantité"><div class="qte"><input type="number" data-k="quantite" min="0" step="0.5" value="${esc(l.quantite)}">${l.unite ? `<span>${esc(l.unite)}</span>` : ''}</div></td>
                     <td data-label="PU HT (€)"><input type="number" data-k="pu_ht" min="0" step="0.01" value="${esc(l.pu_ht)}"></td>
@@ -248,7 +333,8 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
                         <button type="button" class="btn-sm" data-l="up" title="Monter" ${i === 0 ? 'disabled' : ''}>↑</button>
                         <button type="button" class="btn-sm-del" data-l="del" title="Retirer la ligne"><svg class="i"><use href="#i-trash"/></svg></button>
                     </td>
-                </tr>`).join('');
+                </tr>`;
+            }).join('');
         }
         majTotaux();
     }
@@ -313,49 +399,111 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
 
     // Sélecteur catalogue
     const picker = $('picker');
-    function ouvrirPicker() { picker.hidden = false; $('picker-search').value = ''; rendrePicker(); setTimeout(() => $('picker-search').focus(), 50); }
+    const ORDRE_MARQUES = ['ajax', 'somfy', 'yale'];
+    let marquePicker = '';
+    function ouvrirPicker() {
+        if (!courant) return;
+        picker.hidden = false;
+        const marques = marquesCatalogue();
+        if (!marques.includes(marquePicker)) marquePicker = marques[0] || '';
+        $('picker-search').value = '';
+        rendrePicker();
+        setTimeout(() => $('picker-search').focus(), 50);
+    }
     function fermerPicker() { picker.hidden = true; }
     $('btn-ligne-catalogue').addEventListener('click', ouvrirPicker);
     $('picker-close').addEventListener('click', fermerPicker);
     picker.addEventListener('click', (e) => { if (e.target === picker) fermerPicker(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !picker.hidden) fermerPicker(); });
     $('picker-search').addEventListener('input', rendrePicker);
-    $('picker-brand').addEventListener('change', rendrePicker);
-    function rendrePicker() {
-        const prods = getProduits();
-        const q = $('picker-search').value.toLowerCase().trim();
-        const m = $('picker-brand').value;
-        const ids = Object.keys(prods).filter((id) => {
-            const p = prods[id];
-            return (m === 'all' || p.marque === m) && (!q || [p.nom, p.categorie, p.description].join(' ').toLowerCase().includes(q));
-        }).sort((a, b) => String(prods[a].nom).localeCompare(String(prods[b].nom), 'fr'));
-        $('picker-list').innerHTML = ids.length ? ids.map((id) => {
-            const p = prods[id];
-            const brut = /^(javascript|data|vbscript):/i.test(String(p.image || '')) ? '' : (p.image || '');
-            const src = window.imageProduit ? window.imageProduit(brut) : brut;
-            return `<button type="button" class="picker-item" data-pid="${esc(id)}">
-                <img src="${esc(src || 'assets/img/logo-mark.png')}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/logo-mark.png'">
-                <span><b>${esc(p.nom)}</b><small>${esc(NOMS_MARQUES[p.marque] || p.marque || '')}${p.categorie ? ' · ' + esc(p.categorie) : ''}${p.est_pack ? ' · Pack' : ''}</small></span>
-                <em>${isFinite(parseFloat(p.prix)) ? esc(eur(parseFloat(p.prix))) + ' TTC' : 'Sur devis'}</em>
-                <i class="add"><svg class="i"><use href="#i-plus"/></svg></i></button>`;
-        }).join('') : `<div class="empty">Aucun produit trouvé.</div>`;
+    $('picker-cat').addEventListener('change', rendrePicker);
+    function nomMarque(m) { return NOMS_MARQUES[m] || (m ? m.charAt(0).toUpperCase() + m.slice(1) : 'Autre'); }
+    function marquesCatalogue() {
+        const presentes = new Set(Object.values(getProduits()).map((p) => p.marque).filter(Boolean));
+        const connues = ORDRE_MARQUES.filter((m) => presentes.has(m));
+        const autres = [...presentes].filter((m) => !ORDRE_MARQUES.includes(m)).sort((a, b) => nomMarque(a).localeCompare(nomMarque(b), 'fr'));
+        return [...connues, ...autres];
     }
-    $('picker-list').addEventListener('click', (e) => {
-        const b = e.target.closest('[data-pid]'); if (!b) return;
-        const id = b.dataset.pid, p = getProduits()[id]; if (!p) return;
+    function ajouterProduitDevis(id) {
+        const p = getProduits()[id];
+        if (!p || !courant) return;
         const existante = courant.lignes.find((l) => l.produit_id === id);
-        if (existante) existante.quantite = (Number(existante.quantite) || 0) + 1;
-        else {
+        if (existante) {
+            existante.quantite = (Number(existante.quantite) || 0) + 1;
+            if (!Array.isArray(existante.contenu)) existante.contenu = p.est_pack ? contenuPack(p) : [];
+            if (!existante.image) existante.image = urlImageSure(p.image);
+        } else {
             const ttc = parseFloat(p.prix);
             courant.lignes.push({
                 type: 'produit', produit_id: id, marque: p.marque || '',
                 designation: p.nom || '', description: [NOMS_MARQUES[p.marque], p.categorie].filter(Boolean).join(' · '),
-                quantite: 1, unite: '', prix_catalogue_ttc: isFinite(ttc) ? ttc : 0, pu_ht: isFinite(ttc) ? ttcVersHt(ttc) : 0
+                quantite: 1, unite: '', prix_catalogue_ttc: isFinite(ttc) ? ttc : 0, pu_ht: isFinite(ttc) ? ttcVersHt(ttc) : 0,
+                image: urlImageSure(p.image),
+                contenu: p.est_pack ? contenuPack(p) : []
             });
         }
-        modifie = true; rendreLignes();
-        b.classList.add('added'); setTimeout(() => b.classList.remove('added'), 700);
+        modifie = true;
+        rendreLignes();
         toast(`${p.nom} ajouté au devis`);
+    }
+    function rendrePicker() {
+        const prods = getProduits();
+        const marques = marquesCatalogue();
+        $('picker-brands').innerHTML = marques.map((m) =>
+            `<button type="button" class="picker-brand${m === marquePicker ? ' active' : ''}" data-marque="${esc(m)}">${esc(nomMarque(m))}</button>`
+        ).join('') || '<span class="hint">Aucune marque dans le catalogue.</span>';
+        const q = $('picker-search').value.toLowerCase().trim();
+        const catChoisie = $('picker-cat').value;
+        const deLaMarque = Object.entries(prods).filter(([, p]) => p.marque === marquePicker);
+        const cats = [...new Set(deLaMarque.map(([, p]) => p.categorie).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
+        const catGardee = cats.includes(catChoisie) ? catChoisie : 'all';
+        $('picker-cat').innerHTML = '<option value="all">Toutes les catégories</option>' + cats.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+        $('picker-cat').value = catGardee;
+        const ids = deLaMarque.filter(([, p]) => {
+            if (catGardee !== 'all' && p.categorie !== catGardee) return false;
+            if (!q) return true;
+            return [p.nom, p.categorie, p.description].join(' ').toLowerCase().includes(q);
+        }).map(([id]) => id).sort((a, b) => String(prods[a].nom).localeCompare(String(prods[b].nom), 'fr'));
+        if (!ids.length) {
+            $('picker-list').innerHTML = '<div class="empty">Aucun produit pour cette marque.</div>';
+            return;
+        }
+        const groupes = new Map();
+        ids.forEach((id) => {
+            const cle = prods[id].categorie || 'Sans catégorie';
+            if (!groupes.has(cle)) groupes.set(cle, []);
+            groupes.get(cle).push(id);
+        });
+        const cles = [...groupes.keys()].sort((a, b) => a.localeCompare(b, 'fr'));
+        $('picker-list').innerHTML = cles.map((cle) => `
+            <section class="picker-group">
+                <h4>${esc(cle)}</h4>
+                <div class="picker-cards">${groupes.get(cle).map((id) => cartePicker(id, prods[id])).join('')}</div>
+            </section>`).join('');
+    }
+    function cartePicker(id, p) {
+        const src = srcVignette(p.image) || 'assets/img/logo-mark.png';
+        const prix = parseFloat(p.prix);
+        return `<button type="button" class="picker-card" data-pid="${esc(id)}">
+            <img src="${esc(src)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/logo-mark.png'">
+            <span class="picker-body">
+                <b>${esc(p.nom)}</b>
+                <small>${p.est_pack ? '<span class="badge">PACK</span> ' : ''}${esc(p.categorie || '')}</small>
+                <em>${isFinite(prix) && prix > 0 ? esc(eur(prix)) + ' TTC' : 'Sur devis'}</em>
+            </span>
+        </button>`;
+    }
+    $('picker-brands').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-marque]'); if (!b) return;
+        marquePicker = b.dataset.marque;
+        $('picker-cat').value = 'all';
+        rendrePicker();
+    });
+    $('picker-list').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-pid]'); if (!b) return;
+        ajouterProduitDevis(b.dataset.pid);
+        b.classList.add('added');
+        setTimeout(() => b.classList.remove('added'), 700);
     });
 
     // ---------- Enregistrement ----------
@@ -377,7 +525,9 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
                 type: l.type || 'libre', produit_id: l.produit_id || null, marque: l.marque || '',
                 designation: String(l.designation || ''), description: String(l.description || ''),
                 quantite: Number(l.quantite) || 0, unite: l.unite || '', pu_ht: r2(l.pu_ht),
-                prix_catalogue_ttc: l.prix_catalogue_ttc ?? null, pu_manuel: !!l.pu_manuel, total_ht: l.total_ht
+                prix_catalogue_ttc: l.prix_catalogue_ttc ?? null, pu_manuel: !!l.pu_manuel, total_ht: l.total_ht,
+                contenu: contenuLigne(l),
+                image: imageLigne(l)
             })),
             remise_type: d.remise_type, remise_valeur: Number(d.remise_valeur) || 0,
             tva_taux: Number(d.tva_taux) || 0, tva_franchise: !!d.tva_franchise,
@@ -481,6 +631,34 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
     // Les polices standard du PDF ne connaissent pas certains caractères typographiques
     const txt = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, '...').replace(/[–—]/g, '-').replace(/œ/g, 'oe').replace(/Œ/g, 'OE');
 
+    function imagePourPdf(src) {
+        if (!src) return Promise.resolve(null);
+        return new Promise((resolve) => {
+            const img = new Image();
+            let fini = false;
+            const fin = (v) => { if (!fini) { fini = true; resolve(v); } };
+            const timer = setTimeout(() => fin(null), 7000);
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                clearTimeout(timer);
+                try {
+                    const max = 96;
+                    const echelle = Math.min(1, max / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+                    const w = Math.max(1, Math.round((img.naturalWidth || 48) * echelle));
+                    const h = Math.max(1, Math.round((img.naturalHeight || 48) * echelle));
+                    const c = document.createElement('canvas');
+                    c.width = w; c.height = h;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    fin({ data: c.toDataURL('image/jpeg', 0.86), w, h });
+                } catch (_) { fin(null); }
+            };
+            img.onerror = () => { clearTimeout(timer); fin(null); };
+            img.src = src;
+        });
+    }
     async function genererPDF(d, { retour = false } = {}) {
         let jsPDF;
         try { jsPDF = await chargerJsPDF(); } catch (e) { toast(e.message, 'err'); return; }
@@ -543,21 +721,45 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet }) {
             const n = pdf.splitTextToSize(txt(d.notes), W - 2 * M); pdf.text(n, M, y); y += n.length * 4 + 3;
         }
 
-        // Tableau des lignes
+        // Tableau des lignes. La composition du pack reste dans la cellule Désignation.
         const tvaCol = d.tva_franchise ? '-' : num(t.taux) + ' %';
+        const photos = await Promise.all(lignes.map((l) => imagePourPdf(srcVignette(imageLigne(l)))));
+        function texteDesignation(l) {
+            const nom = txt(l.designation || '');
+            const items = contenuLigne(l).map((it) => txt(it));
+            let bloc = nom;
+            if (items.length) bloc += ' :\n' + items.map((it) => '• ' + it).join('\n');
+            if (l.description) bloc += '\n' + txt(l.description);
+            return bloc;
+        }
         pdf.autoTable({
             startY: y + 1, margin: { left: M, right: M, bottom: 24 },
             head: [['Désignation', 'Qté', 'PU HT', 'TVA', 'Total HT']],
-            body: lignes.length ? lignes.map((l) => [
-                { content: txt(l.designation || '') + (l.description ? '\n' + txt(l.description) : ''), styles: {} },
+            body: lignes.length ? lignes.map((l, i) => [
+                {
+                    content: texteDesignation(l),
+                    styles: photos[i] ? { cellPadding: { top: 2.4, right: 2, bottom: 2.4, left: 16 }, minCellHeight: 16 } : {}
+                },
                 txt(num(l.quantite) + (l.unite ? ' ' + l.unite : '')), txt(eur(l.pu_ht)), tvaCol, txt(eur(l.total_ht))
             ]) : [[{ content: 'Aucune ligne', colSpan: 5, styles: { halign: 'center', textColor: GRIS } }]],
             theme: 'plain',
-            styles: { font: 'helvetica', fontSize: 8.8, cellPadding: { top: 3, bottom: 3, left: 3, right: 3 }, textColor: [30, 41, 59], lineColor: LIGNE, lineWidth: { bottom: .2 } },
+            styles: { font: 'helvetica', fontSize: 8.8, cellPadding: { top: 3, bottom: 3, left: 3, right: 3 }, textColor: [30, 41, 59], lineColor: LIGNE, lineWidth: { bottom: .2 }, valign: 'middle' },
             headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 8.2, lineWidth: 0 },
             alternateRowStyles: { fillColor: [248, 250, 252] },
-            columnStyles: { 0: { cellWidth: 'auto' }, 1: { halign: 'center', cellWidth: 18 }, 2: { halign: 'right', cellWidth: 27 }, 3: { halign: 'center', cellWidth: 16 }, 4: { halign: 'right', cellWidth: 29, fontStyle: 'bold' } },
-            didParseCell: (h) => { if (h.section === 'head' && h.column.index > 0) h.cell.styles.halign = h.column.index === 1 || h.column.index === 3 ? 'center' : 'right'; }
+            columnStyles: { 0: { cellWidth: 'auto', valign: 'top' }, 1: { halign: 'center', cellWidth: 18 }, 2: { halign: 'right', cellWidth: 27 }, 3: { halign: 'center', cellWidth: 16 }, 4: { halign: 'right', cellWidth: 29, fontStyle: 'bold' } },
+            didParseCell: (h) => { if (h.section === 'head' && h.column.index > 0) h.cell.styles.halign = h.column.index === 1 || h.column.index === 3 ? 'center' : 'right'; },
+            didDrawCell: (data) => {
+                if (data.section !== 'body' || data.column.index !== 0) return;
+                const img = photos[data.row.index];
+                if (!img) return;
+                const cadre = 12;
+                const ratio = img.w / img.h;
+                let w = cadre, h = cadre;
+                if (ratio > 1) h = cadre / ratio; else w = cadre * ratio;
+                const x = data.cell.x + 2 + (cadre - w) / 2;
+                const yImg = data.cell.y + 2;
+                try { pdf.addImage(img.data, 'JPEG', x, yImg, w, h); } catch (_) { /* photo illisible : la ligne reste sans vignette */ }
+            }
         });
         y = pdf.lastAutoTable.finalY + 6;
 
