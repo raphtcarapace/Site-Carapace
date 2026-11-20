@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
-import { initDevis, contenuPack } from "./devis.js?v=12";
+import { initDevis, contenuPack } from "./devis.js?v=13";
 import { initCatalogueMaj } from "./catalogue-maj.js";
 
 // raphtech.ia@gmail.com — seul UID autorisé à ouvrir « Comptes employés » et à écrire employes.

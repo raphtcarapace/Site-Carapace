@@ -1,8 +1,9 @@
 // ===================== CARAPACE PORTAIL : DEVIS =====================
 // Création, enregistrement (collection Firestore "devis", accès admin uniquement)
-// et génération PDF côté navigateur (jsPDF). Aucun envoi d'e-mail depuis le site.
+// et génération PDF au modèle Alu'Topia. Aucun envoi d'e-mail depuis le site.
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { ENTREPRISE } from "./entreprise-config.js";
+import { genererDevisPdf } from "./devis-pdf.js?v=1";
 
 const STATUTS = { brouillon: 'Brouillon', envoye: 'Envoyé', accepte: 'Accepté', refuse: 'Refusé' };
 const NOMS_MARQUES = { ajax: 'Ajax', somfy: 'Somfy', yale: 'Yale Home' };
@@ -78,6 +79,21 @@ function urlImageSure(url) {
     const s = String(url || '').trim();
     if (!s || /^(javascript|data|vbscript):/i.test(s)) return '';
     return s;
+}
+function colonneDescriptif(arr) {
+    return (Array.isArray(arr) ? arr : []).map((item) => {
+        if (Array.isArray(item)) return { label: String(item[0] || ''), texte: String(item[1] || '') };
+        if (!item || typeof item !== 'object') return null;
+        return { label: String(item.label || item.l || ''), texte: String(item.texte || item.t || '') };
+    }).filter((x) => x && (x.label || x.texte));
+}
+function descriptifFirestore(desc) {
+    if (!desc || typeof desc !== 'object') return null;
+    return {
+        titre: String(desc.titre || ''),
+        gauche: colonneDescriptif(desc.gauche),
+        droite: colonneDescriptif(desc.droite)
+    };
 }
 
 // ---------- Calculs ----------
@@ -638,7 +654,10 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
                 quantite: Number(l.quantite) || 0, unite: l.unite || '', pu_ht: r2(l.pu_ht),
                 prix_catalogue_ttc: l.prix_catalogue_ttc ?? null, pu_manuel: !!l.pu_manuel, total_ht: l.total_ht,
                 contenu: contenuLigne(l),
-                image: imageLigne(l)
+                image: imageLigne(l),
+                ...(l.repere ? { repere: String(l.repere) } : {}),
+                ...(l.tva_taux == null || l.tva_taux === '' ? {} : { tva_taux: Number(l.tva_taux) }),
+                ...(l.descriptif ? { descriptif: descriptifFirestore(l.descriptif) } : {})
             })),
             remise_type: d.remise_type, remise_valeur: Number(d.remise_valeur) || 0,
             tva_taux: Number(d.tva_taux) || 0, tva_franchise: !!d.tva_franchise,
@@ -682,10 +701,13 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     }
     $('btn-devis-save').addEventListener('click', enregistrer);
     $('form-devis').addEventListener('submit', (e) => { e.preventDefault(); enregistrer(); });
-    $('btn-devis-pdf').addEventListener('click', () => {
+    $('btn-devis-pdf').addEventListener('click', async () => {
         const d = lireFormulaire();
         if (!d.client.nom && !d.client.societe) { toast('Indiquez au moins le nom du client avant de générer le PDF.', 'err'); return; }
-        genererPDF(versFirestore(d));
+        const btn = $('btn-devis-pdf');
+        btn.disabled = true;
+        try { await genererPDF(d); }
+        finally { btn.disabled = false; }
     });
     $('btn-devis-dupliquer').addEventListener('click', () => dupliquer(lireFormulaire()));
 
@@ -716,248 +738,20 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     }
 
     // ---------- PDF ----------
-    function chargerScript(src, integrity) {
-        return new Promise((res, rej) => {
-            if (document.querySelector(`script[src="${src}"]`)) return res();
-            const s = document.createElement('script');
-            s.src = src; s.integrity = integrity; s.crossOrigin = 'anonymous'; s.referrerPolicy = 'no-referrer';
-            s.onload = res; s.onerror = () => rej(new Error('Impossible de charger le module PDF (connexion internet ?)'));
-            document.head.appendChild(s);
-        });
-    }
-    async function chargerJsPDF() {
-        if (window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API.autoTable) return window.jspdf.jsPDF;
-        await chargerScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk');
-        await chargerScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js', 'sha384-fCAW/rDWORTbQXSiB7mOg0QtQ5c+r0f544y6XoKjuVva0nMBlCpNUjiFeG5iMdS3');
-        return window.jspdf.jsPDF;
-    }
-    let logoCache = null;
-    function chargerLogo() {
-        if (logoCache) return Promise.resolve(logoCache);
-        return new Promise((res) => {
-            const img = new Image();
-            img.onload = () => {
-                const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
-                const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0);
-                logoCache = { data: c.toDataURL('image/png'), w: img.naturalWidth, h: img.naturalHeight }; res(logoCache);
-            };
-            img.onerror = () => res(null);
-            img.src = 'assets/img/logo-mark.png';
-        });
-    }
-    // Les polices standard du PDF ne connaissent pas certains caractères typographiques
-    const txt = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, '...').replace(/[–—]/g, '-').replace(/œ/g, 'oe').replace(/Œ/g, 'OE');
-
-    function imagePourPdf(src) {
-        if (!src) return Promise.resolve(null);
-        return new Promise((resolve) => {
-            const img = new Image();
-            let fini = false;
-            const fin = (v) => { if (!fini) { fini = true; resolve(v); } };
-            const timer = setTimeout(() => fin(null), 7000);
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-                clearTimeout(timer);
-                try {
-                    const max = 96;
-                    const echelle = Math.min(1, max / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
-                    const w = Math.max(1, Math.round((img.naturalWidth || 48) * echelle));
-                    const h = Math.max(1, Math.round((img.naturalHeight || 48) * echelle));
-                    const c = document.createElement('canvas');
-                    c.width = w; c.height = h;
-                    const ctx = c.getContext('2d');
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(img, 0, 0, w, h);
-                    fin({ data: c.toDataURL('image/jpeg', 0.86), w, h });
-                } catch (_) { fin(null); }
-            };
-            img.onerror = () => { clearTimeout(timer); fin(null); };
-            img.src = src;
-        });
-    }
-    async function genererPDF(d, { retour = false } = {}) {
-        let jsPDF;
-        try { jsPDF = await chargerJsPDF(); } catch (e) { toast(e.message, 'err'); return; }
-        const logo = await chargerLogo();
-        const { lignes, totaux: t } = calculerTotaux(d);
-        const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-        const W = 210, M = 16;
-        const ROUGE = [215, 38, 56], NAVY = [11, 17, 32], GRIS = [100, 116, 139], LIGNE = [226, 232, 240];
-        const E = ENTREPRISE;
-
-        // Bandeau supérieur
-        pdf.setFillColor(...NAVY); pdf.rect(0, 0, W, 4, 'F');
-        pdf.setFillColor(...ROUGE); pdf.rect(0, 4, W, 1.2, 'F');
-
-        // Logo + entreprise
-        let y = 16;
-        if (logo) pdf.addImage(logo.data, 'PNG', M, y - 2, 14, 14 * logo.h / logo.w);
-        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(17); pdf.setTextColor(...NAVY);
-        pdf.text(txt(E.nom || 'Carapace').toUpperCase(), M + 19, y + 5, { charSpace: 1.2 });
-        pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.5); pdf.setTextColor(...GRIS);
-        pdf.text(txt(E.slogan || ''), M + 19, y + 10);
-        const infos = [E.raison_sociale, E.adresse, E.code_postal_ville, E.siret ? 'SIRET : ' + E.siret : ''].filter((v) => v && !String(v).includes('[À COMPLÉTER]')).map(txt);
-        pdf.setFontSize(8.2); pdf.setTextColor(51, 65, 85);
-        let yi = y + 22;
-        infos.forEach((l) => { const parts = pdf.splitTextToSize(l, 92); pdf.text(parts, M, yi); yi += parts.length * 3.9; });
-        const vendeur = contactAffiche(d);
-        const lignesVendeur = [vendeur.nom, vendeur.telephone, vendeur.email].filter(Boolean).map(txt);
-        if (lignesVendeur.length) {
-            yi += 2;
-            pdf.setFont('helvetica', 'bold'); pdf.setFontSize(7.5); pdf.setTextColor(...ROUGE);
-            pdf.text('VOTRE CONTACT', M, yi); yi += 4.2;
-            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(9); pdf.setTextColor(...NAVY);
-            lignesVendeur.forEach((l) => { pdf.text(pdf.splitTextToSize(l, 92), M, yi); yi += 4.2; });
+    async function genererPDF(d) {
+        const lignes = (d.lignes || []).map((l) => ({
+            ...l,
+            contenu: contenuLigne(l),
+            image: srcVignette(imageLigne(l))
+        }));
+        try {
+            toast('Préparation du PDF…');
+            const { nom } = await genererDevisPdf({ ...d, lignes, contact: contactAffiche(d) });
+            toast('PDF téléchargé : ' + nom);
+        } catch (e) {
+            console.error(e);
+            toast(e && e.message ? e.message : 'Impossible de générer le PDF.', 'err');
         }
-
-        // Titre DEVIS
-        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(30); pdf.setTextColor(...ROUGE);
-        pdf.text('DEVIS', W - M, y + 7, { align: 'right' });
-        pdf.setFontSize(10); pdf.setTextColor(...NAVY);
-        pdf.text(txt('N° ' + (d.numero || '')), W - M, y + 14, { align: 'right' });
-        pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.8); pdf.setTextColor(...GRIS);
-        pdf.text(txt(`Date : ${dateFr(d.date_emission)}`), W - M, y + 19.5, { align: 'right' });
-        pdf.text(txt(`Valable jusqu'au : ${dateFr(d.date_validite)}`), W - M, y + 24, { align: 'right' });
-
-        // Bloc client
-        const bx = 112, by = y + 30, bw = W - M - bx;
-        const c = d.client || {};
-        const clientLignes = [c.societe, [c.prenom, c.nom].filter(Boolean).join(' '), ...(String(c.adresse || '').split('\n')), c.contact].filter((s) => s && String(s).trim()).map(txt);
-        const bh = Math.max(26, 11 + clientLignes.length * 4.4);
-        pdf.setFillColor(248, 250, 252); pdf.setDrawColor(...LIGNE); pdf.roundedRect(bx, by, bw, bh, 2.5, 2.5, 'FD');
-        pdf.setFillColor(...ROUGE); pdf.rect(bx, by + 3, 1.2, bh - 6, 'F');
-        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(7.5); pdf.setTextColor(...ROUGE);
-        pdf.text('CLIENT', bx + 5, by + 6.5, { charSpace: .6 });
-        pdf.setFontSize(9.6); pdf.setTextColor(...NAVY);
-        let yc = by + 12;
-        clientLignes.forEach((l, i) => {
-            pdf.setFont('helvetica', i === 0 ? 'bold' : 'normal'); pdf.setFontSize(i === 0 ? 10 : 8.8);
-            pdf.setTextColor(...(i === 0 ? NAVY : [51, 65, 85]));
-            const parts = pdf.splitTextToSize(l, bw - 9); pdf.text(parts, bx + 5, yc); yc += parts.length * 4.4;
-        });
-
-        y = Math.max(by + bh, yi) + 8;
-        if (d.objet) {
-            pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.setTextColor(...NAVY);
-            const o = pdf.splitTextToSize(txt('Objet : ' + d.objet), W - 2 * M); pdf.text(o, M, y); y += o.length * 4.6 + 2;
-        }
-        if (d.notes) {
-            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.8); pdf.setTextColor(51, 65, 85);
-            const n = pdf.splitTextToSize(txt(d.notes), W - 2 * M); pdf.text(n, M, y); y += n.length * 4 + 3;
-        }
-
-        // Tableau des lignes. La composition du pack reste dans la cellule Désignation.
-        const tvaCol = d.tva_franchise ? '-' : num(t.taux) + ' %';
-        const photos = await Promise.all(lignes.map((l) => imagePourPdf(srcVignette(imageLigne(l)))));
-        function texteDesignation(l) {
-            const nom = txt(l.designation || '');
-            const items = contenuLigne(l).map((it) => txt(it));
-            let bloc = nom;
-            if (items.length) bloc += ' :\n' + items.map((it) => '• ' + it).join('\n');
-            if (l.description) bloc += '\n' + txt(l.description);
-            return bloc;
-        }
-        pdf.autoTable({
-            startY: y + 1, margin: { left: M, right: M, bottom: 24 },
-            head: [['Désignation', 'Qté', 'PU HT', 'TVA', 'Total HT']],
-            body: lignes.length ? lignes.map((l, i) => [
-                {
-                    content: texteDesignation(l),
-                    styles: photos[i] ? { cellPadding: { top: 2.4, right: 2, bottom: 2.4, left: 16 }, minCellHeight: 16 } : {}
-                },
-                txt(num(l.quantite) + (l.unite ? ' ' + l.unite : '')), txt(eur(l.pu_ht)), tvaCol, txt(eur(l.total_ht))
-            ]) : [[{ content: 'Aucune ligne', colSpan: 5, styles: { halign: 'center', textColor: GRIS } }]],
-            theme: 'plain',
-            styles: { font: 'helvetica', fontSize: 8.8, cellPadding: { top: 3, bottom: 3, left: 3, right: 3 }, textColor: [30, 41, 59], lineColor: LIGNE, lineWidth: { bottom: .2 }, valign: 'middle' },
-            headStyles: { fillColor: NAVY, textColor: 255, fontStyle: 'bold', fontSize: 8.2, lineWidth: 0 },
-            alternateRowStyles: { fillColor: [248, 250, 252] },
-            columnStyles: { 0: { cellWidth: 'auto', valign: 'top' }, 1: { halign: 'center', cellWidth: 18 }, 2: { halign: 'right', cellWidth: 27 }, 3: { halign: 'center', cellWidth: 16 }, 4: { halign: 'right', cellWidth: 29, fontStyle: 'bold' } },
-            didParseCell: (h) => { if (h.section === 'head' && h.column.index > 0) h.cell.styles.halign = h.column.index === 1 || h.column.index === 3 ? 'center' : 'right'; },
-            didDrawCell: (data) => {
-                if (data.section !== 'body' || data.column.index !== 0) return;
-                const img = photos[data.row.index];
-                if (!img) return;
-                const cadre = 12;
-                const ratio = img.w / img.h;
-                let w = cadre, h = cadre;
-                if (ratio > 1) h = cadre / ratio; else w = cadre * ratio;
-                const x = data.cell.x + 2 + (cadre - w) / 2;
-                const yImg = data.cell.y + 2;
-                try { pdf.addImage(img.data, 'JPEG', x, yImg, w, h); } catch (_) { /* photo illisible : la ligne reste sans vignette */ }
-            }
-        });
-        y = pdf.lastAutoTable.finalY + 6;
-
-        // Totaux
-        const rows = [['Total HT', eur(t.ht_brut)]];
-        if (t.remise) { rows.push([`Remise${d.remise_type === '%' ? ' ' + num(d.remise_valeur) + ' %' : ''}`, '- ' + eur(t.remise)]); rows.push(['Total HT après remise', eur(t.ht)]); }
-        rows.push([d.tva_franchise ? 'TVA' : `TVA ${num(t.taux)} %`, eur(t.tva)]);
-        const hTot = Math.max(rows.length * 6 + 14 + (t.acompte ? 7 : 0), 40);
-        if (y + hTot > 272) { pdf.addPage(); y = 20; }
-        const yTot = y;
-        const tx = 118, tw = W - M - tx;
-        pdf.setFontSize(9);
-        rows.forEach(([k, v]) => {
-            pdf.setFont('helvetica', 'normal'); pdf.setTextColor(...GRIS); pdf.text(txt(k), tx, y);
-            pdf.setTextColor(...NAVY); pdf.text(txt(v), W - M, y, { align: 'right' }); y += 6;
-        });
-        pdf.setFillColor(...ROUGE); pdf.roundedRect(tx - 3, y - 4, tw + 3, 11, 2, 2, 'F');
-        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(11); pdf.setTextColor(255);
-        pdf.text('TOTAL TTC', tx, y + 3.2); pdf.text(txt(eur(t.ttc)), W - M - 2, y + 3.2, { align: 'right' });
-        y += 13;
-        if (t.acompte) {
-            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.8); pdf.setTextColor(...NAVY);
-            pdf.text(txt(`Acompte à la signature (${num(d.acompte_pct)} %)`), tx, y); pdf.setFont('helvetica', 'bold'); pdf.text(txt(eur(t.acompte)), W - M, y, { align: 'right' }); y += 6;
-        }
-        if (d.tva_franchise) {
-            pdf.setFont('helvetica', 'italic'); pdf.setFontSize(8.2); pdf.setTextColor(...GRIS);
-            pdf.text('TVA non applicable, art. 293 B du CGI', W - M, y, { align: 'right' }); y += 5;
-        }
-
-        // Bon pour accord (à gauche des totaux)
-        const sx = M, sy = yTot - 4, sw = 92, sh = 38;
-        pdf.setDrawColor(...LIGNE); pdf.setLineWidth(.3);
-        pdf.roundedRect(sx, sy, sw, sh, 2.5, 2.5, 'S');
-        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(8.5); pdf.setTextColor(...NAVY);
-        pdf.text('BON POUR ACCORD', sx + 4, sy + 6);
-        pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.2); pdf.setTextColor(...GRIS);
-        pdf.text(pdf.splitTextToSize(txt('Date, signature et mention manuscrite « Devis reçu avant l\'exécution des travaux, bon pour accord »'), sw - 8), sx + 4, sy + 10.5);
-        pdf.setDrawColor(...LIGNE); pdf.setLineDashPattern([1, 1], 0); pdf.line(sx + 4, sy + sh - 6, sx + sw - 4, sy + sh - 6); pdf.setLineDashPattern([], 0);
-        y = Math.max(y, sy + sh) + 2;
-
-        // Conditions
-        y += 4;
-        if (d.conditions) {
-            const cond = pdf.splitTextToSize(txt(d.conditions), W - 2 * M);
-            if (y + 8 + cond.length * 3.7 > 279) { pdf.addPage(); y = 20; }
-            pdf.setFont('helvetica', 'bold'); pdf.setFontSize(8.5); pdf.setTextColor(...NAVY); pdf.text('CONDITIONS', M, y); y += 4.5;
-            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8); pdf.setTextColor(71, 85, 105); pdf.text(cond, M, y); y += cond.length * 3.7 + 4;
-        }
-        if (E.iban) { pdf.setFontSize(8); pdf.setTextColor(71, 85, 105); pdf.text(txt('IBAN : ' + E.iban), M, y); y += 5; }
-
-        pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.6); pdf.setTextColor(...GRIS);
-        pdf.text(pdf.splitTextToSize(txt('Merci pour votre confiance. Pour toute question sur ce devis, contactez-nous en rappelant son numéro.'), W - 2 * M), M, y);
-        y += 6;
-
-        // Pied de page (toutes les pages)
-        const pied = [E.raison_sociale, E.forme_juridique, E.siret ? 'SIRET ' + E.siret : '', E.rcs_rm, E.tva_intra ? 'TVA ' + E.tva_intra : ''].filter(Boolean).map(txt).join(' · ');
-        const pied2 = E.assurance ? txt('Assurance : ' + E.assurance) : '';
-        const n = pdf.getNumberOfPages();
-        for (let i = 1; i <= n; i++) {
-            pdf.setPage(i);
-            pdf.setDrawColor(...LIGNE); pdf.line(M, 282.5, W - M, 282.5);
-            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(6.6); pdf.setTextColor(...GRIS);
-            const l1 = pdf.splitTextToSize(pied, W - 2 * M - 16);
-            pdf.text(l1, M, 287);
-            if (pied2) pdf.text(pdf.splitTextToSize(pied2, W - 2 * M - 16), M, 287 + l1.length * 2.9);
-            pdf.text(`${i} / ${n}`, W - M, 287, { align: 'right' });
-        }
-
-        const nomFichier = `Devis-${(d.numero || "brouillon").replace(/[^A-Za-z0-9_-]/g, "_")}-${txt([c.nom, c.prenom].filter(Boolean).join('_') || c.societe || 'client').replace(/[^A-Za-z0-9_-]/g, '_')}.pdf`;
-        if (retour) return { pdf, nomFichier };
-        pdf.save(nomFichier);
-        toast('PDF téléchargé : ' + nomFichier);
     }
 
     // Avertit si on quitte la page avec un devis non enregistré

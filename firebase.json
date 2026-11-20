@@ -56,6 +56,19 @@
         ]
       },
       {
+        "source": "/assets/devis-modele/**",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      },
+      {
         "source": "/admin.html",
         "headers": [
           {
