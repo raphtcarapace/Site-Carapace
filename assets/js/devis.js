@@ -4,6 +4,7 @@
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { ENTREPRISE } from "./entreprise-config.js";
 import { genererDevisPdf } from "./devis-pdf.js?v=1";
+import { monterAide } from "./aide-devis.js?v=1";
 
 const STATUTS = { brouillon: 'Brouillon', envoye: 'Envoyé', accepte: 'Accepté', refuse: 'Refusé' };
 const NOMS_MARQUES = { ajax: 'Ajax', somfy: 'Somfy', yale: 'Yale Home' };
@@ -115,6 +116,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     let courant = null;        // devis en cours d'édition
     let idCourant = null;
     let modifie = false;
+    let rangerAide = () => {};
 
     // ---------- Liste ----------
     async function chargerDevis() {
@@ -260,6 +262,7 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     function fermerEditeur(force = false) {
         if (!force && modifie && !confirm('Des modifications ne sont pas enregistrées. Quitter quand même ?')) return;
         courant = null; idCourant = null; modifie = false;
+        rangerAide();
         $('devis-editeur').hidden = true;
         $('devis-liste-box').hidden = false;
     }
@@ -551,12 +554,13 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
         const autres = [...presentes].filter((m) => !ORDRE_MARQUES.includes(m)).sort((a, b) => nomMarque(a).localeCompare(nomMarque(b), 'fr'));
         return [...connues, ...autres];
     }
-    function ajouterProduitDevis(id) {
+    function ajouterProduitDevis(id, qte = 1, { silencieux = false } = {}) {
         const p = getProduits()[id];
-        if (!p || !courant) return;
+        const n = Math.max(1, Math.round(Number(qte) || 1));
+        if (!p || !courant) return false;
         const existante = courant.lignes.find((l) => l.produit_id === id);
         if (existante) {
-            existante.quantite = (Number(existante.quantite) || 0) + 1;
+            existante.quantite = (Number(existante.quantite) || 0) + n;
             if (!Array.isArray(existante.contenu)) existante.contenu = p.est_pack ? contenuPack(p) : [];
             if (!existante.image) existante.image = urlImageSure(p.image);
         } else {
@@ -564,14 +568,22 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
             courant.lignes.push({
                 type: 'produit', produit_id: id, marque: p.marque || '',
                 designation: p.nom || '', description: [NOMS_MARQUES[p.marque], p.categorie].filter(Boolean).join(' · '),
-                quantite: 1, unite: '', prix_catalogue_ttc: isFinite(ttc) ? ttc : 0, pu_ht: isFinite(ttc) ? ttcVersHt(ttc) : 0,
+                quantite: n, unite: '', prix_catalogue_ttc: isFinite(ttc) ? ttc : 0, pu_ht: isFinite(ttc) ? ttcVersHt(ttc) : 0,
                 image: urlImageSure(p.image),
                 contenu: p.est_pack ? contenuPack(p) : []
             });
         }
         modifie = true;
         rendreLignes();
-        toast(`${p.nom} ajouté au devis`);
+        if (!silencieux) toast(`${p.nom} ajouté au devis`);
+        return true;
+    }
+    function ajouterLignesAide(items) {
+        if (!courant) return false;
+        const ok = (items || []).filter((it) => it && it.id && ajouterProduitDevis(it.id, it.qte, { silencieux: true }));
+        if (!ok.length) return false;
+        toast(ok.length > 1 ? `${ok.length} lignes ajoutées au devis` : 'Ligne ajoutée au devis');
+        return true;
     }
     function rendrePicker() {
         const prods = getProduits();
@@ -758,6 +770,14 @@ export function initDevis({ db, toast, getProduits, ouvrirOnglet, getContact, pr
     window.addEventListener('beforeunload', (e) => { if (courant && modifie) { e.preventDefault(); e.returnValue = ''; } });
 
     if ($('dv-aller-profil')) $('dv-aller-profil').addEventListener('click', () => { if (typeof ouvrirProfil === 'function') ouvrirProfil(); });
+
+    rangerAide = monterAide({
+        getProduits,
+        devisOuvert: () => !!courant,
+        tauxDevis: () => (courant ? tauxCourant() : 20),
+        ajouterLignes: ajouterLignesAide,
+        toast
+    }).ranger;
 
     return { chargerDevis, creerDepuisDemande, genererPDF, ouvrirEditeur, nouveauDevis, rafraichirContact: majBlocContact };
 }

@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/admin.css?v=13">
+<link rel="stylesheet" href="assets/css/admin.css?v=15">
 <script>document.documentElement.style.background=(localStorage.getItem('carapace-admin-theme')==='dark')?'#070b14':'';</script>
 </head>
 <body data-theme="light">
@@ -136,6 +136,7 @@
       <button class="tab active" data-tab="panel-demandes" role="tab"><svg class="i"><use href="#i-mail"/></svg>Demandes <span class="count" id="tab-count-demandes">0</span></button>
       <button class="tab" data-tab="panel-catalogue" role="tab"><svg class="i"><use href="#i-box"/></svg>Catalogue</button>
       <button class="tab" data-tab="panel-devis" role="tab"><svg class="i"><use href="#i-file"/></svg>Devis <span class="count count-blue" id="tab-count-devis">0</span></button>
+      <button class="tab" data-tab="panel-aide" role="tab"><svg class="i"><use href="#i-tools"/></svg>Aide au devis</button>
       <button class="tab" data-tab="panel-clients" role="tab"><svg class="i"><use href="#i-users"/></svg>Clients <span class="count count-blue" id="tab-count-clients">0</span></button>
       <button class="tab" data-tab="panel-profil" role="tab"><svg class="i"><use href="#i-users"/></svg>Mon profil</button>
       <button class="tab" data-tab="panel-employes" id="tab-employes" role="tab" hidden><svg class="i"><use href="#i-users"/></svg>Comptes employés</button>
@@ -317,9 +318,18 @@
           <button class="btn btn-ghost" type="button" id="btn-devis-retour"><svg class="i"><use href="#i-back"/></svg>Retour aux devis</button>
           <div class="devis-topbar-title"><span id="dv-titre">Nouveau devis</span> <span class="statut-pill" id="dv-statut-pill">Brouillon</span></div>
           <div class="devis-topbar-actions">
+            <button class="btn btn-secondary" type="button" id="btn-aide-devis"><svg class="i"><use href="#i-tools"/></svg>Aide au devis</button>
             <button class="btn btn-secondary" type="button" id="btn-devis-pdf"><svg class="i"><use href="#i-download"/></svg>PDF</button>
             <button class="btn btn-primary" type="button" id="btn-devis-save"><svg class="i"><use href="#i-check-circle"/></svg>Enregistrer</button>
           </div>
+        </div>
+
+        <div id="aide-inline" class="card-box aide-inline" hidden>
+          <div class="section-head">
+            <h3><svg class="i"><use href="#i-tools"/></svg>Aide au devis</h3>
+            <button class="btn btn-ghost" type="button" id="aide-fermer">Fermer</button>
+          </div>
+          <div id="aide-inline-slot"></div>
         </div>
 
         <form id="form-devis" class="devis-grid" novalidate>
@@ -432,6 +442,16 @@
             </div>
           </aside>
         </form>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-aide">
+      <div class="card-box">
+        <div class="section-head">
+          <h3><svg class="i"><use href="#i-tools"/></svg>Aide au devis</h3>
+        </div>
+        <p class="hint">Comparez un achat à l'unité et le pack le moins cher, à partir des prix de vente du catalogue.</p>
+        <div id="aide-slot"></div>
       </div>
     </section>
 
@@ -553,6 +573,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="assets/js/images-produits.js"></script>
-<script type="module" src="assets/js/admin.js?v=14"></script>
+<script type="module" src="assets/js/admin.js?v=15"></script>
 </body>
 </html>
